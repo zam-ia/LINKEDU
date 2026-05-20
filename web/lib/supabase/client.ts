@@ -44,7 +44,7 @@ export const INITIAL_COLEGIOS: ColegioInfo[] = [
 
 export const MOCK_USERS: Record<string, UserProfile> = {
   'superadmin@linkedu.com': {
-    id: 's0000000-0000-0000-0000-000000000000',
+    id: 'f0000000-0000-0000-0000-000000000000',
     colegio_id: null,
     rol: 'superadmin',
     nombre: 'Administrador',

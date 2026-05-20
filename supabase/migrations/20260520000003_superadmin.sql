@@ -39,7 +39,7 @@ CREATE POLICY "Superadmin acceso total egresos" ON public.egresos FOR ALL USING 
 
 INSERT INTO auth.users (id, email, raw_user_meta_data, raw_app_meta_data, aud, role)
 VALUES (
-    's0000000-0000-0000-0000-000000000000',
+    'f0000000-0000-0000-0000-000000000000',
     'superadmin@linkedu.com',
     '{"nombre": "Administrador", "apellido": "Global"}'::jsonb,
     '{"rol": "superadmin"}'::jsonb,
@@ -50,7 +50,7 @@ ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.usuarios (id, colegio_id, rol, nombre, apellido, dni, foto_url, activo)
 VALUES (
-    's0000000-0000-0000-0000-000000000000',
+    'f0000000-0000-0000-0000-000000000000',
     NULL, -- No está amarrado a ningún colegio particular
     'superadmin',
     'Administrador',
