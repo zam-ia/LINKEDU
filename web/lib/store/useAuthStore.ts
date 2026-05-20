@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { UserProfile, MOCK_USERS } from '../supabase/client';
+import { UserProfile, getStoredColegios, getStoredUsers, saveStoredUsers } from '../supabase/client';
 
 interface AuthState {
   user: UserProfile | null;
@@ -8,22 +8,31 @@ interface AuthState {
   login: (email: string) => Promise<boolean>;
   logout: () => void;
   setUser: (user: UserProfile | null) => void;
+  updateUserProfile: (nombre: string, apellido: string, fotoUrl: string) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => {
+export const useAuthStore = create<AuthState>((set, get) => {
   // Intentar cargar la sesión del localStorage si existe
   let initialUser: UserProfile | null = null;
   let initialColegio = null;
+  
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('linkedu_session');
     if (saved) {
       try {
         initialUser = JSON.parse(saved);
-        initialColegio = {
-          id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
-          nombre: 'Colegio de Excelencia Linkedu',
-          logo: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80'
-        };
+        const currentUser = initialUser;
+        if (currentUser && currentUser.colegio_id) {
+          const colegios = getStoredColegios();
+          const school = colegios.find(c => c.id === currentUser.colegio_id);
+          if (school) {
+            initialColegio = {
+              id: school.id,
+              nombre: school.nombre,
+              logo: school.logo
+            };
+          }
+        }
       } catch (e) {
         console.error("Error al parsear sesión guardada", e);
       }
@@ -39,18 +48,49 @@ export const useAuthStore = create<AuthState>((set) => {
       // Simular retraso de red
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      const matchedUser = MOCK_USERS[email.toLowerCase().trim()];
+      const cleanEmail = email.toLowerCase().trim();
+      const users = getStoredUsers();
+      const matchedUser = users.find(u => u.email === cleanEmail);
+
       if (matchedUser) {
+        // 1. Verificar si el usuario está inactivo
+        if (matchedUser.activo === false) {
+          set({ loading: false });
+          alert("Tu cuenta ha sido desactivada. Comunícate con el administrador.");
+          return false;
+        }
+
+        // 2. Verificar si el colegio del usuario está inactivo (excluye Super Admin)
+        if (matchedUser.rol !== 'superadmin' && matchedUser.colegio_id) {
+          const colegios = getStoredColegios();
+          const school = colegios.find(c => c.id === matchedUser.colegio_id);
+          if (school && !school.activo) {
+            set({ loading: false });
+            alert("El servicio para tu colegio ha sido suspendido. Comunícate con Soporte.");
+            return false;
+          }
+        }
+
         if (typeof window !== 'undefined') {
           localStorage.setItem('linkedu_session', JSON.stringify(matchedUser));
         }
+
+        let matchedColegio = null;
+        if (matchedUser.colegio_id) {
+          const colegios = getStoredColegios();
+          const school = colegios.find(c => c.id === matchedUser.colegio_id);
+          if (school) {
+            matchedColegio = {
+              id: school.id,
+              nombre: school.nombre,
+              logo: school.logo
+            };
+          }
+        }
+
         set({
           user: matchedUser,
-          colegio: {
-            id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
-            nombre: 'Colegio de Excelencia Linkedu',
-            logo: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80'
-          },
+          colegio: matchedColegio,
           loading: false
         });
         return true;
@@ -64,6 +104,23 @@ export const useAuthStore = create<AuthState>((set) => {
       }
       set({ user: null, colegio: null });
     },
-    setUser: (user) => set({ user })
+    setUser: (user) => set({ user }),
+    updateUserProfile: (nombre: string, apellido: string, fotoUrl: string) => {
+      const { user } = get();
+      if (!user) return;
+      const updated = { ...user, nombre, apellido, foto_url: fotoUrl };
+
+      // Persistir en la lista de usuarios simulados
+      const users = getStoredUsers();
+      const updatedUsers = users.map(u => u.id === user.id ? { ...u, nombre, apellido, foto_url: fotoUrl } : u);
+      saveStoredUsers(updatedUsers);
+
+      // Persistir en la sesión activa del cliente
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('linkedu_session', JSON.stringify(updated));
+      }
+
+      set({ user: updated });
+    }
   };
 });

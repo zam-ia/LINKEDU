@@ -142,39 +142,58 @@ export default function LoginPage() {
             <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-4">
               Acceso Rápido (Perfiles Demo)
             </span>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
+              {/* Botón Destacado: Super Admin */}
               <button
-                onClick={() => handleQuickLogin('director@linkedu.com')}
+                onClick={() => handleQuickLogin('superadmin@linkedu.com')}
                 disabled={loading}
-                className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EEF1FE] hover:border-[#4F6AF0]/30 transition-all text-left group cursor-pointer"
+                className="flex items-center justify-between w-full p-3.5 border border-[#9B7FD4]/30 bg-[#F3EFFE]/20 hover:bg-[#F3EFFE]/70 rounded-xl transition-all cursor-pointer group"
               >
-                <span className="text-xs font-bold text-gray-800">Dirección</span>
-                <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#4F6AF0] transition-colors">director@linkedu.com</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">🌐</span>
+                  <div className="text-left">
+                    <span className="block text-xs font-extrabold text-gray-800">Super Administrador Global</span>
+                    <span className="block text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">superadmin@linkedu.com</span>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[#9B7FD4] group-hover:translate-x-0.5 transition-transform" />
               </button>
-              <button
-                onClick={() => handleQuickLogin('docente@linkedu.com')}
-                disabled={loading}
-                className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EAF7F7] hover:border-[#7EC8C8]/30 transition-all text-left group cursor-pointer"
-              >
-                <span className="text-xs font-bold text-gray-800">Docente</span>
-                <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#7EC8C8] transition-colors">docente@linkedu.com</span>
-              </button>
-              <button
-                onClick={() => handleQuickLogin('padre@linkedu.com')}
-                disabled={loading}
-                className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#FEF6E8] hover:border-[#F5A623]/30 transition-all text-left group cursor-pointer"
-              >
-                <span className="text-xs font-bold text-gray-800">Padre / Tutor</span>
-                <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#F5A623] transition-colors">padre@linkedu.com</span>
-              </button>
-              <button
-                onClick={() => handleQuickLogin('alumno@linkedu.com')}
-                disabled={loading}
-                className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#F3EFFE] hover:border-[#9B7FD4]/30 transition-all text-left group cursor-pointer"
-              >
-                <span className="text-xs font-bold text-gray-800">Alumno</span>
-                <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">alumno@linkedu.com</span>
-              </button>
+
+              {/* Grid para el resto de roles del colegio */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => handleQuickLogin('director@linkedu.com')}
+                  disabled={loading}
+                  className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EEF1FE] hover:border-[#4F6AF0]/30 transition-all text-left group cursor-pointer"
+                >
+                  <span className="text-xs font-bold text-gray-800">Dirección</span>
+                  <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#4F6AF0] transition-colors">director@linkedu.com</span>
+                </button>
+                <button
+                  onClick={() => handleQuickLogin('docente@linkedu.com')}
+                  disabled={loading}
+                  className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EAF7F7] hover:border-[#7EC8C8]/30 transition-all text-left group cursor-pointer"
+                >
+                  <span className="text-xs font-bold text-gray-800">Docente</span>
+                  <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#7EC8C8] transition-colors">docente@linkedu.com</span>
+                </button>
+                <button
+                  onClick={() => handleQuickLogin('padre@linkedu.com')}
+                  disabled={loading}
+                  className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#FEF6E8] hover:border-[#F5A623]/30 transition-all text-left group cursor-pointer"
+                >
+                  <span className="text-xs font-bold text-gray-800">Padre / Tutor</span>
+                  <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#F5A623] transition-colors">padre@linkedu.com</span>
+                </button>
+                <button
+                  onClick={() => handleQuickLogin('alumno@linkedu.com')}
+                  disabled={loading}
+                  className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#F3EFFE]/40 hover:border-[#9B7FD4]/20 transition-all text-left group cursor-pointer"
+                >
+                  <span className="text-xs font-bold text-gray-800">Alumno</span>
+                  <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">alumno@linkedu.com</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -48,24 +48,33 @@
 }
 
 body {
-  background-color: #F8F9FB;
+  background-color: #F8F9FB; /* Capa 0: Lienzo completamente plano y mate */
   color: #111827;
   overflow-x: hidden;
 }
 
-/* Micro-animaciones y Utilidades Premium */
+/* Micro-animaciones y Utilidades Premium: SOFT MINIMALISM (Card-Based Design) */
 .premium-card {
-  background: #FFFFFF;
-  border: 1px solid #EAECF0;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #FFFFFF; /* Capa 1: Blanco sólido flotante */
+  border: 1px solid rgba(234, 236, 240, 0.6);
+  border-radius: 16px; /* Bordes generosos y modernos (16px) */
+  /* Sombras "de aire" difusas y suaves con blur muy amplio y opacidad del 4% al 6% */
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.04), 0 8px 24px -5px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 10; /* Capa 1 */
 }
 
 .premium-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(79, 106, 240, 0.05), 0 12px 24px rgba(79, 106, 240, 0.04);
-  border-color: rgba(79, 106, 240, 0.3);
+  transform: translateY(-3px); /* Elevación sutil */
+  /* Sombra de aire más amplia y un halo de color primario muy suave (opacidad del 5%) */
+  box-shadow: 0 30px 60px -15px rgba(79, 106, 240, 0.06), 0 12px 30px -5px rgba(79, 106, 240, 0.03);
+  border-color: rgba(79, 106, 240, 0.2);
+}
+
+.interactive-element {
+  /* Capa 2: Elementos interactivos (botones, gráficos) que se asientan sobre las tarjetas */
+  z-index: 20;
 }
 
 .glassmorphism {

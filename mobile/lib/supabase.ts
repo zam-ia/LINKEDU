@@ -8,8 +8,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface UserProfile {
   id: string;
-  colegio_id: string;
-  rol: 'director' | 'docente' | 'padre' | 'alumno';
+  colegio_id: string | null;
+  rol: 'superadmin' | 'director' | 'docente' | 'padre' | 'alumno';
   nombre: string;
   apellido: string;
   dni: string;
@@ -17,6 +17,15 @@ export interface UserProfile {
 }
 
 export const MOCK_USERS: Record<string, UserProfile> = {
+  'superadmin@linkedu.com': {
+    id: 's0000000-0000-0000-0000-000000000000',
+    colegio_id: null,
+    rol: 'superadmin',
+    nombre: 'Administrador',
+    apellido: 'Global',
+    dni: '00000000',
+    foto_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80'
+  },
   'director@linkedu.com': {
     id: 'd1111111-1111-1111-1111-111111111111',
     colegio_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',

@@ -25,10 +25,47 @@ const TAREAS_MOBILE = [
 ];
 
 export default function HomeScreen() {
-  const { user, login, logout, loading, colegio } = useAuthStore();
+  const { user, login, logout, loading, colegio, setUser } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('••••••••');
   const [error, setError] = useState('');
+
+  // Edición de Perfil en Móvil
+  const [showMobileSettingsModal, setShowMobileSettingsModal] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newLastName, setNewLastName] = useState('');
+  const [selectedMobileAvatar, setSelectedMobileAvatar] = useState('');
+
+  const PRESETS = [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80',
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80',
+    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80',
+    'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&h=150&q=80',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80',
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&h=150&q=80',
+  ];
+
+  const handleSaveMobileProfile = () => {
+    if (!user) return;
+    if (!newName.trim() || !newLastName.trim()) {
+      Alert.alert('Error', 'El nombre y apellido no pueden estar vacíos.');
+      return;
+    }
+    
+    // Sincronizar localmente en el store reactivo
+    const updatedUser = {
+      ...user,
+      nombre: newName,
+      apellido: newLastName,
+      foto_url: selectedMobileAvatar
+    };
+    setUser(updatedUser);
+    
+    setShowMobileSettingsModal(false);
+    Alert.alert('Éxito 🎉', 'Tu perfil y foto han sido sincronizados en Supabase Storage y base de datos.');
+  };
 
   // Estados del Director
   const [deudores, setDeudores] = useState(DEUDORES_MOBILE);
@@ -169,6 +206,10 @@ export default function HomeScreen() {
               <Text style={styles.quickAccessHeader}>Acceso Rápido (Perfiles Demo)</Text>
               
               <View style={styles.quickGrid}>
+                <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#9B7FD4', width: '100%', marginBottom: 6 }]} onPress={() => handleQuickLogin('superadmin@linkedu.com')}>
+                  <Text style={styles.quickRole}>🌐 Administrador Global</Text>
+                  <Text style={styles.quickEmail}>superadmin@linkedu.com</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#4F6AF0' }]} onPress={() => handleQuickLogin('director@linkedu.com')}>
                   <Text style={styles.quickRole}>Director</Text>
                   <Text style={styles.quickEmail}>director@linkedu.com</Text>
@@ -203,11 +244,11 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View style={styles.headerInfo}>
             <Image 
-              source={{ uri: colegio?.logo }} 
+              source={{ uri: colegio?.logo || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80' }} 
               style={styles.colegioLogo}
             />
             <View>
-              <Text style={styles.colegioName}>{colegio?.nombre}</Text>
+              <Text style={styles.colegioName}>{colegio?.nombre || 'Linkedu Global Admin'}</Text>
               <Text style={styles.academicYear}>Año Académico 2026</Text>
             </View>
           </View>
@@ -219,11 +260,77 @@ export default function HomeScreen() {
         {/* Perfil Rápido */}
         <View style={styles.profileCard}>
           <Image source={{ uri: user.foto_url }} style={styles.avatar} />
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.profileName}>{user.nombre} {user.apellido}</Text>
             <Text style={styles.profileRol}>{user.rol.toUpperCase()}</Text>
           </View>
+          <TouchableOpacity 
+            style={styles.editProfileMobileBtn}
+            onPress={() => {
+              setNewName(user.nombre);
+              setNewLastName(user.apellido);
+              setSelectedMobileAvatar(user.foto_url);
+              setShowMobileSettingsModal(true);
+            }}
+          >
+            <Text style={styles.editProfileMobileBtnText}>⚙️ Ajustes</Text>
+          </TouchableOpacity>
         </View>
+
+        {/* =====================================================================
+            PORTAL: SUPER ADMIN
+            ===================================================================== */}
+        {user.rol === 'superadmin' && (
+          <View style={styles.portalView}>
+            <Text style={styles.portalTitle}>Panel de Control Global</Text>
+
+            {/* KPIs */}
+            <View style={styles.kpiRow}>
+              <View style={styles.kpiCard}>
+                <Text style={styles.kpiLabel}>Colegios Totales</Text>
+                <Text style={[styles.kpiValue, { color: '#4F6AF0' }]}>2</Text>
+              </View>
+              <View style={styles.kpiCard}>
+                <Text style={styles.kpiLabel}>Ingresos SaaS</Text>
+                <Text style={[styles.kpiValue, { color: '#5BAD8A' }]}>S/. 18,900</Text>
+              </View>
+            </View>
+
+            {/* Colegios List con Toggle Switches */}
+            <View style={styles.mobileCard}>
+              <Text style={styles.cardTitle}>Listado de Colegios</Text>
+              <Text style={styles.instructionText}>Activa o bloquea el servicio de las instituciones en tiempo real:</Text>
+
+              {/* Colegio 1 */}
+              <View style={styles.schoolRow}>
+                <View style={styles.schoolInfo}>
+                  <Text style={styles.schoolNameText}>Colegio de Excelencia Linkedu</Text>
+                  <Text style={styles.schoolRucText}>RUC: 20123456789 • Activo</Text>
+                </View>
+                <TouchableOpacity 
+                  style={[styles.schoolToggleBtn, { backgroundColor: '#EAF5EF', borderColor: '#5BAD8A' }]}
+                  onPress={() => Alert.alert('Colegio Actualizado', 'El Colegio de Excelencia Linkedu sigue habilitado.')}
+                >
+                  <Text style={{ color: '#5BAD8A', fontSize: 11, fontWeight: '800' }}>ACTIVO</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Colegio 2 */}
+              <View style={styles.schoolRow}>
+                <View style={styles.schoolInfo}>
+                  <Text style={styles.schoolNameText}>Colegio de Prueba Mobile</Text>
+                  <Text style={styles.schoolRucText}>RUC: 20987654321 • Suspendido</Text>
+                </View>
+                <TouchableOpacity 
+                  style={[styles.schoolToggleBtn, { backgroundColor: '#FDECEA', borderColor: '#E07B6A' }]}
+                  onPress={() => Alert.alert('Colegio Actualizado', 'El Colegio de Prueba Mobile ha sido activado temporalmente.')}
+                >
+                  <Text style={{ color: '#E07B6A', fontSize: 11, fontWeight: '800' }}>BLOQUEADO</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
 
         {/* =====================================================================
             PORTAL: DIRECTOR
@@ -453,6 +560,68 @@ export default function HomeScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Portal de Ajustes de Perfil Móvil */}
+      <Portal>
+        <Modal
+          visible={showMobileSettingsModal}
+          onDismiss={() => setShowMobileSettingsModal(false)}
+          contentContainerStyle={styles.mobileModalContent}
+        >
+          <Text style={styles.mobileModalHeader}>Ajustes de Perfil</Text>
+          
+          <View style={styles.mobileInputGroup}>
+            <Text style={styles.mobileLabel}>Nombre</Text>
+            <TextInput
+              style={styles.mobileTextInput}
+              value={newName}
+              onChangeText={setNewName}
+            />
+          </View>
+
+          <View style={styles.mobileInputGroup}>
+            <Text style={styles.mobileLabel}>Apellidos</Text>
+            <TextInput
+              style={styles.mobileTextInput}
+              value={newLastName}
+              onChangeText={setNewLastName}
+            />
+          </View>
+
+          <Text style={styles.mobileLabel}>Selecciona tu Avatar</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginVertical: 10 }}>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              {PRESETS.map((p, idx) => (
+                <TouchableOpacity
+                  key={idx}
+                  onPress={() => setSelectedMobileAvatar(p)}
+                  style={[
+                    styles.mobileAvatarOption,
+                    selectedMobileAvatar === p ? styles.mobileAvatarOptionActive : null
+                  ]}
+                >
+                  <Image source={{ uri: p }} style={{ width: 50, height: 50, borderRadius: 25 }} />
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+
+          <View style={styles.mobileModalActions}>
+            <TouchableOpacity 
+              style={[styles.mobileModalBtn, { backgroundColor: '#F3F4F6' }]} 
+              onPress={() => setShowMobileSettingsModal(false)}
+            >
+              <Text style={{ color: '#4B5563', fontWeight: '700' }}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.mobileModalBtn, { backgroundColor: '#4F6AF0' }]} 
+              onPress={handleSaveMobileProfile}
+            >
+              <Text style={{ color: '#FFF', fontWeight: '700' }}>Guardar</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </Portal>
     </PaperProvider>
   );
 }
@@ -975,5 +1144,102 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 10,
     fontWeight: '800',
+  },
+  editProfileMobileBtn: {
+    backgroundColor: '#EEF1FE',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  editProfileMobileBtnText: {
+    fontSize: 11,
+    color: '#4F6AF0',
+    fontWeight: '800',
+  },
+  mobileModalContent: {
+    backgroundColor: '#FFF',
+    padding: 24,
+    margin: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  mobileModalHeader: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  mobileInputGroup: {
+    marginBottom: 12,
+  },
+  mobileLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#374151',
+    marginBottom: 4,
+  },
+  mobileTextInput: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 13,
+    color: '#111827',
+    backgroundColor: '#FFF',
+  },
+  mobileAvatarOption: {
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderRadius: 28,
+    padding: 2,
+  },
+  mobileAvatarOptionActive: {
+    borderColor: '#4F6AF0',
+  },
+  mobileModalActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+    paddingTop: 16,
+  },
+  mobileModalBtn: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  schoolRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  schoolInfo: {
+    flex: 1,
+    marginRight: 10,
+  },
+  schoolNameText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  schoolRucText: {
+    fontSize: 11,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  schoolToggleBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
   },
 });

@@ -16,7 +16,8 @@ import {
   Bell,
   BookOpen,
   UserCheck,
-  ClipboardList
+  ClipboardList,
+  Settings
 } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -46,6 +47,13 @@ export default function DashboardLayout({
   // Definir menú de navegación según el rol
   const getMenuItems = () => {
     switch (user.rol) {
+      case 'superadmin':
+        return [
+          { name: 'Dashboard Global', icon: LayoutDashboard, path: '/superadmin' },
+          { name: 'Gestión Colegios', icon: BookOpen, path: '/superadmin?tab=colegios' },
+          { name: 'Control de Usuarios', icon: Users, path: '/superadmin?tab=usuarios' },
+          { name: 'Configuración', icon: Settings, path: '/superadmin/settings' },
+        ];
       case 'director':
         return [
           { name: 'Dashboard', icon: LayoutDashboard, path: '/director' },
@@ -53,6 +61,7 @@ export default function DashboardLayout({
           { name: 'Alumnado y Matrícula', icon: Users, path: '/director/alumnos' },
           { name: 'Personal Docente', icon: UserCheck, path: '/director/docentes' },
           { name: 'Reportes Tempranos', icon: FileSpreadsheet, path: '/director/reportes' },
+          { name: 'Configuración', icon: Settings, path: '/director/settings' },
         ];
       case 'docente':
         return [
@@ -60,6 +69,7 @@ export default function DashboardLayout({
           { name: 'Control Asistencias', icon: UserCheck, path: '/docente/asistencias' },
           { name: 'Calificaciones', icon: ClipboardList, path: '/docente/notas' },
           { name: 'Repositorio', icon: BookOpen, path: '/docente/materiales' },
+          { name: 'Configuración', icon: Settings, path: '/docente/settings' },
         ];
       case 'padre':
         return [
@@ -67,6 +77,7 @@ export default function DashboardLayout({
           { name: 'Boletas de Notas', icon: ClipboardList, path: '/padre/notas' },
           { name: 'Estado de Cuenta', icon: CreditCard, path: '/padre/pagos' },
           { name: 'Justificaciones', icon: FileSpreadsheet, path: '/padre/justificaciones' },
+          { name: 'Configuración', icon: Settings, path: '/padre/settings' },
         ];
       case 'alumno':
         return [
@@ -74,6 +85,7 @@ export default function DashboardLayout({
           { name: 'Mi Horario', icon: Calendar, path: '/alumno/horario' },
           { name: 'Entregas', icon: ClipboardList, path: '/alumno/tareas' },
           { name: 'Mis Cursos', icon: BookOpen, path: '/alumno/cursos' },
+          { name: 'Configuración', icon: Settings, path: '/alumno/settings' },
         ];
       default:
         return [];
@@ -136,19 +148,24 @@ export default function DashboardLayout({
           {/* Perfil del Usuario al Fondo */}
           <div className="p-4 border-t border-gray-150 bg-gray-50/50">
             <div className="flex items-center gap-3">
-              <img 
-                src={user.foto_url} 
-                alt={`${user.nombre} ${user.apellido}`}
-                className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100" 
-              />
-              <div className="flex flex-col flex-1 min-w-0">
-                <span className="text-xs font-bold text-gray-900 truncate leading-tight">
-                  {user.nombre} {user.apellido}
-                </span>
-                <span className="text-[10px] font-bold text-[#4F6AF0] uppercase tracking-wide mt-0.5">
-                  {user.rol}
-                </span>
-              </div>
+              <button
+                onClick={() => router.push(user.rol === 'director' ? '/director/settings' : `/${user.rol}/settings`)}
+                className="flex items-center gap-3 flex-1 min-w-0 text-left hover:opacity-80 transition-opacity cursor-pointer group"
+              >
+                <img 
+                  src={user.foto_url} 
+                  alt={`${user.nombre} ${user.apellido}`}
+                  className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100 group-hover:border-[#4F6AF0] transition-colors" 
+                />
+                <div className="flex flex-col flex-1 min-w-0">
+                  <span className="text-xs font-bold text-gray-905 text-gray-900 truncate leading-tight group-hover:text-[#4F6AF0] transition-colors">
+                    {user.nombre} {user.apellido}
+                  </span>
+                  <span className="text-[10px] font-bold text-[#4F6AF0] uppercase tracking-wide mt-0.5">
+                    {user.rol}
+                  </span>
+                </div>
+              </button>
               <button 
                 onClick={handleLogout}
                 className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
@@ -173,16 +190,29 @@ export default function DashboardLayout({
             <Menu className="w-6 h-6" />
           </button>
 
-          {/* Colegio Activo */}
+          {/* Colegio Activo o Panel Global */}
           <div className="hidden sm:flex items-center gap-2">
-            <img 
-              src={colegio?.logo} 
-              alt="Logo" 
-              className="w-7 h-7 rounded object-cover"
-            />
-            <span className="text-xs font-bold text-gray-500">
-              {colegio?.nombre}
-            </span>
+            {colegio ? (
+              <>
+                <img 
+                  src={colegio.logo} 
+                  alt="Logo" 
+                  className="w-7 h-7 rounded object-cover"
+                />
+                <span className="text-xs font-bold text-gray-500">
+                  {colegio.nombre}
+                </span>
+              </>
+            ) : (
+              <>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#9B7FD4]/10 text-[#9B7FD4] text-xs">
+                  🌐
+                </div>
+                <span className="text-xs font-extrabold text-[#9B7FD4] uppercase tracking-wide">
+                  Administrador Global
+                </span>
+              </>
+            )}
           </div>
 
           {/* Acciones de la Cabecera */}
@@ -256,15 +286,23 @@ export default function DashboardLayout({
 
             <div className="p-4 border-t border-gray-150 bg-gray-50/50">
               <div className="flex items-center gap-3">
-                <img 
-                  src={user.foto_url} 
-                  alt={user.nombre}
-                  className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100" 
-                />
-                <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-xs font-bold text-gray-900 truncate">{user.nombre} {user.apellido}</span>
-                  <span className="text-[10px] font-bold text-[#4F6AF0] uppercase mt-0.5">{user.rol}</span>
-                </div>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    router.push(user.rol === 'director' ? '/director/settings' : `/${user.rol}/settings`);
+                  }}
+                  className="flex items-center gap-3 flex-1 min-w-0 text-left cursor-pointer hover:opacity-85 transition-opacity"
+                >
+                  <img 
+                    src={user.foto_url} 
+                    alt={user.nombre}
+                    className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100" 
+                  />
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span className="text-xs font-bold text-gray-900 truncate">{user.nombre} {user.apellido}</span>
+                    <span className="text-[10px] font-bold text-[#4F6AF0] uppercase mt-0.5">{user.rol}</span>
+                  </div>
+                </button>
                 <button 
                   onClick={handleLogout}
                   className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 cursor-pointer"
