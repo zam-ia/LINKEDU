@@ -17,7 +17,8 @@ import {
   UserPlus,
   RefreshCw,
   Eye,
-  Check
+  Check,
+  Edit
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -87,6 +88,17 @@ export default function SuperAdminDashboard() {
   });
   const [activeUserToReset, setActiveUserToReset] = useState<UserProfile | null>(null);
   const [newPassword, setNewPassword] = useState('');
+
+  const [showEditColegio, setShowEditColegio] = useState(false);
+  const [editingColegio, setEditingColegio] = useState<ColegioInfo | null>(null);
+  const [editColegioForm, setEditColegioForm] = useState({ 
+    nombre: '', 
+    ruc: '', 
+    logo: '', 
+    plan: 'Premium SaaS', 
+    mensualidad: '1200', 
+    vencimiento: '2026-06-21' 
+  });
 
   // Sincronizar el colegio del nuevo usuario al abrir el modal
   useEffect(() => {
@@ -171,6 +183,45 @@ export default function SuperAdminDashboard() {
     });
     setSelectedColegioId(newId);
     triggerAlert(`¡Colegio "${added.nombre}" registrado exitosamente en la nube!`);
+  };
+
+  const handleOpenEditColegio = (col: ColegioInfo) => {
+    setEditingColegio(col);
+    setEditColegioForm({
+      nombre: col.nombre,
+      ruc: col.ruc,
+      logo: col.logo || '',
+      plan: col.plan || 'Premium SaaS',
+      mensualidad: String(col.mensualidad || 1200),
+      vencimiento: col.vencimiento || '2026-06-21'
+    });
+    setShowEditColegio(true);
+  };
+
+  const handleEditColegio = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingColegio || !editColegioForm.nombre || !editColegioForm.ruc) return;
+
+    const updated = colegios.map(c => {
+      if (c.id === editingColegio.id) {
+        return {
+          ...c,
+          nombre: editColegioForm.nombre,
+          ruc: editColegioForm.ruc,
+          logo: editColegioForm.logo || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80',
+          plan: editColegioForm.plan,
+          mensualidad: Number(editColegioForm.mensualidad) || 1200,
+          vencimiento: editColegioForm.vencimiento
+        };
+      }
+      return c;
+    });
+
+    setColegios(updated);
+    saveStoredColegios(updated);
+    setShowEditColegio(false);
+    setEditingColegio(null);
+    triggerAlert(`¡Colegio "${editColegioForm.nombre}" actualizado con éxito!`);
   };
 
   // --- ACCIONES DE USUARIOS ---
@@ -483,6 +534,13 @@ export default function SuperAdminDashboard() {
                           <span className="text-[10px] text-gray-400 font-bold uppercase mt-0.5 block">RUC: {col.ruc}</span>
                         </div>
                       </div>
+                      <button
+                        onClick={() => handleOpenEditColegio(col)}
+                        className="p-2 bg-gray-50 hover:bg-[#EEF1FE] hover:text-[#4F6AF0] rounded-xl text-gray-400 transition-all cursor-pointer shrink-0"
+                        title="Editar Colegio"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
                     </div>
 
                     <div className="mt-4 grid grid-cols-2 gap-2 text-xs border-t border-gray-100 pt-3">
@@ -829,6 +887,150 @@ export default function SuperAdminDashboard() {
                   className="px-4 py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Dar de Alta
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: EDITAR COLEGIO ================= */}
+      {showEditColegio && editingColegio && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setShowEditColegio(false)}></div>
+          <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <h3 className="text-base font-extrabold text-gray-950 mb-4 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-[#4F6AF0]" />
+              Editar Colegio
+            </h3>
+            <form onSubmit={handleEditColegio} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nombre del Colegio</label>
+                <input
+                  type="text"
+                  placeholder="Ej: Colegio San Agustín"
+                  value={editColegioForm.nombre}
+                  onChange={(e) => setEditColegioForm({ ...editColegioForm, nombre: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">RUC de la Institución</label>
+                <input
+                  type="text"
+                  placeholder="20123456789"
+                  maxLength={11}
+                  value={editColegioForm.ruc}
+                  onChange={(e) => setEditColegioForm({ ...editColegioForm, ruc: e.target.value.replace(/\D/g,'') })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Logo del Colegio</label>
+                <div className="flex gap-3 items-center">
+                  <div className="w-14 h-14 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                    {editColegioForm.logo ? (
+                      <img src={editColegioForm.logo} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xl">🏫</span>
+                    )}
+                    {editColegioForm.logo && (
+                      <button
+                        type="button"
+                        onClick={() => setEditColegioForm({ ...editColegioForm, logo: '' })}
+                        className="absolute inset-0 bg-black/50 text-white text-[9px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                      >
+                        Quitar
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-1.5">
+                    <div className="flex gap-2">
+                      <label className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 px-2.5 py-2 border border-dashed border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all text-[11px] font-bold text-gray-600">
+                        📁 Subir Logo
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setEditColegioForm({ ...editColegioForm, logo: reader.result as string });
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                      <span className="text-[10px] text-gray-400 self-center font-bold">o</span>
+                      <input
+                        type="text"
+                        placeholder="Pega un URL de imagen"
+                        value={editColegioForm.logo.startsWith('data:') ? '' : editColegioForm.logo}
+                        onChange={(e) => setEditColegioForm({ ...editColegioForm, logo: e.target.value })}
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Plan SaaS</label>
+                  <select
+                    value={editColegioForm.plan}
+                    onChange={(e) => setEditColegioForm({ ...editColegioForm, plan: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                  >
+                    <option value="Premium SaaS">Premium SaaS</option>
+                    <option value="Estandar SaaS">Estandar SaaS</option>
+                    <option value="Básico SaaS">Básico SaaS</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Mensualidad (S/.)</label>
+                  <input
+                    type="number"
+                    placeholder="1200"
+                    value={editColegioForm.mensualidad}
+                    onChange={(e) => setEditColegioForm({ ...editColegioForm, mensualidad: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Fecha de Vencimiento</label>
+                <input
+                  type="date"
+                  value={editColegioForm.vencimiento}
+                  onChange={(e) => setEditColegioForm({ ...editColegioForm, vencimiento: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                  required
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end pt-4 border-t border-gray-150">
+                <button
+                  type="button"
+                  onClick={() => setShowEditColegio(false)}
+                  className="px-4 py-2 border border-gray-250 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                >
+                  Guardar Cambios
                 </button>
               </div>
             </form>
