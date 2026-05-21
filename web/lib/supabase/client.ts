@@ -547,4 +547,202 @@ export const saveStoredNotas = (notas: NotaInfo[]) => {
   }
 };
 
+export const seedDataForNewSchool = (newColegioId: string, schoolName: string) => {
+  if (typeof window === 'undefined') return;
+
+  // 1. Seed Alumnos
+  const alumnos = getStoredAlumnos();
+  const alreadyHasAlumnos = alumnos.some(a => a.colegio_id === newColegioId);
+  if (!alreadyHasAlumnos) {
+    const mateoId = crypto.randomUUID();
+    const lucasId = crypto.randomUUID();
+    
+    const newAlumnos: AlumnoInfo[] = [
+      {
+        id: mateoId,
+        colegio_id: newColegioId,
+        nombre: 'Mateo',
+        apellido: `Castro (${schoolName.replace('Colegio ', '')})`,
+        dni: '66554433',
+        foto_url: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=150&h=150&q=80',
+        email: `alumno@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`,
+        grado: '1ro Primaria',
+        seccion: 'A',
+        estado: 'activo',
+        financiero: 'en_mora',
+        contacto_tutor: {
+          nombre: `Sofía Castro`,
+          relacion: 'Madre',
+          telefono: '998877665',
+          email: `padre@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`
+        },
+        datos_medicos: {
+          sangre: 'O+',
+          alergias: ['Penicilina'],
+          condiciones: 'Asma leve',
+          seguro: 'Privado'
+        }
+      },
+      {
+        id: lucasId,
+        colegio_id: newColegioId,
+        nombre: 'Lucas',
+        apellido: `Castro (${schoolName.replace('Colegio ', '')})`,
+        dni: '88776655',
+        foto_url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&h=150&q=80',
+        email: `lucas@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`,
+        grado: '2do Primaria',
+        seccion: 'A',
+        estado: 'activo',
+        financiero: 'pendiente',
+        contacto_tutor: {
+          nombre: `Sofía Castro`,
+          relacion: 'Madre',
+          telefono: '998877665',
+          email: `padre@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`
+        },
+        datos_medicos: {
+          sangre: 'A+',
+          alergias: [],
+          condiciones: 'Ninguna',
+          seguro: 'EsSalud'
+        }
+      }
+    ];
+    saveStoredAlumnos([...alumnos, ...newAlumnos]);
+
+    // 2. Seed Docentes
+    const docentes = getStoredDocentes();
+    const newDocentes: DocenteInfo[] = [
+      {
+        id: crypto.randomUUID(),
+        colegio_id: newColegioId,
+        nombre: 'María',
+        apellido: `Gutiérrez (${schoolName.replace('Colegio ', '')})`,
+        dni: '11223344',
+        foto_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80',
+        email: `docente@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`,
+        especialidad: 'Matemática y Ciencias',
+        contrato: 'planilla',
+        salario: 1500,
+        estado: 'activo',
+        cursos_asignados: [
+          { curso: 'Matemática Divertida', seccion: '1ro Primaria - A', horas: 8 },
+          { curso: 'Matemática Divertida', seccion: '2do Primaria - A', horas: 8 }
+        ]
+      }
+    ];
+    saveStoredDocentes([...docentes, ...newDocentes]);
+
+    // 3. Seed Pagos
+    const pagos = getStoredPagos();
+    const newPagos: PagoInfo[] = [
+      {
+        id: crypto.randomUUID(),
+        colegio_id: newColegioId,
+        alumno_id: mateoId,
+        concepto: 'Pensión Mensual Mayo',
+        monto: 380,
+        tipo: 'ingreso',
+        categoria: 'Pensión',
+        fecha: '2026-05-01',
+        vencimiento: '2026-05-10',
+        estado: 'vencido',
+        metodo: null,
+        comprobante: null
+      },
+      {
+        id: crypto.randomUUID(),
+        colegio_id: newColegioId,
+        alumno_id: lucasId,
+        concepto: 'Pensión Mensual Mayo',
+        monto: 380,
+        tipo: 'ingreso',
+        categoria: 'Pensión',
+        fecha: '2026-05-01',
+        vencimiento: '2026-05-31',
+        estado: 'pendiente',
+        metodo: null,
+        comprobante: null
+      },
+      {
+        id: crypto.randomUUID(),
+        colegio_id: newColegioId,
+        alumno_id: null,
+        concepto: 'Planillas docentes Mayo 2026',
+        monto: 1500,
+        tipo: 'egreso',
+        categoria: 'Planilla',
+        fecha: '2026-05-15',
+        vencimiento: null,
+        estado: 'pagado',
+        metodo: 'Transferencia',
+        comprobante: 'Planilla_Mayo.pdf'
+      }
+    ];
+    saveStoredPagos([...pagos, ...newPagos]);
+
+    // 4. Seed Asistencias
+    const asistencias = getStoredAsistencias();
+    const newAsistencias: AsistenciaInfo[] = [
+      { id: crypto.randomUUID(), colegio_id: newColegioId, alumno_id: mateoId, fecha: '2026-05-21', curso: 'Matemática Divertida', estado: 'F' },
+      { id: crypto.randomUUID(), colegio_id: newColegioId, alumno_id: lucasId, fecha: '2026-05-21', curso: 'Matemática Divertida', estado: 'P' }
+    ];
+    saveStoredAsistencias([...asistencias, ...newAsistencias]);
+
+    // 5. Seed Evaluaciones
+    const evaluaciones = getStoredEvaluaciones();
+    const ev1Id = crypto.randomUUID();
+    const ev2Id = crypto.randomUUID();
+    const ev3Id = crypto.randomUUID();
+    const newEvaluaciones: EvaluacionInfo[] = [
+      { id: ev1Id, colegio_id: newColegioId, curso: 'Matemática Divertida', periodo: 'Bimestre I', nombre: 'Examen Parcial', tipo: 'examen', peso: 30 },
+      { id: ev2Id, colegio_id: newColegioId, curso: 'Matemática Divertida', periodo: 'Bimestre I', nombre: 'Tareas y Talleres', tipo: 'tarea', peso: 30 },
+      { id: ev3Id, colegio_id: newColegioId, curso: 'Matemática Divertida', periodo: 'Bimestre I', nombre: 'Examen Bimestral', tipo: 'examen', peso: 40 }
+    ];
+    saveStoredEvaluaciones([...evaluaciones, ...newEvaluaciones]);
+
+    // 6. Seed Notas
+    const notas = getStoredNotas();
+    const newNotas: NotaInfo[] = [
+      { id: crypto.randomUUID(), colegio_id: newColegioId, alumno_id: mateoId, evaluacion_id: ev1Id, nota: 11 },
+      { id: crypto.randomUUID(), colegio_id: newColegioId, alumno_id: mateoId, evaluacion_id: ev2Id, nota: 12 },
+      { id: crypto.randomUUID(), colegio_id: newColegioId, alumno_id: mateoId, evaluacion_id: ev3Id, nota: 10 },
+      { id: crypto.randomUUID(), colegio_id: newColegioId, alumno_id: lucasId, evaluacion_id: ev1Id, nota: 17 },
+      { id: crypto.randomUUID(), colegio_id: newColegioId, alumno_id: lucasId, evaluacion_id: ev2Id, nota: 16.6 }
+    ];
+    saveStoredNotas([...notas, ...newNotas]);
+
+    // 7. Seed corresponding Padre & Alumno users so they can log in too!
+    const users = getStoredUsers();
+    const newUsers: UserProfile[] = [
+      {
+        id: crypto.randomUUID(),
+        colegio_id: newColegioId,
+        rol: 'padre',
+        nombre: `Sofía (Padre)`,
+        apellido: `Castro (${schoolName.replace('Colegio ', '')})`,
+        dni: '99887766',
+        email: `padre@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`,
+        foto_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80',
+        activo: true,
+        password: 'admin123'
+      },
+      {
+        id: mateoId,
+        colegio_id: newColegioId,
+        rol: 'alumno',
+        nombre: `Mateo (Alumno)`,
+        apellido: `Castro (${schoolName.replace('Colegio ', '')})`,
+        dni: '66554433',
+        email: `alumno@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`,
+        foto_url: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=150&h=150&q=80',
+        activo: true,
+        password: 'admin123'
+      }
+    ];
+    localStorage.setItem('linkedu_users', JSON.stringify([...users, ...newUsers]));
+  }
+};
+
 

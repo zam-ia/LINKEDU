@@ -204,10 +204,13 @@ export default function HomeScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Contraseña</Text>
               <TextInput
-                style={[styles.input, { backgroundColor: '#F3F4F6', color: '#9CA3AF' }]}
+                style={styles.input}
                 value={password}
                 secureTextEntry
-                editable={false}
+                editable={true}
+                onChangeText={setPassword}
+                placeholder="********"
+                placeholderTextColor="#9CA3AF"
               />
             </View>
 

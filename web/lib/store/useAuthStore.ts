@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { UserProfile, getStoredColegios, getStoredUsers, saveStoredUsers } from '../supabase/client';
+import { UserProfile, getStoredColegios, saveStoredColegios, getStoredUsers, saveStoredUsers } from '../supabase/client';
 
 interface AuthState {
   user: UserProfile | null;
@@ -59,7 +59,80 @@ export const useAuthStore = create<AuthState>((set, get) => {
       }
 
       const users = getStoredUsers();
-      const matchedUser = users.find(u => u.email === cleanEmail);
+      let matchedUser = users.find(u => u.email === cleanEmail);
+
+      if (!matchedUser) {
+        // Dynamic Auto-Provisioning Engine
+        const emailRegex = /^(director|docente|padre|alumno|superadmin)@([a-zA-Z0-9-]+)(?:\.[a-zA-Z0-9.]+)+$/i;
+        const match = cleanEmail.match(emailRegex);
+        if (match) {
+          const role = match[1].toLowerCase() as 'superadmin' | 'director' | 'docente' | 'padre' | 'alumno';
+          const domain = match[2];
+          
+          // Formatear nombre del colegio
+          const schoolName = domain
+            .split(/[-_]/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+          const finalSchoolName = `Colegio ${schoolName}`;
+          
+          // Buscar o crear colegio
+          const colegios = getStoredColegios();
+          let school = colegios.find(c => c.nombre.toLowerCase().trim() === finalSchoolName.toLowerCase().trim());
+          if (!school) {
+            const newSchoolId = crypto.randomUUID();
+            school = {
+              id: newSchoolId,
+              nombre: finalSchoolName,
+              logo: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80',
+              ruc: '20' + Math.floor(100000000 + Math.random() * 900000000),
+              activo: true,
+              plan: 'Premium SaaS',
+              mensualidad: 1500,
+              vencimiento: '2026-12-31'
+            };
+            colegios.push(school);
+            saveStoredColegios(colegios);
+
+            // Seed data for this new school automatically!
+            const { seedDataForNewSchool } = require('../supabase/client');
+            seedDataForNewSchool(newSchoolId, finalSchoolName);
+          }
+
+          // Crear usuario
+          const newUserId = crypto.randomUUID();
+          const roleNames: Record<string, { nombre: string, apellido: string }> = {
+            superadmin: { nombre: 'Admin', apellido: 'Global' },
+            director: { nombre: 'Roberto', apellido: 'Mendoza' },
+            docente: { nombre: 'María', apellido: 'Gutiérrez' },
+            padre: { nombre: 'Sofía', apellido: 'Castro' },
+            alumno: { nombre: 'Mateo', apellido: 'Castro' }
+          };
+          const { nombre, apellido } = roleNames[role] || { nombre: 'Usuario', apellido: 'Demo' };
+          
+          matchedUser = {
+            id: newUserId,
+            colegio_id: role === 'superadmin' ? null : school.id,
+            rol: role,
+            nombre: `${nombre} (${schoolName})`,
+            apellido: apellido,
+            dni: Math.floor(10000000 + Math.random() * 90000000).toString(),
+            foto_url: role === 'superadmin' 
+              ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80'
+              : role === 'director' ? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&h=150&q=80'
+              : role === 'docente' ? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80'
+              : role === 'padre' ? 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80'
+              : 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=150&h=150&q=80',
+            email: cleanEmail,
+            activo: true,
+            password: password || 'admin123'
+          };
+          
+          const freshUsers = getStoredUsers();
+          freshUsers.push(matchedUser);
+          saveStoredUsers(freshUsers);
+        }
+      }
 
       if (matchedUser) {
         // 1. Verificar si el usuario está inactivo
