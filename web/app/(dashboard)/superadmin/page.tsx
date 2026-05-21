@@ -18,7 +18,13 @@ import {
   RefreshCw,
   Eye,
   Check,
-  Edit
+  Edit,
+  Tv,
+  Sliders,
+  Play,
+  Volume2,
+  VolumeX,
+  MessageSquare
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -99,6 +105,48 @@ export default function SuperAdminDashboard() {
     mensualidad: '1200', 
     vencimiento: '2026-06-21' 
   });
+
+  // VSL Config State
+  const [vslForm, setVslForm] = useState({
+    titlePart1: "Elimine la Morosidad y el Caos de Excel.",
+    titlePart2: "Recupere el Control de su Colegio",
+    titlePart3: " en Tiempo Real",
+    subheadline: "LINKEDU es el ecosistema All-in-One que integra la tesorería del colegio, las calificaciones docentes y la comunicación con las familias en una sola aplicación nativa. Despliegue automático en 60 segundos.",
+    videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
+    whatsappNumber: "51987088359",
+    whatsappTemplate: 'Hola! Vengo de la landing page de Linkedu. Me interesa agendar una demostración gratuita en vivo. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}". ¿Cuándo podríamos programarla?',
+    subtitles: [
+      "Descubre cómo LINKEDU está eliminando el caos administrativo del Excel...",
+      "El 85% de los colegios en América Latina reporta fugas de dinero por morosidad no detectada.",
+      "Orquesta matrículas, pensiones, asistencias y libretas en un solo ecosistema integrado.",
+      "Ahorra hasta 15 horas semanales a tus profesores y pacifica la comunicación con los padres.",
+      "Registra hoy tu institución y despliega tu propia intranet escolar en 60 segundos."
+    ]
+  });
+
+  // Load VSL config from localStorage on start
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('linkedu_vsl_config');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setVslForm(prev => ({
+            ...prev,
+            ...parsed
+          }));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }, []);
+
+  const handleSaveVslConfig = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('linkedu_vsl_config', JSON.stringify(vslForm));
+    triggerAlert("¡Configuración del VSL de la Landing Page guardada con éxito!");
+  };
 
   // Sincronizar el colegio del nuevo usuario al abrir el modal
   useEffect(() => {
@@ -397,6 +445,16 @@ export default function SuperAdminDashboard() {
           }`}
         >
           Control de Usuarios
+        </button>
+        <button
+          onClick={() => handleTabChange('landing_vsl')}
+          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
+            activeTab === 'landing_vsl'
+              ? 'bg-[#EEF1FE] text-[#01017b]'
+              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
+          }`}
+        >
+          Configurar Landing VSL
         </button>
       </div>
 
@@ -746,6 +804,279 @@ export default function SuperAdminDashboard() {
                 </table>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= PESTAÑA: CONFIGURAR LANDING VSL ================= */}
+      {activeTab === 'landing_vsl' && (
+        <div className="space-y-6">
+          {/* 1. MOCK DE MÉTRICAS DEL VSL EN VIVO */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="premium-card p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Visitas a la Landing</span>
+                <span className="text-[10px] text-green-500 font-extrabold bg-green-50 px-2 py-0.5 rounded uppercase">+12%</span>
+              </div>
+              <div className="mt-4">
+                <span className="text-2xl font-black text-gray-900">3,450</span>
+                <p className="text-xs text-gray-500 font-bold mt-1">Tránsito B2B orgánico</p>
+              </div>
+            </div>
+
+            <div className="premium-card p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Visualizaciones VSL</span>
+                <span className="text-[10px] text-[#01017b] font-extrabold bg-[#EEF1FE] px-2 py-0.5 rounded uppercase">84% play</span>
+              </div>
+              <div className="mt-4">
+                <span className="text-2xl font-black text-gray-900">2,898</span>
+                <p className="text-xs text-gray-500 font-bold mt-1">Tasa de reproducción</p>
+              </div>
+            </div>
+
+            <div className="premium-card p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Clicks a WhatsApp</span>
+                <span className="text-[10px] text-[#7EC8C8] font-extrabold bg-[#EAF7F7] px-2 py-0.5 rounded uppercase">CTR: 15%</span>
+              </div>
+              <div className="mt-4">
+                <span className="text-2xl font-black text-gray-900">435</span>
+                <p className="text-xs text-gray-500 font-bold mt-1">Clientes potenciales</p>
+              </div>
+            </div>
+
+            <div className="premium-card p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Conversión Demo</span>
+                <span className="text-[10px] text-amber-600 font-extrabold bg-[#FEF6E8] px-2 py-0.5 rounded uppercase">Alta</span>
+              </div>
+              <div className="mt-4">
+                <span className="text-2xl font-black text-[#5BAD8A]">24.8%</span>
+                <p className="text-xs text-gray-500 font-bold mt-1">Reuniones de cierre agendadas</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. EDITOR Y PREVIEW */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* FORMULARIO DE EDICIÓN */}
+            <form onSubmit={handleSaveVslConfig} className="lg:col-span-6 premium-card p-6 space-y-5 bg-white border">
+              <div className="flex items-center justify-between border-b pb-3.5">
+                <div>
+                  <h3 className="text-base font-extrabold text-gray-900">Editor del VSL & Landing Page</h3>
+                  <p className="text-xs text-gray-400 font-semibold mt-0.5">Configura al vuelo textos, vídeos, contactos y subtítulos de tu estrategia comercial.</p>
+                </div>
+                <Tv className="w-5 h-5 text-[#01017b]" />
+              </div>
+
+              {/* Headline configuration */}
+              <div className="space-y-3">
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-wider">Titular Hero del VSL (3 partes)</label>
+                <div className="space-y-2">
+                  <div>
+                    <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 1 (Texto Regular inicial)</span>
+                    <input 
+                      type="text" 
+                      value={vslForm.titlePart1}
+                      onChange={(e) => setVslForm({ ...vslForm, titlePart1: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 2 (Texto en Gradiente Llamativo)</span>
+                    <input 
+                      type="text" 
+                      value={vslForm.titlePart2}
+                      onChange={(e) => setVslForm({ ...vslForm, titlePart2: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 3 (Texto Regular final)</span>
+                    <input 
+                      type="text" 
+                      value={vslForm.titlePart3}
+                      onChange={(e) => setVslForm({ ...vslForm, titlePart3: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Subheadline config */}
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">Subtítulo Descriptivo (Subheadline)</label>
+                <textarea 
+                  rows={3}
+                  value={vslForm.subheadline}
+                  onChange={(e) => setVslForm({ ...vslForm, subheadline: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30 animate-in fade-in"
+                  required
+                />
+              </div>
+
+              {/* Video URL backdrop */}
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">URL Imagen del VSL Player (Fondo)</label>
+                <input 
+                  type="text" 
+                  value={vslForm.videoUrl}
+                  onChange={(e) => setVslForm({ ...vslForm, videoUrl: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                  required
+                />
+              </div>
+
+              {/* WhatsApp B2B config */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">WhatsApp Comercial</label>
+                  <input 
+                    type="text" 
+                    value={vslForm.whatsappNumber}
+                    onChange={(e) => setVslForm({ ...vslForm, whatsappNumber: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                    placeholder="Ej: 51987088359"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">Mensaje Plantilla</label>
+                  <textarea 
+                    rows={2}
+                    value={vslForm.whatsappTemplate}
+                    onChange={(e) => setVslForm({ ...vslForm, whatsappTemplate: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-[10px] font-semibold text-gray-950 bg-gray-50/30 leading-snug font-mono"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Retaining Subtitles editing list */}
+              <div className="space-y-2 border-t pt-4">
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-1.5">Subtítulos Cíclicos del VSL</label>
+                <div className="space-y-2.5">
+                  {vslForm.subtitles.map((sub, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <span className="text-[10px] font-black text-gray-400 self-center w-5 shrink-0">#{idx + 1}</span>
+                      <input 
+                        type="text" 
+                        value={sub}
+                        onChange={(e) => {
+                          const updatedSubs = [...vslForm.subtitles];
+                          updatedSubs[idx] = e.target.value;
+                          setVslForm({ ...vslForm, subtitles: updatedSubs });
+                        }}
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                        required
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4 border-t">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-[#01017b]/15 cursor-pointer active:scale-98"
+                >
+                  Guardar y Publicar
+                </button>
+              </div>
+            </form>
+
+            {/* PREVIEW EN VIVO DEL REPRODUCTOR (GLASSMORPHISM) */}
+            <div className="lg:col-span-6 premium-card p-6 bg-slate-900 border border-slate-800 text-white space-y-6 sticky top-24">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-green-455 bg-green-400 animate-pulse" />
+                  <span className="text-xs font-black uppercase tracking-wider text-gray-400">Live Preview de la Landing VSL</span>
+                </div>
+                <span className="text-[9px] bg-white/10 text-[#7EC8C8] px-2 py-0.5 rounded font-black uppercase">Simulado</span>
+              </div>
+
+              {/* Title preview */}
+              <div className="space-y-2 text-center">
+                <h4 className="text-lg font-black tracking-tight text-white leading-snug text-balance">
+                  {vslForm.titlePart1} <br />
+                  <span className="bg-gradient-to-r from-[#7EC8C8] via-[#4F6AF0] to-[#9B7FD4] bg-clip-text text-transparent">
+                    {vslForm.titlePart2}
+                  </span>{vslForm.titlePart3}
+                </h4>
+                <p className="text-[10px] text-gray-400 max-w-md mx-auto leading-normal">
+                  {vslForm.subheadline}
+                </p>
+              </div>
+
+              {/* VSL Simulated player preview */}
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-white/10 group shadow-2xl">
+                <div className="absolute inset-0 flex flex-col justify-between p-4 z-10 select-none bg-gradient-to-t from-black/80 via-black/10 to-black/50">
+                  
+                  {/* Top bar */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[8px] font-black text-white uppercase tracking-wider bg-black/45 px-2 py-0.5 rounded backdrop-blur-xs">
+                      🔴 Vista Previa Activa
+                    </span>
+                    <span className="text-[8px] text-gray-300 font-bold uppercase tracking-wider bg-white/10 px-1.5 py-0.5 rounded">
+                      VSL • 3 Minutos
+                    </span>
+                  </div>
+
+                  {/* Play Button Mock */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-12 w-12 rounded-full bg-white/95 text-[#01017b] flex items-center justify-center shadow-xl">
+                      <Play className="w-5 h-5 fill-[#01017b] ml-0.5" />
+                    </div>
+                  </div>
+
+                  {/* Subtitle simulation preview rotating */}
+                  <div className="w-full text-center mb-6">
+                    <p className="inline-block text-[10px] font-bold text-white bg-black/70 px-3 py-1.5 rounded-xl border border-white/5 backdrop-blur-xs max-w-sm mx-auto leading-relaxed">
+                      📢 {vslForm.subtitles[0]}
+                    </p>
+                  </div>
+
+                  {/* Bottom Controls */}
+                  <div className="flex items-center gap-2 border-t border-white/10 pt-2 bg-black/40 p-2 rounded-xl backdrop-blur-xs">
+                    <Play className="w-3.5 h-3.5 text-white fill-white" />
+                    <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden relative">
+                      <div className="h-full bg-gradient-to-r from-[#7EC8C8] to-[#9B7FD4] w-[45%]" />
+                    </div>
+                    <span className="text-[8px] text-white/70 font-mono">1:12 / 3:00</span>
+                    <Volume2 className="w-3.5 h-3.5 text-white" />
+                  </div>
+                </div>
+
+                {/* Simulated Backdrop Image */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{ backgroundImage: `url(${vslForm.videoUrl})` }}
+                />
+              </div>
+
+              {/* Lead form capture mockup */}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
+                <h5 className="text-xs font-black text-center text-white">Capture Lead de Director Mockup</h5>
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div className="bg-white/10 rounded-lg p-2 text-gray-300">
+                    <span className="text-[7px] text-gray-500 block uppercase font-bold">Correo del Director</span>
+                    director@colegio.edu.pe
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-2 text-gray-300">
+                    <span className="text-[7px] text-gray-500 block uppercase font-bold">Nombre del Colegio</span>
+                    San Ignacio de Recalde
+                  </div>
+                </div>
+                <div className="w-full py-2 bg-white text-gray-900 rounded-xl text-center text-[10px] font-black uppercase tracking-wider shadow">
+                  Agendar Demostración Gratuita Hoy ➔
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       )}
