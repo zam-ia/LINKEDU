@@ -69,8 +69,23 @@ export default function RepositorioDocente() {
     url: '',
     tamano: '1.5 MB'
   });
+  const [selectedFileDetail, setSelectedFileDetail] = useState<{ name: string; size: string } | null>(null);
 
   const [alertMsg, setAlertMsg] = useState('');
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const sizeInMB = file.size / (1024 * 1024);
+    const sizeStr = sizeInMB < 0.1 ? `${(file.size / 1024).toFixed(1)} KB` : `${sizeInMB.toFixed(1)} MB`;
+    setSelectedFileDetail({ name: file.name, size: sizeStr });
+    setNewMaterial(prev => ({
+      ...prev,
+      nombre: file.name.replace(/\.[^/.]+$/, ""), // quitar extension
+      tamano: sizeStr,
+      url: '#'
+    }));
+  };
 
   useEffect(() => {
     // Get teacher's courses
@@ -122,6 +137,7 @@ export default function RepositorioDocente() {
 
     setShowAddModal(false);
     setNewMaterial({ nombre: '', tipo: 'archivo', url: '', tamano: '1.5 MB' });
+    setSelectedFileDetail(null);
     triggerAlert('Material de clase subido y compartido exitosamente.');
   };
 
@@ -278,6 +294,28 @@ export default function RepositorioDocente() {
                 </div>
               </div>
 
+              {newMaterial.tipo === 'archivo' && (
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Seleccionar Archivo Local</label>
+                  <input
+                    type="file"
+                    onChange={handleFileSelect}
+                    className="block w-full text-xs text-gray-500
+                      file:mr-4 file:py-1.5 file:px-3.5
+                      file:rounded-xl file:border-0
+                      file:text-xs file:font-bold
+                      file:bg-[#EEF1FE] file:text-[#01017b]
+                      hover:file:bg-[#EEF1FE]/80
+                      border border-gray-300 rounded-xl p-2 cursor-pointer focus:outline-none w-full"
+                  />
+                  {selectedFileDetail && (
+                    <p className="text-[10px] font-semibold text-gray-400 mt-1 uppercase font-mono">
+                      Detalle: {selectedFileDetail.name} ({selectedFileDetail.size})
+                    </p>
+                  )}
+                </div>
+              )}
+
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Nombre del Documento</label>
                 <input
@@ -290,7 +328,7 @@ export default function RepositorioDocente() {
                 />
               </div>
 
-              {newMaterial.tipo === 'link' ? (
+              {newMaterial.tipo === 'link' && (
                 <div>
                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">URL del Enlace Web</label>
                   <input
@@ -300,17 +338,6 @@ export default function RepositorioDocente() {
                     value={newMaterial.url}
                     onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })}
                     className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none"
-                  />
-                </div>
-              ) : (
-                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Tamaño Simulado</label>
-                  <input
-                    type="text"
-                    placeholder="Ej. 2.4 MB"
-                    value={newMaterial.tamano}
-                    onChange={(e) => setNewMaterial({ ...newMaterial, tamano: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none font-mono"
                   />
                 </div>
               )}

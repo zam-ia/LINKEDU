@@ -21,6 +21,7 @@ import {
   getStoredColegios,
   DocenteInfo 
 } from '@/lib/supabase/client';
+import ImageCropperModal from '@/components/ImageCropperModal';
 
 export default function DocentesPage() {
   const { colegio } = useAuthStore();
@@ -42,6 +43,15 @@ export default function DocentesPage() {
     foto_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80'
   });
 
+  // Edit Docente State
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingDocente, setEditingDocente] = useState<DocenteInfo | null>(null);
+
+  // Image Cropper States
+  const [rawImage, setRawImage] = useState<string>('');
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [cropperTarget, setCropperTarget] = useState<'new' | 'edit'>('new');
+
   // Schedule Course load states
   const [editingDocenteCarga, setEditingDocenteCarga] = useState<DocenteInfo | null>(null);
   const [newCursoAsignado, setNewCursoAsignado] = useState({
@@ -51,6 +61,39 @@ export default function DocentesPage() {
   });
 
   const [alertMsg, setAlertMsg] = useState('');
+
+  const handleCropCompleted = (croppedDataUrl: string, croppedBlob: Blob) => {
+    if (cropperTarget === 'new') {
+      setNewDocente(prev => ({ ...prev, foto_url: croppedDataUrl }));
+    } else if (cropperTarget === 'edit' && editingDocente) {
+      setEditingDocente(prev => prev ? { ...prev, foto_url: croppedDataUrl } : null);
+    }
+    setCropperOpen(false);
+  };
+
+  const handleSaveEditDocente = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingDocente || !colegio) return;
+
+    if (!editingDocente.nombre.trim() || !editingDocente.apellido.trim() || !editingDocente.dni.trim() || !editingDocente.email.trim()) {
+      triggerAlert('Nombre, Apellido, DNI y Correo son campos obligatorios.');
+      return;
+    }
+
+    const storedGlobal = getStoredDocentes();
+    const updated = storedGlobal.map(d => d.id === editingDocente.id ? editingDocente : d);
+    saveStoredDocentes(updated);
+
+    setDocentes(updated.filter(d => d.colegio_id === colegio.id));
+    
+    if (editingDocenteCarga && editingDocenteCarga.id === editingDocente.id) {
+      setEditingDocenteCarga(editingDocente);
+    }
+
+    setShowEditModal(false);
+    setEditingDocente(null);
+    triggerAlert(`Datos de ${editingDocente.nombre} ${editingDocente.apellido} actualizados.`);
+  };
 
   useEffect(() => {
     const storedDocentes = getStoredDocentes();
@@ -260,15 +303,27 @@ export default function DocentesPage() {
                     <span className="h-2 w-2 rounded-full bg-[#5BAD8A]" />
                     {doc.cursos_asignados.length} Cursos dictados
                   </span>
-                  <button 
-                    onClick={() => {
-                      setEditingDocenteCarga(doc);
-                      setActiveTab('carga');
-                    }}
-                    className="text-[10px] font-black text-[#01017b] uppercase hover:underline"
-                  >
-                    Asignar Horas
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => {
+                        setEditingDocente(doc);
+                        setShowEditModal(true);
+                      }}
+                      className="text-[10px] font-black text-gray-500 hover:text-[#01017b] uppercase cursor-pointer transition-colors"
+                    >
+                      Editar
+                    </button>
+                    <span className="text-gray-300 text-[10px]">|</span>
+                    <button 
+                      onClick={() => {
+                        setEditingDocenteCarga(doc);
+                        setActiveTab('carga');
+                      }}
+                      className="text-[10px] font-black text-[#01017b] uppercase hover:underline cursor-pointer"
+                    >
+                      Carga
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -498,6 +553,48 @@ export default function DocentesPage() {
                 />
               </div>
 
+              {/* Photo uploader with Cropper */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider">Foto de Perfil</label>
+                <div className="flex items-center gap-4 p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                  <img
+                    src={newDocente.foto_url}
+                    alt="Preview"
+                    className="w-10 h-10 rounded-full object-cover border bg-gray-100"
+                  />
+                  <div className="flex-1 space-y-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="newTeacherPhotoInput"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          if (typeof reader.result === 'string') {
+                            setRawImage(reader.result);
+                            setCropperTarget('new');
+                            setCropperOpen(true);
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                        e.target.value = '';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById('newTeacherPhotoInput')?.click()}
+                      className="px-3 py-1.5 border border-gray-350 bg-white hover:bg-gray-50 text-gray-700 font-extrabold text-[10px] rounded-lg transition-all cursor-pointer shadow-xs"
+                    >
+                      Cargar / Recortar Foto
+                    </button>
+                    <p className="text-[8px] text-gray-400 font-semibold uppercase">Opcional</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Tipo de Contrato</label>
@@ -540,6 +637,166 @@ export default function DocentesPage() {
           </div>
         </div>
       )}
+      {/* ================= MODAL: EDITAR DOCENTE ================= */}
+      {showEditModal && editingDocente && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={() => setShowEditModal(false)}></div>
+          <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <h3 className="text-base font-black text-gray-950 mb-4">Editar Datos del Docente</h3>
+            <form onSubmit={handleSaveEditDocente} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Nombre <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    value={editingDocente.nombre}
+                    onChange={(e) => setEditingDocente({ ...editingDocente, nombre: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Apellido <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    value={editingDocente.apellido}
+                    onChange={(e) => setEditingDocente({ ...editingDocente, apellido: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">DNI <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    maxLength={8}
+                    required
+                    value={editingDocente.dni}
+                    onChange={(e) => setEditingDocente({ ...editingDocente, dni: e.target.value.replace(/\D/g, '') })}
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold focus:outline-none font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Especialidad</label>
+                  <select
+                    value={editingDocente.especialidad}
+                    onChange={(e) => setEditingDocente({ ...editingDocente, especialidad: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white text-xs font-semibold focus:outline-none"
+                  >
+                    <option value="Matemática y Ciencias">Matemática y Ciencias</option>
+                    <option value="Lengua Española">Lengua Española</option>
+                    <option value="Historia y Cívica">Historia y Cívica</option>
+                    <option value="Idiomas Extranjeros">Idiomas Extranjeros</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Correo Institucional <span className="text-red-500">*</span></label>
+                <input
+                  type="email"
+                  required
+                  value={editingDocente.email}
+                  onChange={(e) => setEditingDocente({ ...editingDocente, email: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold focus:outline-none"
+                />
+              </div>
+
+              {/* Photo uploader with Cropper */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider">Foto de Perfil</label>
+                <div className="flex items-center gap-4 p-3 bg-gray-55 bg-gray-50 border border-gray-200 rounded-xl">
+                  <img
+                    src={editingDocente.foto_url}
+                    alt="Preview"
+                    className="w-10 h-10 rounded-full object-cover border bg-gray-100"
+                  />
+                  <div className="flex-1 space-y-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="editTeacherPhotoInput"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          if (typeof reader.result === 'string') {
+                            setRawImage(reader.result);
+                            setCropperTarget('edit');
+                            setCropperOpen(true);
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                        e.target.value = '';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById('editTeacherPhotoInput')?.click()}
+                      className="px-3 py-1.5 border border-gray-350 bg-white hover:bg-gray-50 text-gray-700 font-extrabold text-[10px] rounded-lg transition-all cursor-pointer shadow-xs"
+                    >
+                      Cambiar / Recortar Foto
+                    </button>
+                    <p className="text-[8px] text-gray-400 font-semibold uppercase">Opcional</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Tipo de Contrato</label>
+                  <select
+                    value={editingDocente.contrato}
+                    onChange={(e) => setEditingDocente({ ...editingDocente, contrato: e.target.value as any })}
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white text-xs font-semibold focus:outline-none"
+                  >
+                    <option value="planilla">Planilla Completa</option>
+                    <option value="honorarios">Locación (Honorarios)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Monto de Pago (S/.)</label>
+                  <input
+                    type="number"
+                    value={editingDocente.salario}
+                    onChange={(e) => setEditingDocente({ ...editingDocente, salario: parseFloat(e.target.value) || 0 })}
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-bold focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-end pt-4 border-t border-gray-150 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 border border-gray-250 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                >
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================= IMAGE CROPPER MODAL ================= */}
+      <ImageCropperModal
+        isOpen={cropperOpen}
+        onClose={() => setCropperOpen(false)}
+        imageSrc={rawImage}
+        onCropCompleted={handleCropCompleted}
+      />
 
     </div>
   );

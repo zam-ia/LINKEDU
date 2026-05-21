@@ -29,7 +29,7 @@ import {
 import ImageCropperModal from '@/components/ImageCropperModal';
 
 export default function DirectorSettingsPage() {
-  const { user, colegio, setUser } = useAuthStore();
+  const { user, colegio, setUser, updateColegioInfo } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Tabs: 'colegio' | 'personal'
@@ -39,6 +39,7 @@ export default function DirectorSettingsPage() {
   const [colegioNombre, setColegioNombre] = useState('');
   const [colegioLogo, setColegioLogo] = useState('');
   const [colegioRuc, setColegioRuc] = useState('');
+  const [colegioColor, setColegioColor] = useState('#01017b');
   const [colegioAddress, setColegioAddress] = useState('Av. Larco 456, Miraflores, Lima');
   const [colegioPhone, setColegioPhone] = useState('(01) 445-8930');
 
@@ -86,6 +87,7 @@ export default function DirectorSettingsPage() {
         setColegioNombre(match.nombre);
         setColegioLogo(match.logo);
         setColegioRuc(match.ruc);
+        setColegioColor(match.color_primario || '#01017b');
       }
     }
   }, [colegio]);
@@ -154,6 +156,7 @@ export default function DirectorSettingsPage() {
       );
       setColegios(updatedColegios);
       saveStoredColegios(updatedColegios);
+      updateColegioInfo(colegioNombre, uploadedUrl, colegioColor);
 
       // Force update session
       if (typeof window !== 'undefined') {
@@ -174,6 +177,7 @@ export default function DirectorSettingsPage() {
       );
       setColegios(updatedColegios);
       saveStoredColegios(updatedColegios);
+      updateColegioInfo(colegioNombre, croppedDataUrl, colegioColor);
       
       triggerStatus('Logo del colegio actualizado localmente (Demo).');
     } finally {
@@ -196,7 +200,8 @@ export default function DirectorSettingsPage() {
           ...c,
           nombre: colegioNombre,
           ruc: colegioRuc,
-          logo: colegioLogo
+          logo: colegioLogo,
+          color_primario: colegioColor
         };
       }
       return c;
@@ -204,6 +209,7 @@ export default function DirectorSettingsPage() {
 
     setColegios(updated);
     saveStoredColegios(updated);
+    updateColegioInfo(colegioNombre, colegioLogo, colegioColor);
     triggerStatus('Información institucional actualizada exitosamente.');
   };
 
@@ -432,6 +438,49 @@ export default function DirectorSettingsPage() {
                     />
                   </div>
                 </div>
+
+                {colegio?.plan === 'Premium SaaS' && (
+                  <div className="p-4 bg-gradient-to-r from-[#EEF1FE]/30 to-white border border-gray-200 rounded-2xl space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-extrabold bg-[#01017b] text-white px-2 py-0.5 rounded uppercase tracking-wider">Opción VIP</span>
+                      <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">Color Temático Institucional</h4>
+                    </div>
+                    <p className="text-xs text-gray-500 font-semibold leading-relaxed">
+                      Elige el color distintivo de tu colegio. Nuestro motor de armonía de diseño ajustará automáticamente el color a un tono elegante y generará matices pasteles suaves para no perturbar la visual de la intranet.
+                    </p>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="color"
+                          id="schoolColorPicker"
+                          value={colegioColor}
+                          onChange={(e) => setColegioColor(e.target.value)}
+                          className="h-10 w-10 cursor-pointer rounded-xl border border-gray-300 bg-white p-1"
+                        />
+                        <input
+                          type="text"
+                          maxLength={7}
+                          value={colegioColor}
+                          onChange={(e) => setColegioColor(e.target.value)}
+                          placeholder="#01017B"
+                          className="block w-32 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs text-gray-900 font-semibold"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {['#01017b', '#6366F1', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'].map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setColegioColor(c)}
+                            className="h-7 w-7 rounded-full border border-gray-200 shadow-xs transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+                            style={{ backgroundColor: c }}
+                            title={c}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex justify-end pt-4 border-t border-gray-150">
                   <button

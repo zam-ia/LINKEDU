@@ -34,6 +34,7 @@ import {
   NotaInfo,
   EvaluacionInfo
 } from '@/lib/supabase/client';
+import ImageCropperModal from '@/components/ImageCropperModal';
 
 export default function AlumnosPage() {
   const { colegio } = useAuthStore();
@@ -77,6 +78,45 @@ export default function AlumnosPage() {
   });
 
   const [alertMsg, setAlertMsg] = useState('');
+
+  // Image Cropper States
+  const [rawImage, setRawImage] = useState<string>('');
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [cropperTarget, setCropperTarget] = useState<'new' | 'edit'>('new');
+
+  // Edit Student States
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingAlumno, setEditingAlumno] = useState<AlumnoInfo | null>(null);
+
+  const handleCropCompleted = (croppedDataUrl: string, croppedBlob: Blob) => {
+    if (cropperTarget === 'new') {
+      setNewAlumno(prev => ({ ...prev, foto_url: croppedDataUrl }));
+    } else if (cropperTarget === 'edit' && editingAlumno) {
+      setEditingAlumno(prev => prev ? { ...prev, foto_url: croppedDataUrl } : null);
+    }
+    setCropperOpen(false);
+  };
+
+  const handleSaveEditAlumno = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAlumno) return;
+
+    if (!editingAlumno.nombre.trim() || !editingAlumno.apellido.trim() || !editingAlumno.dni.trim() || !editingAlumno.email.trim()) {
+      alert('Nombre, Apellido, DNI y Correo son campos obligatorios.');
+      return;
+    }
+
+    const updated = alumnos.map(a => a.id === editingAlumno.id ? editingAlumno : a);
+    setAlumnos(updated);
+    saveStoredAlumnos(updated);
+    
+    if (selectedAlumno && selectedAlumno.id === editingAlumno.id) {
+      setSelectedAlumno(editingAlumno);
+    }
+    
+    setShowEditModal(false);
+    setEditingAlumno(null);
+  };
 
   useEffect(() => {
     const storedAlumnos = getStoredAlumnos();
@@ -395,12 +435,24 @@ export default function AlumnosPage() {
                   <p className="text-xs text-gray-500 font-semibold">{selectedAlumno.grado} - Sección {selectedAlumno.seccion} • DNI {selectedAlumno.dni}</p>
                 </div>
               </div>
-              <button 
-                onClick={() => setSelectedAlumno(null)}
-                className="p-1.5 hover:bg-gray-200 rounded-full text-gray-400 hover:text-gray-700 transition-all cursor-pointer"
-              >
-                <X className="w-6 h-6" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setEditingAlumno(selectedAlumno);
+                    setShowEditModal(true);
+                  }}
+                  className="px-3.5 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/10 cursor-pointer flex items-center gap-1.5 transition-all"
+                >
+                  <span>✏️</span>
+                  Editar
+                </button>
+                <button 
+                  onClick={() => setSelectedAlumno(null)}
+                  className="p-1.5 hover:bg-gray-200 rounded-full text-gray-400 hover:text-gray-700 transition-all cursor-pointer"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
             </div>
 
             {/* Drawer Tab Headers */}
@@ -724,7 +776,22 @@ export default function AlumnosPage() {
                         maxLength={8}
                         placeholder="8 dígitos"
                         value={newAlumno.dni}
-                        onChange={(e) => setNewAlumno({ ...newAlumno, dni: e.target.value.replace(/\D/g, '') })}
+                        onChange={(e) => {
+                          const cleanDni = e.target.value.replace(/\D/g, '');
+                          const schoolNameBase = colegio 
+                            ? colegio.nombre.toLowerCase()
+                                .normalize("NFD")
+                                .replace(/[\u0300-\u036f]/g, "")
+                                .replace(/\s+/g, '')
+                                .replace(/^colegiodede|^colegiod|^colegio/, '')
+                            : 'linkedu';
+                          const generatedEmail = cleanDni ? `${cleanDni}@${schoolNameBase || 'linkedu'}.com` : '';
+                          setNewAlumno({ 
+                            ...newAlumno, 
+                            dni: cleanDni,
+                            email: generatedEmail
+                          });
+                        }}
                         className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold font-mono"
                       />
                     </div>
@@ -740,15 +807,45 @@ export default function AlumnosPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">URL de Foto de Perfil</label>
-                    <input
-                      type="text"
-                      placeholder="https://images.unsplash.com/..."
-                      value={newAlumno.foto_url}
-                      onChange={(e) => setNewAlumno({ ...newAlumno, foto_url: e.target.value })}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
-                    />
+                  <div className="space-y-3">
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider">Foto de Perfil del Alumno</label>
+                    <div className="flex items-center gap-4 p-3.5 bg-gray-55 bg-gray-50 border border-gray-200 rounded-xl">
+                      <img
+                        src={newAlumno.foto_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'}
+                        alt="Preview"
+                        className="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-xs bg-gray-100"
+                      />
+                      <div className="flex-1 space-y-1.5">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="studentPhotoInput"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                              if (typeof reader.result === 'string') {
+                                setRawImage(reader.result);
+                                setCropperTarget('new');
+                                setCropperOpen(true);
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                            e.target.value = '';
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => document.getElementById('studentPhotoInput')?.click()}
+                          className="px-3.5 py-2 border border-gray-350 bg-white hover:bg-gray-50 text-gray-700 font-extrabold text-[10px] rounded-xl transition-all cursor-pointer shadow-xs"
+                        >
+                          Cargar / Ajustar Foto
+                        </button>
+                        <p className="text-[9px] text-gray-400 font-semibold uppercase">Opcional (PNG, JPG o JPEG)</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -966,6 +1063,340 @@ export default function AlumnosPage() {
           </div>
         </div>
       )}
+
+      {/* ================= EDIT ALUMNO MODAL ================= */}
+      {showEditModal && editingAlumno && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={() => setShowEditModal(false)}></div>
+          <div className="relative bg-white rounded-2xl w-full max-w-xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[90vh]">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-gray-150 mb-4">
+              <div>
+                <h3 className="text-base font-black text-gray-950">Editar Ficha de Alumno</h3>
+                <p className="text-xs text-gray-400 font-semibold">Modifica la información personal, académica, del tutor o médica.</p>
+              </div>
+              <button onClick={() => setShowEditModal(false)} className="p-1 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSaveEditAlumno} className="flex-1 overflow-y-auto space-y-4 px-1 py-1 custom-scrollbar">
+              
+              {/* TAB 1: DATOS PERSONALES */}
+              <div className="space-y-4">
+                <span className="text-[10px] font-black text-[#01017b] uppercase tracking-wider block border-b border-gray-100 pb-1">
+                  1. Datos Personales
+                </span>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Nombre <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      value={editingAlumno.nombre}
+                      onChange={(e) => setEditingAlumno({ ...editingAlumno, nombre: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Apellido <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      value={editingAlumno.apellido}
+                      onChange={(e) => setEditingAlumno({ ...editingAlumno, apellido: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">DNI <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      maxLength={8}
+                      value={editingAlumno.dni}
+                      onChange={(e) => {
+                        const cleanDni = e.target.value.replace(/\D/g, '');
+                        const schoolNameBase = colegio 
+                          ? colegio.nombre.toLowerCase()
+                              .normalize("NFD")
+                              .replace(/[\u0300-\u036f]/g, "")
+                              .replace(/\s+/g, '')
+                              .replace(/^colegiodede|^colegiod|^colegio/, '')
+                          : 'linkedu';
+                        const generatedEmail = cleanDni ? `${cleanDni}@${schoolNameBase || 'linkedu'}.com` : '';
+                        setEditingAlumno({ 
+                          ...editingAlumno, 
+                          dni: cleanDni,
+                          email: generatedEmail
+                        });
+                      }}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Correo del Alumno <span className="text-red-500">*</span></label>
+                    <input
+                      type="email"
+                      value={editingAlumno.email}
+                      onChange={(e) => setEditingAlumno({ ...editingAlumno, email: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                    />
+                  </div>
+                </div>
+
+                {/* Photo uploader with Cropper */}
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider">Foto de Perfil del Alumno</label>
+                  <div className="flex items-center gap-4 p-3.5 bg-gray-55 bg-gray-50 border border-gray-200 rounded-xl">
+                    <img
+                      src={editingAlumno.foto_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'}
+                      alt="Preview"
+                      className="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-xs bg-gray-100"
+                    />
+                    <div className="flex-1 space-y-1.5">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id="editStudentPhotoInput"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            if (typeof reader.result === 'string') {
+                              setRawImage(reader.result);
+                              setCropperTarget('edit');
+                              setCropperOpen(true);
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                          e.target.value = '';
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('editStudentPhotoInput')?.click()}
+                        className="px-3.5 py-2 border border-gray-350 bg-white hover:bg-gray-50 text-gray-700 font-extrabold text-[10px] rounded-xl transition-all cursor-pointer shadow-xs"
+                      >
+                        Cambiar / Ajustar Foto
+                      </button>
+                      <p className="text-[9px] text-gray-400 font-semibold uppercase">Opcional (PNG, JPG o JPEG)</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Grado Académico</label>
+                    <select
+                      value={editingAlumno.grado}
+                      onChange={(e) => setEditingAlumno({ ...editingAlumno, grado: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                    >
+                      <option value="Inicial (3 años)">Inicial (3 años)</option>
+                      <option value="Inicial (4 años)">Inicial (4 años)</option>
+                      <option value="Inicial (5 años)">Inicial (5 años)</option>
+                      <option value="1ro Primaria">1ro Primaria</option>
+                      <option value="2do Primaria">2do Primaria</option>
+                      <option value="3ro Primaria">3ro Primaria</option>
+                      <option value="4to Primaria">4to Primaria</option>
+                      <option value="5to Primaria">5to Primaria</option>
+                      <option value="6to Primaria">6to Primaria</option>
+                      <option value="1ro Secundaria">1ro Secundaria</option>
+                      <option value="2do Secundaria">2do Secundaria</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5">Sección</label>
+                    <select
+                      value={editingAlumno.seccion}
+                      onChange={(e) => setEditingAlumno({ ...editingAlumno, seccion: e.target.value })}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                    >
+                      <option value="A">Sección A</option>
+                      <option value="B">Sección B</option>
+                      <option value="C">Sección C</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* TAB 2: TUTOR Y MEDICO */}
+              <div className="space-y-4 pt-2">
+                <span className="text-[10px] font-black text-[#01017b] uppercase tracking-wider block border-b border-gray-100 pb-1">
+                  2. Tutor & Ficha Médica
+                </span>
+
+                <div className="p-3.5 bg-gray-50 border border-gray-150 rounded-xl space-y-3">
+                  <span className="text-[10px] font-black text-gray-900 uppercase tracking-wider">Datos de Contacto del Tutor</span>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</label>
+                      <input
+                        type="text"
+                        value={editingAlumno.contacto_tutor.nombre}
+                        onChange={(e) => setEditingAlumno({
+                          ...editingAlumno,
+                          contacto_tutor: { ...editingAlumno.contacto_tutor, nombre: e.target.value }
+                        })}
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Relación / Parentesco</label>
+                      <select
+                        value={editingAlumno.contacto_tutor.relacion}
+                        onChange={(e) => setEditingAlumno({
+                          ...editingAlumno,
+                          contacto_tutor: { ...editingAlumno.contacto_tutor, relacion: e.target.value }
+                        })}
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      >
+                        <option value="Madre">Madre</option>
+                        <option value="Padre">Padre</option>
+                        <option value="Apoderado">Apoderado / Tutor Legal</option>
+                        <option value="Abuelo/a">Abuelo / Abuela</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Teléfono Móvil</label>
+                      <input
+                        type="tel"
+                        value={editingAlumno.contacto_tutor.telefono}
+                        onChange={(e) => setEditingAlumno({
+                          ...editingAlumno,
+                          contacto_tutor: { ...editingAlumno.contacto_tutor, telefono: e.target.value }
+                        })}
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico</label>
+                      <input
+                        type="email"
+                        value={editingAlumno.contacto_tutor.email}
+                        onChange={(e) => setEditingAlumno({
+                          ...editingAlumno,
+                          contacto_tutor: { ...editingAlumno.contacto_tutor, email: e.target.value }
+                        })}
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 bg-gray-55 bg-gray-50 border border-gray-150 rounded-xl space-y-3">
+                  <span className="text-[10px] font-black text-gray-900 uppercase tracking-wider">Ficha de Salud y Alergias</span>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Grupo Sanguíneo</label>
+                      <select
+                        value={editingAlumno.datos_medicos.sangre}
+                        onChange={(e) => setEditingAlumno({
+                          ...editingAlumno,
+                          datos_medicos: { ...editingAlumno.datos_medicos, sangre: e.target.value }
+                        })}
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      >
+                        <option value="O+">O Positivo (O+)</option>
+                        <option value="O-">O Negativo (O-)</option>
+                        <option value="A+">A Positivo (A+)</option>
+                        <option value="A-">A Negativo (A-)</option>
+                        <option value="B+">B Positivo (B+)</option>
+                        <option value="B-">B Negativo (B-)</option>
+                        <option value="AB+">AB Positivo (AB+)</option>
+                        <option value="AB-">AB Negativo (AB-)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Seguro de Salud / EPS</label>
+                      <input
+                        type="text"
+                        value={editingAlumno.datos_medicos.seguro}
+                        onChange={(e) => setEditingAlumno({
+                          ...editingAlumno,
+                          datos_medicos: { ...editingAlumno.datos_medicos, seguro: e.target.value }
+                        })}
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Alergias Conocidas (Separadas por comas)</label>
+                    <input
+                      type="text"
+                      value={editingAlumno.datos_medicos.alergias.join(', ')}
+                      onChange={(e) => {
+                        const arr = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                        setEditingAlumno({
+                          ...editingAlumno,
+                          datos_medicos: { ...editingAlumno.datos_medicos, alergias: arr }
+                        });
+                      }}
+                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      placeholder="Ej. Penicilina, Lactosa, Maní"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Condiciones Médicas o Tratamientos Permanentes</label>
+                    <textarea
+                      rows={2}
+                      value={editingAlumno.datos_medicos.condiciones}
+                      onChange={(e) => setEditingAlumno({
+                        ...editingAlumno,
+                        datos_medicos: { ...editingAlumno.datos_medicos, condiciones: e.target.value }
+                      })}
+                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold resize-none"
+                      placeholder="Ej. Asma estacional leve, requiere inhalador en caso de crisis."
+                    />
+                  </div>
+                </div>
+              </div>
+
+            </form>
+
+            {/* Footer */}
+            <div className="flex gap-3 justify-end pt-4 border-t border-gray-150 mt-4">
+              <button
+                type="button"
+                onClick={() => setShowEditModal(false)}
+                className="px-4 py-2 border border-gray-250 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-50 cursor-pointer transition-all"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveEditAlumno}
+                className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition-all shadow-md shadow-[#01017b]/10"
+              >
+                Guardar Cambios
+                <CheckCircle className="w-4 h-4" />
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= IMAGE CROPPER MODAL ================= */}
+      <ImageCropperModal
+        isOpen={cropperOpen}
+        onClose={() => setCropperOpen(false)}
+        imageSrc={rawImage}
+        onCropCompleted={handleCropCompleted}
+      />
 
     </div>
   );

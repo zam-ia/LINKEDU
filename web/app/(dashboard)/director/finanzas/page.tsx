@@ -302,19 +302,7 @@ export default function FinanzasPage() {
         </div>
       </div>
 
-      {/* 2. PLAN STATUS INDICATOR (SAAS TIERING) */}
-      <div className="flex items-center justify-between p-3.5 bg-white border border-gray-150 rounded-2xl shadow-xs">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-2.5 w-2.5 rounded-full bg-[#01017b] animate-pulse" />
-          <span className="text-xs font-semibold text-gray-500">Plan del Colegio:</span>
-          <span className="text-xs font-black uppercase tracking-wider text-[#01017b]">{schoolPlan}</span>
-        </div>
-        {isBasico && (
-          <span className="text-[10px] font-bold text-[#E07B6A] bg-[#FDECEA] px-2.5 py-1 rounded-full uppercase tracking-wider">
-            Funcionalidad de Finanzas Bloqueada
-          </span>
-        )}
-      </div>
+
 
       {/* RENDERIZADO CONDICIONAL DE BLOQUEO SAAS DE PLAN BÁSICO */}
       {isBasico ? (

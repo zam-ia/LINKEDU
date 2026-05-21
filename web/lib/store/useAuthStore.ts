@@ -4,11 +4,12 @@ import { UserProfile, getStoredColegios, saveStoredColegios, getStoredUsers, sav
 interface AuthState {
   user: UserProfile | null;
   loading: boolean;
-  colegio: { id: string; nombre: string; logo: string } | null;
+  colegio: { id: string; nombre: string; logo: string; plan?: string; color_primario?: string } | null;
   login: (email: string, password?: string) => Promise<boolean>;
   logout: () => void;
   setUser: (user: UserProfile | null) => void;
   updateUserProfile: (nombre: string, apellido: string, fotoUrl: string) => void;
+  updateColegioInfo: (nombre: string, logo: string, colorPrimario?: string) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => {
@@ -29,7 +30,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
             initialColegio = {
               id: school.id,
               nombre: school.nombre,
-              logo: school.logo
+              logo: school.logo,
+              plan: school.plan,
+              color_primario: school.color_primario
             };
           }
         }
@@ -179,7 +182,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
             matchedColegio = {
               id: school.id,
               nombre: school.nombre,
-              logo: school.logo
+              logo: school.logo,
+              plan: school.plan,
+              color_primario: school.color_primario
             };
           }
         }
@@ -217,6 +222,17 @@ export const useAuthStore = create<AuthState>((set, get) => {
       }
 
       set({ user: updated });
+    },
+    updateColegioInfo: (nombre: string, logo: string, colorPrimario?: string) => {
+      const { colegio } = get();
+      if (!colegio) return;
+      const updatedColegio = { 
+        ...colegio, 
+        nombre, 
+        logo, 
+        color_primario: colorPrimario 
+      };
+      set({ colegio: updatedColegio });
     }
   };
 });

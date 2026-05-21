@@ -34,6 +34,7 @@ export interface ColegioInfo {
   plan?: string;
   mensualidad?: number;
   vencimiento?: string;
+  color_primario?: string;
 }
 
 export const INITIAL_COLEGIOS: ColegioInfo[] = [
