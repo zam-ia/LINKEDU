@@ -265,7 +265,7 @@ export default function CalificacionesPage() {
                     <span className="block text-[8px] text-gray-400 font-bold tracking-widest">{ev.peso}% (PESO)</span>
                   </th>
                 ))}
-                <th className="p-3 text-center border-l border-gray-150 bg-[#EEF1FE] text-[#4F6AF0] font-black">
+                <th className="p-3 text-center border-l border-gray-150 bg-[#EEF1FE] text-[#01017b] font-black">
                   PROMEDIO
                 </th>
               </tr>
@@ -301,7 +301,7 @@ export default function CalificacionesPage() {
                           value={scoresMap[alumno.id]?.[ev.id] || ''}
                           onChange={(e) => handleScoreChange(alumno.id, ev.id, e.target.value)}
                           placeholder="—"
-                          className="w-12 py-1.5 border border-gray-200 rounded-lg text-center font-black focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/10 focus:border-[#4F6AF0] bg-white font-mono text-xs text-gray-950"
+                          className="w-12 py-1.5 border border-gray-200 rounded-lg text-center font-black focus:outline-none focus:ring-2 focus:ring-[#01017b]/10 focus:border-[#01017b] bg-white font-mono text-xs text-gray-950"
                         />
                       </td>
                     ))}
@@ -373,7 +373,7 @@ export default function CalificacionesPage() {
                     placeholder="Ej. Tarea Académica"
                     value={newEvalName}
                     onChange={(e) => setNewEvalName(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/10"
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/10"
                   />
                 </div>
                 <div>
@@ -386,7 +386,7 @@ export default function CalificacionesPage() {
                     placeholder="30"
                     value={newEvalWeight}
                     onChange={(e) => setNewEvalWeight(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/10"
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-2 focus:ring-[#01017b]/10"
                   />
                 </div>
               </div>
@@ -407,7 +407,7 @@ export default function CalificacionesPage() {
 
               <button
                 type="submit"
-                className="w-full py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/95 text-white font-bold text-xs rounded-xl cursor-pointer shadow-xs transition-all"
+                className="w-full py-2 bg-[#01017b] hover:bg-[#01017b]/95 text-white font-bold text-xs rounded-xl cursor-pointer shadow-xs transition-all"
               >
                 Añadir Evaluación
               </button>

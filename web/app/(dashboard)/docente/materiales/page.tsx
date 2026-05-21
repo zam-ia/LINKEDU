@@ -153,7 +153,7 @@ export default function RepositorioDocente() {
         <div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all"
           >
             <Plus className="w-4.5 h-4.5" />
             Subir Material
@@ -172,7 +172,7 @@ export default function RepositorioDocente() {
                 onClick={() => setSelectedCurso(c)}
                 className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center gap-3 ${
                   selectedCurso === c 
-                    ? 'border-[#4F6AF0] bg-[#4F6AF0]/5 text-[#4F6AF0] font-bold shadow-xs' 
+                    ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b] font-bold shadow-xs' 
                     : 'border-gray-150 hover:bg-gray-50 text-gray-500'
                 }`}
               >
@@ -195,7 +195,7 @@ export default function RepositorioDocente() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {currentMateriales.map((mat) => (
-              <div key={mat.id} className="p-4 border border-gray-150 bg-gray-50/50 rounded-2xl flex items-center justify-between group hover:border-[#4F6AF0]/20 transition-all">
+              <div key={mat.id} className="p-4 border border-gray-150 bg-gray-50/50 rounded-2xl flex items-center justify-between group hover:border-[#01017b]/20 transition-all">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-xl shadow-xs">
                     {mat.tipo === 'archivo' ? '📄' : '🔗'}
@@ -212,7 +212,7 @@ export default function RepositorioDocente() {
                   {mat.tipo === 'archivo' ? (
                     <button 
                       onClick={() => triggerAlert('Descargando archivo...')}
-                      className="p-2 hover:bg-[#EEF1FE] text-gray-400 hover:text-[#4F6AF0] rounded-xl cursor-pointer"
+                      className="p-2 hover:bg-[#EEF1FE] text-gray-400 hover:text-[#01017b] rounded-xl cursor-pointer"
                       title="Descargar"
                     >
                       <Download className="w-4 h-4" />
@@ -222,7 +222,7 @@ export default function RepositorioDocente() {
                       href={mat.url} 
                       target="_blank" 
                       rel="noreferrer" 
-                      className="p-2 hover:bg-[#EEF1FE] text-gray-400 hover:text-[#4F6AF0] rounded-xl cursor-pointer"
+                      className="p-2 hover:bg-[#EEF1FE] text-gray-400 hover:text-[#01017b] rounded-xl cursor-pointer"
                       title="Abrir Enlace"
                     >
                       <Link className="w-4 h-4" />
@@ -261,7 +261,7 @@ export default function RepositorioDocente() {
                     type="button"
                     onClick={() => setNewMaterial({ ...newMaterial, tipo: 'archivo' })}
                     className={`py-2 text-xs font-bold rounded-xl border cursor-pointer ${
-                      newMaterial.tipo === 'archivo' ? 'border-[#4F6AF0] bg-[#4F6AF0]/5 text-[#4F6AF0]' : 'border-gray-250 text-gray-600'
+                      newMaterial.tipo === 'archivo' ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b]' : 'border-gray-250 text-gray-600'
                     }`}
                   >
                     Subir Archivo (.pdf, .zip)
@@ -270,7 +270,7 @@ export default function RepositorioDocente() {
                     type="button"
                     onClick={() => setNewMaterial({ ...newMaterial, tipo: 'link' })}
                     className={`py-2 text-xs font-bold rounded-xl border cursor-pointer ${
-                      newMaterial.tipo === 'link' ? 'border-[#4F6AF0] bg-[#4F6AF0]/5 text-[#4F6AF0]' : 'border-gray-250 text-gray-600'
+                      newMaterial.tipo === 'link' ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b]' : 'border-gray-250 text-gray-600'
                     }`}
                   >
                     Enlace Web / URL
@@ -325,7 +325,7 @@ export default function RepositorioDocente() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Compartir Material
                 </button>

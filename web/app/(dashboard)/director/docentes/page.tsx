@@ -175,7 +175,7 @@ export default function DocentesPage() {
         <div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#4F6AF0]/20 cursor-pointer transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/20 cursor-pointer transition-all"
           >
             <Plus className="w-4.5 h-4.5" />
             Registrar Profesor
@@ -189,7 +189,7 @@ export default function DocentesPage() {
           onClick={() => setActiveTab('lista')}
           className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
             activeTab === 'lista'
-              ? 'border-[#4F6AF0] text-[#4F6AF0]'
+              ? 'border-[#01017b] text-[#01017b]'
               : 'border-transparent text-gray-500 hover:text-gray-900'
           }`}
         >
@@ -199,7 +199,7 @@ export default function DocentesPage() {
           onClick={() => setActiveTab('carga')}
           className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
             activeTab === 'carga'
-              ? 'border-[#4F6AF0] text-[#4F6AF0]'
+              ? 'border-[#01017b] text-[#01017b]'
               : 'border-transparent text-gray-500 hover:text-gray-900'
           }`}
         >
@@ -232,7 +232,7 @@ export default function DocentesPage() {
                   <img src={doc.foto_url} alt="" className="w-12 h-12 rounded-full object-cover border" />
                   <div>
                     <h3 className="font-extrabold text-sm text-gray-950 leading-snug">{doc.nombre} {doc.apellido}</h3>
-                    <span className="text-[10px] text-[#4F6AF0] font-black uppercase tracking-wider">{doc.especialidad}</span>
+                    <span className="text-[10px] text-[#01017b] font-black uppercase tracking-wider">{doc.especialidad}</span>
                   </div>
                 </div>
 
@@ -265,7 +265,7 @@ export default function DocentesPage() {
                       setEditingDocenteCarga(doc);
                       setActiveTab('carga');
                     }}
-                    className="text-[10px] font-black text-[#4F6AF0] uppercase hover:underline"
+                    className="text-[10px] font-black text-[#01017b] uppercase hover:underline"
                   >
                     Asignar Horas
                   </button>
@@ -294,7 +294,7 @@ export default function DocentesPage() {
                   onClick={() => setEditingDocenteCarga(d)}
                   className={`w-full text-left p-3 rounded-xl border transition-all flex items-center gap-3 ${
                     editingDocenteCarga?.id === d.id 
-                      ? 'border-[#4F6AF0] bg-[#4F6AF0]/5 text-gray-950 font-bold shadow-xs' 
+                      ? 'border-[#01017b] bg-[#01017b]/5 text-gray-950 font-bold shadow-xs' 
                       : 'border-gray-200 hover:bg-gray-50 text-gray-600'
                   }`}
                 >
@@ -368,7 +368,7 @@ export default function DocentesPage() {
                 {/* Add Course assignment Form */}
                 <div className="p-4 bg-gray-50 border border-gray-150 rounded-xl space-y-4">
                   <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                    <BookOpen className="w-4 h-4 text-[#4F6AF0]" />
+                    <BookOpen className="w-4 h-4 text-[#01017b]" />
                     Asignar Nueva Carga Horaria
                   </h4>
 
@@ -415,7 +415,7 @@ export default function DocentesPage() {
 
                   <button
                     onClick={handleAddCursoLoad}
-                    className="w-full py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/95 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-all"
+                    className="w-full py-2 bg-[#01017b] hover:bg-[#01017b]/95 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-all"
                   >
                     Asignar Horas Dictadas
                   </button>
@@ -531,7 +531,7 @@ export default function DocentesPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Registrar Docente
                 </button>

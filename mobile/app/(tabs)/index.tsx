@@ -21,7 +21,7 @@ const DEUDORES_MOBILE = [
 
 const TAREAS_MOBILE = [
   { id: '1', titulo: 'Ejercicios de Fracciones', curso: 'Matemática', vencimiento: 'Hoy, 23:59', prioridad: 'alta', color: '#E07B6A' },
-  { id: '2', titulo: 'Ensayo sobre Don Quijote', curso: 'Comunicación', vencimiento: 'Viernes', prioridad: 'media', color: '#4F6AF0' },
+  { id: '2', titulo: 'Ensayo sobre Don Quijote', curso: 'Comunicación', vencimiento: 'Viernes', prioridad: 'media', color: '#00a7eb' }, // Celeste interactivo
 ];
 
 export default function HomeScreen() {
@@ -179,7 +179,7 @@ export default function HomeScreen() {
             <View style={styles.logoBadge}>
               <Text style={styles.logoBadgeText}>🎓</Text>
             </View>
-            <Text style={styles.logoTitle}>Link<Text style={{ color: '#4F6AF0' }}>edu</Text></Text>
+            <Text style={styles.logoTitle}>Link<Text style={{ color: '#00a7eb' }}>edu</Text></Text>
             <Text style={styles.logoSubtitle}>Plataforma Educativa Integral</Text>
           </TouchableOpacity>
 
@@ -282,11 +282,11 @@ export default function HomeScreen() {
             <View style={styles.kpiRow}>
               <View style={styles.kpiCard}>
                 <Text style={styles.kpiLabel}>Colegios Totales</Text>
-                <Text style={[styles.kpiValue, { color: '#4F6AF0' }]}>2</Text>
+                <Text style={[styles.kpiValue, { color: '#00a7eb' }]}>2</Text>
               </View>
               <View style={styles.kpiCard}>
                 <Text style={styles.kpiLabel}>Ingresos SaaS</Text>
-                <Text style={[styles.kpiValue, { color: '#5BAD8A' }]}>S/. 18,900</Text>
+                <Text style={[styles.kpiValue, { color: '#198754' }]}>S/. 18,900</Text>
               </View>
             </View>
 
@@ -350,7 +350,7 @@ export default function HomeScreen() {
               <Text style={styles.cardTitle}>Flujo de Caja Mensual</Text>
               <View style={styles.barChartContainer}>
                 <View style={styles.chartBarCol}>
-                  <View style={[styles.chartBar, { height: 100, backgroundColor: '#4F6AF0' }]} />
+                  <View style={[styles.chartBar, { height: 100, backgroundColor: '#00a7eb' }]} />
                   <Text style={styles.chartBarLabel}>Ingresos</Text>
                 </View>
                 <View style={styles.chartBarCol}>
@@ -402,16 +402,16 @@ export default function HomeScreen() {
                     key={al.id} 
                     style={[
                       styles.alumnoAsistenciaItem,
-                      al.estado === 'P' ? { backgroundColor: '#EAF5EF', borderColor: '#5BAD8A' } :
-                      al.estado === 'T' ? { backgroundColor: '#FEF6E8', borderColor: '#F5A623' } :
-                      { backgroundColor: '#FDECEA', borderColor: '#E07B6A' }
+                      al.estado === 'P' ? { backgroundColor: '#D1E7DD', borderColor: '#BADBCC' } :
+                      al.estado === 'T' ? { backgroundColor: '#FFF3CD', borderColor: '#FFE69C' } :
+                      { backgroundColor: '#FDECEA', borderColor: 'rgba(224, 123, 106, 0.2)' }
                     ]}
                     onPress={() => handleToggleAsistencia(al.id)}
                   >
                     <Text style={styles.alumnoAsistenciaName}>{al.nombre}</Text>
                     <View style={[
                       styles.badge,
-                      al.estado === 'P' ? { backgroundColor: '#5BAD8A' } :
+                      al.estado === 'P' ? { backgroundColor: '#198754' } :
                       al.estado === 'T' ? { backgroundColor: '#F5A623' } :
                       { backgroundColor: '#E07B6A' }
                     ]}>
@@ -454,13 +454,14 @@ export default function HomeScreen() {
             <Text style={styles.portalTitle}>Seguimiento de {selectedHijo === 'mateo' ? 'Mateo' : 'Lucas'}</Text>
 
             {/* [PRIORIDAD 1] Estado de Cuenta */}
+            {/* [PRIORIDAD 1] Estado de Cuenta */}
             {selectedHijo === 'mateo' && !pagoCompletado ? (
-              <View style={[styles.alertCard, { backgroundColor: '#FDECEA', borderColor: '#E07B6A' }]}>
+              <View style={[styles.alertCard, { backgroundColor: '#FFF3CD', borderColor: '#FFE69C' }]}>
                 <View>
-                  <Text style={[styles.alertTitle, { color: '#E07B6A' }]}>Pensión Vencida - Mayo</Text>
+                  <Text style={[styles.alertTitle, { color: '#664D03' }]}>Pensión Vencida - Mayo</Text>
                   <Text style={styles.alertDetail}>Monto: S/. 380.00. Regularice su estado.</Text>
                 </View>
-                <TouchableOpacity style={[styles.alertPayButton, { backgroundColor: '#E07B6A' }]} onPress={handlePayPension} disabled={pagando}>
+                <TouchableOpacity style={[styles.alertPayButton, { backgroundColor: '#01017b' }]} onPress={handlePayPension} disabled={pagando}>
                   {pagando ? (
                     <ActivityIndicator color="#FFF" size="small" />
                   ) : (
@@ -469,12 +470,12 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               </View>
             ) : (
-              <View style={[styles.alertCard, { backgroundColor: '#EAF5EF', borderColor: '#5BAD8A' }]}>
+              <View style={[styles.alertCard, { backgroundColor: '#D1E7DD', borderColor: '#BADBCC' }]}>
                 <View>
-                  <Text style={[styles.alertTitle, { color: '#5BAD8A' }]}>Estado Financiero al Día</Text>
+                  <Text style={[styles.alertTitle, { color: '#0F5132' }]}>Estado Financiero al Día</Text>
                   <Text style={styles.alertDetail}>No cuenta con obligaciones vencidas.</Text>
                 </View>
-                <Text style={styles.checkIcon}>✓</Text>
+                <Text style={[styles.checkIcon, { color: '#0F5132' }]}>✓</Text>
               </View>
             )}
 
@@ -484,7 +485,7 @@ export default function HomeScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: 10 }}>
                 <View style={[
                   styles.asistenciaBadge, 
-                  selectedHijo === 'mateo' && !pagoCompletado ? { backgroundColor: '#E07B6A' } : { backgroundColor: '#5BAD8A' }
+                  selectedHijo === 'mateo' && !pagoCompletado ? { backgroundColor: '#E07B6A' } : { backgroundColor: '#198754' }
                 ]}>
                   <Text style={styles.asistenciaBadgeText}>
                     {selectedHijo === 'mateo' && !pagoCompletado ? 'F' : 'P'}
@@ -504,13 +505,13 @@ export default function HomeScreen() {
               <Text style={styles.cardTitle}>Libreta Bimestral en Tiempo Real</Text>
               <View style={styles.notaRow}>
                 <Text style={styles.notaCurso}>Matemática Divertida</Text>
-                <Text style={[styles.notaPromedio, { color: selectedHijo === 'mateo' ? '#E07B6A' : '#5BAD8A' }]}>
+                <Text style={[styles.notaPromedio, { color: selectedHijo === 'mateo' ? '#E07B6A' : '#198754' }]}>
                   {selectedHijo === 'mateo' ? '11.0' : '16.8'}
                 </Text>
               </View>
               <View style={styles.notaRow}>
                 <Text style={styles.notaCurso}>Comunicación / Ciencia</Text>
-                <Text style={[styles.notaPromedio, { color: '#5BAD8A' }]}>
+                <Text style={[styles.notaPromedio, { color: '#198754' }]}>
                   {selectedHijo === 'mateo' ? '14.5' : '15.5'}
                 </Text>
               </View>
@@ -608,7 +609,7 @@ export default function HomeScreen() {
               <Text style={{ color: '#4B5563', fontWeight: '700' }}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              style={[styles.mobileModalBtn, { backgroundColor: '#4F6AF0' }]} 
+              style={[styles.mobileModalBtn, { backgroundColor: '#01017b' }]} 
               onPress={handleSaveMobileProfile}
             >
               <Text style={{ color: '#FFF', fontWeight: '700' }}>Guardar</Text>
@@ -623,7 +624,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   loginContainer: {
     flexGrow: 1,
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F4F5F7',
     paddingHorizontal: 24,
     paddingVertical: 60,
     justifyContent: 'center',
@@ -636,12 +637,12 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 16,
-    backgroundColor: '#4F6AF0',
+    backgroundColor: '#01017b',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
-    shadowColor: '#4F6AF0',
-    shadowOpacity: 0.2,
+    shadowColor: '#01017b',
+    shadowOpacity: 0.15,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
   },
@@ -667,11 +668,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 24,
     borderWidth: 1,
-    borderColor: '#EAECF0',
-    elevation: 2,
-    shadowColor: '#000',
+    borderColor: 'rgba(1, 1, 123, 0.06)',
+    elevation: 4,
+    shadowColor: '#01017b',
     shadowOpacity: 0.05,
-    shadowRadius: 10,
+    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 6 },
   },
   cardHeader: {
     fontSize: 20,
@@ -690,7 +692,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E07B6A/20',
+    borderColor: 'rgba(224, 123, 106, 0.2)',
   },
   inputGroup: {
     marginBottom: 16,
@@ -712,7 +714,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   loginButton: {
-    backgroundColor: '#4F6AF0',
+    backgroundColor: '#01017b',
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
@@ -748,7 +750,7 @@ const styles = StyleSheet.create({
     width: '48%',
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: '#EAECF0',
+    borderColor: 'rgba(1, 1, 123, 0.06)',
     borderLeftWidth: 4,
     padding: 10,
     borderRadius: 10,
@@ -765,7 +767,7 @@ const styles = StyleSheet.create({
   },
   dashboardContainer: {
     flex: 1,
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F4F5F7',
     paddingHorizontal: 16,
     paddingTop: 24,
   },
@@ -812,10 +814,15 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: '#EAECF0',
+    borderColor: 'rgba(1, 1, 123, 0.06)',
     borderRadius: 16,
     padding: 16,
     marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#01017b',
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
   },
   avatar: {
     width: 44,
@@ -830,7 +837,7 @@ const styles = StyleSheet.create({
   profileRol: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#4F6AF0',
+    color: '#01017b',
     letterSpacing: 0.5,
     marginTop: 2,
   },
@@ -851,9 +858,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: '#EAECF0',
+    borderColor: 'rgba(1, 1, 123, 0.06)',
     padding: 16,
     borderRadius: 14,
+    elevation: 2,
+    shadowColor: '#01017b',
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
   },
   kpiLabel: {
     fontSize: 11,
@@ -869,9 +881,14 @@ const styles = StyleSheet.create({
   mobileCard: {
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: '#EAECF0',
+    borderColor: 'rgba(1, 1, 123, 0.06)',
     borderRadius: 16,
     padding: 16,
+    elevation: 2,
+    shadowColor: '#01017b',
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
   },
   cardTitle: {
     fontSize: 13,
@@ -943,7 +960,7 @@ const styles = StyleSheet.create({
   classHour: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#4F6AF0',
+    color: '#01017b',
     marginTop: 2,
   },
   instructionText: {
@@ -981,7 +998,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   saveAsistenciaButton: {
-    backgroundColor: '#5BAD8A',
+    backgroundColor: '#01017b',
     borderRadius: 12,
     paddingVertical: 12,
     alignItems: 'center',
@@ -995,7 +1012,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: '#EAECF0',
+    borderColor: 'rgba(1, 1, 123, 0.06)',
     padding: 4,
     borderRadius: 12,
     marginBottom: 8,
@@ -1007,7 +1024,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   hijoTabActive: {
-    backgroundColor: '#EEF1FE',
+    backgroundColor: '#F3F4FF',
   },
   hijoTabText: {
     fontSize: 13,
@@ -1015,7 +1032,7 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   hijoTabActiveText: {
-    color: '#4F6AF0',
+    color: '#01017b',
   },
   alertCard: {
     flexDirection: 'row',
@@ -1047,7 +1064,6 @@ const styles = StyleSheet.create({
   },
   checkIcon: {
     fontSize: 20,
-    color: '#5BAD8A',
     fontWeight: '900',
   },
   asistenciaBadge: {
@@ -1093,7 +1109,7 @@ const styles = StyleSheet.create({
   attendancePercentage: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#5BAD8A',
+    color: '#198754',
     marginTop: 4,
   },
   attendanceDetail: {
@@ -1104,7 +1120,7 @@ const styles = StyleSheet.create({
   },
   noTasks: {
     fontSize: 13,
-    color: '#5BAD8A',
+    color: '#198754',
     fontWeight: '700',
     textAlign: 'center',
     paddingVertical: 20,
@@ -1129,7 +1145,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   taskDeliverBtn: {
-    backgroundColor: '#4F6AF0',
+    backgroundColor: '#01017b',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -1140,14 +1156,14 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   editProfileMobileBtn: {
-    backgroundColor: '#EEF1FE',
+    backgroundColor: '#F3F4FF',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   editProfileMobileBtnText: {
     fontSize: 11,
-    color: '#4F6AF0',
+    color: '#01017b',
     fontWeight: '800',
   },
   mobileModalContent: {
@@ -1156,7 +1172,12 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#F3F4F6',
+    borderColor: 'rgba(1, 1, 123, 0.06)',
+    elevation: 8,
+    shadowColor: '#01017b',
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
   },
   mobileModalHeader: {
     fontSize: 18,
@@ -1190,7 +1211,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   mobileAvatarOptionActive: {
-    borderColor: '#4F6AF0',
+    borderColor: '#01017b',
   },
   mobileModalActions: {
     flexDirection: 'row',

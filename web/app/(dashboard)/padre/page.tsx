@@ -118,7 +118,7 @@ export default function PadreDashboard() {
           <button
             onClick={() => { setSelectedHijoKey('mateo'); setPagadoExito(false); setShowDesgloseCurso(null); }}
             className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-              selectedHijoKey === 'mateo' ? 'bg-[#EEF1FE] text-[#4F6AF0]' : 'text-gray-500 hover:text-gray-900'
+              selectedHijoKey === 'mateo' ? 'bg-[#EEF1FE] text-[#01017b]' : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             Mateo
@@ -126,7 +126,7 @@ export default function PadreDashboard() {
           <button
             onClick={() => { setSelectedHijoKey('lucas'); setPagadoExito(false); setShowDesgloseCurso(null); }}
             className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-              selectedHijoKey === 'lucas' ? 'bg-[#EEF1FE] text-[#4F6AF0]' : 'text-gray-500 hover:text-gray-900'
+              selectedHijoKey === 'lucas' ? 'bg-[#EEF1FE] text-[#01017b]' : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             Lucas
@@ -220,7 +220,7 @@ export default function PadreDashboard() {
           {hijo.asistenciaHoy === 'F' && (
             <div className="mt-4 pt-3 border-t border-gray-150 flex items-center justify-between text-xs">
               <span className="text-gray-500 font-semibold">¿Justificar inasistencia?</span>
-              <a href="#" className="font-bold text-[#4F6AF0] hover:underline">Enviar Justificación</a>
+              <a href="#" className="font-bold text-[#01017b] hover:underline">Enviar Justificación</a>
             </div>
           )}
         </div>
@@ -238,7 +238,7 @@ export default function PadreDashboard() {
               <ChevronRight className="w-4 h-4 text-gray-300" />
             </div>
             <div className="flex items-center gap-3.5 p-2 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#4F6AF0]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#01017b]" />
               <div className="flex-1">
                 <span className="block text-xs font-bold text-gray-800">Entrega de Cuaderno de Comunicación</span>
                 <span className="block text-[10px] text-gray-400 font-semibold mt-0.5">Viernes 22 de Mayo</span>
@@ -263,7 +263,7 @@ export default function PadreDashboard() {
                   className="flex items-center justify-between p-4 bg-gray-50/50 hover:bg-gray-50 transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#4F6AF0]/10 rounded-lg text-[#4F6AF0]">
+                    <div className="p-2 bg-[#01017b]/10 rounded-lg text-[#01017b]">
                       <FileText className="w-4 h-4" />
                     </div>
                     <div>

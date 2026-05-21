@@ -30,7 +30,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F8F9FB] text-[#111827]">
+      <body className="min-h-full flex flex-col bg-[#F4F5F7] text-[#111827]">
         {children}
       </body>
     </html>

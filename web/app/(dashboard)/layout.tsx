@@ -50,16 +50,16 @@ function SidebarNav({ menuItems }: { menuItems: any[] }) {
             }}
             className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all group ${
               isActive 
-                ? 'bg-[#EEF1FE] text-[#4F6AF0]' 
+                ? 'bg-[#EEF1FE] text-[#01017b]' 
                 : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
             }`}
           >
             <item.icon className={`mr-3 h-5 w-5 transition-colors ${
-              isActive ? 'text-[#4F6AF0]' : 'text-gray-400 group-hover:text-gray-600'
+              isActive ? 'text-[#01017b]' : 'text-gray-400 group-hover:text-gray-600'
             }`} />
             {item.name}
             {isActive && (
-              <div className="ml-auto w-1 h-5 rounded-full bg-[#4F6AF0]" />
+              <div className="ml-auto w-1 h-5 rounded-full bg-[#01017b]" />
             )}
           </a>
         );
@@ -99,11 +99,11 @@ function MobileSidebarNav({ menuItems, onClose }: { menuItems: any[]; onClose: (
             }}
             className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all ${
               isActive 
-                ? 'bg-[#EEF1FE] text-[#4F6AF0]' 
+                ? 'bg-[#EEF1FE] text-[#01017b]' 
                 : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
             }`}
           >
-            <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[#4F6AF0]' : 'text-gray-400'}`} />
+            <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[#01017b]' : 'text-gray-400'}`} />
             {item.name}
           </a>
         );
@@ -130,8 +130,8 @@ export default function DashboardLayout({
 
   if (loading || !user) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#F8F9FB]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#4F6AF0] border-t-transparent"></div>
+      <div className="flex h-screen items-center justify-center bg-[#F4F5F7]">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#01017b] border-t-transparent"></div>
       </div>
     );
   }
@@ -192,13 +192,13 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="flex h-screen bg-[#F8F9FB] overflow-hidden">
+    <div className="flex h-screen bg-[#F4F5F7] overflow-hidden">
       {/* 1. SIDEBAR DESKTOP */}
       <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-white border-r border-gray-200 z-30">
         <div className="flex flex-col flex-1 min-h-0">
           {/* Cabecera Sidebar */}
           <div className="flex items-center h-16 px-6 border-b border-gray-150 gap-2 shrink-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4F6AF0] text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b] text-white">
               <GraduationCap className="h-5.5 w-5.5" />
             </div>
             <div className="flex flex-col">
@@ -222,13 +222,13 @@ export default function DashboardLayout({
                 <img 
                   src={user.foto_url} 
                   alt={`${user.nombre} ${user.apellido}`}
-                  className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100 group-hover:border-[#4F6AF0] transition-colors" 
+                  className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100 group-hover:border-[#01017b] transition-colors" 
                 />
                 <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-xs font-bold text-gray-905 text-gray-900 truncate leading-tight group-hover:text-[#4F6AF0] transition-colors">
+                  <span className="text-xs font-bold text-gray-905 text-gray-900 truncate leading-tight group-hover:text-[#01017b] transition-colors">
                     {user.nombre} {user.apellido}
                   </span>
-                  <span className="text-[10px] font-bold text-[#4F6AF0] uppercase tracking-wide mt-0.5">
+                  <span className="text-[10px] font-bold text-[#01017b] uppercase tracking-wide mt-0.5">
                     {user.rol}
                   </span>
                 </div>
@@ -295,7 +295,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Scrollable Content Body */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[#F8F9FB]">
+        <main className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[#F4F5F7]">
           {children}
         </main>
       </div>
@@ -313,7 +313,7 @@ export default function DashboardLayout({
           <div className="relative flex flex-col w-full max-w-xs bg-white h-full shadow-2xl animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between h-16 px-6 border-b border-gray-150">
               <div className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4F6AF0] text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b] text-white">
                   <GraduationCap className="h-5.5 w-5.5" />
                 </div>
                 <span className="text-sm font-extrabold tracking-tight text-gray-900">Linkedu</span>
@@ -346,7 +346,7 @@ export default function DashboardLayout({
                   />
                   <div className="flex flex-col flex-1 min-w-0">
                     <span className="text-xs font-bold text-gray-900 truncate">{user.nombre} {user.apellido}</span>
-                    <span className="text-[10px] font-bold text-[#4F6AF0] uppercase mt-0.5">{user.rol}</span>
+                    <span className="text-[10px] font-bold text-[#01017b] uppercase mt-0.5">{user.rol}</span>
                   </div>
                 </button>
                 <button 

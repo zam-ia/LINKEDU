@@ -14,12 +14,12 @@ import {
 
 const UPCOMING_TASKS = [
   { id: '1', titulo: 'Resolver ejercicios de Fracciones algebraicas', curso: 'Matemática Divertida', vencimiento: 'Hoy, 23:59', prioridad: 'alta', color: '#E07B6A' },
-  { id: '2', titulo: 'Ensayo sobre Don Quijote de la Mancha', curso: 'Comunicación Integral', vencimiento: 'Viernes, 14:00', prioridad: 'media', color: '#4F6AF0' },
+  { id: '2', titulo: 'Ensayo sobre Don Quijote de la Mancha', curso: 'Comunicación Integral', vencimiento: 'Viernes, 14:00', prioridad: 'media', color: '#01017b' },
   { id: '3', titulo: 'Reporte del experimento sobre la Fotosíntesis', curso: 'Ciencia y Tecnología', vencimiento: 'Próxima semana', prioridad: 'baja', color: '#5BAD8A' },
 ];
 
 const CALENDAR_EVENTS = [
-  { hora: '08:00 - 09:30', titulo: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#4F6AF0' },
+  { hora: '08:00 - 09:30', titulo: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#01017b' },
   { hora: '09:45 - 11:15', titulo: 'Comunicación Integral', aula: 'Aula 101', docente: 'Juan Pérez', color: '#9B7FD4' },
 ];
 
@@ -35,7 +35,7 @@ export default function AlumnoDashboard() {
   return (
     <div className="space-y-6">
       {/* 1. SALUDO PERSONALIZADO */}
-      <div className="bg-gradient-to-r from-[#4F6AF0] to-[#9B7FD4] p-6 rounded-2xl text-white shadow-lg shadow-[#4F6AF0]/10">
+      <div className="bg-gradient-to-r from-[#01017b] to-[#9B7FD4] p-6 rounded-2xl text-white shadow-lg shadow-[#01017b]/10">
         <h1 className="text-2xl font-black font-sans">¡Hola, Mateo! 👋</h1>
         <p className="text-xs text-white/80 mt-1 font-semibold">Hoy es miércoles, 20 de mayo. Tienes {tasks.length} entregas pendientes para esta semana.</p>
       </div>
@@ -66,7 +66,7 @@ export default function AlumnoDashboard() {
         <div className="premium-card p-5">
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Promedio Bimestral</span>
           <div className="flex items-center gap-3 mt-3">
-            <div className="h-10 w-10 bg-[#EEF1FE] text-[#4F6AF0] rounded-xl flex items-center justify-center">
+            <div className="h-10 w-10 bg-[#EEF1FE] text-[#01017b] rounded-xl flex items-center justify-center">
               <TrendingUp className="w-5.5 h-5.5" />
             </div>
             <div>
@@ -120,7 +120,7 @@ export default function AlumnoDashboard() {
                     </span>
                     <button
                       onClick={() => handleCompleteTask(task.id)}
-                      className="px-3.5 py-1.5 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white font-bold text-[10px] rounded-lg shadow-xs cursor-pointer"
+                      className="px-3.5 py-1.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-[10px] rounded-lg shadow-xs cursor-pointer"
                     >
                       Subir Trabajo
                     </button>
@@ -138,7 +138,7 @@ export default function AlumnoDashboard() {
             {CALENDAR_EVENTS.map((ev, index) => (
               <div key={index} className="flex gap-4 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                 <div className="flex flex-col items-center justify-center shrink-0">
-                  <span className="text-[10px] font-black text-[#4F6AF0] bg-[#EEF1FE] px-2 py-1 rounded-lg">
+                  <span className="text-[10px] font-black text-[#01017b] bg-[#EEF1FE] px-2 py-1 rounded-lg">
                     {ev.hora.split(' ')[0]}
                   </span>
                 </div>

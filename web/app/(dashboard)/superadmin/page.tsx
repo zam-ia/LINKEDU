@@ -348,7 +348,7 @@ export default function SuperAdminDashboard() {
           {activeTab === 'colegios' && (
             <button 
               onClick={() => setShowAddColegio(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#4F6AF0]/20 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/20 cursor-pointer"
             >
               <Plus className="w-4.5 h-4.5" />
               Nuevo Colegio
@@ -372,7 +372,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('dashboard')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'dashboard'
-              ? 'bg-[#EEF1FE] text-[#4F6AF0]'
+              ? 'bg-[#EEF1FE] text-[#01017b]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -382,7 +382,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('colegios')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'colegios'
-              ? 'bg-[#EEF1FE] text-[#4F6AF0]'
+              ? 'bg-[#EEF1FE] text-[#01017b]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -392,7 +392,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('usuarios')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'usuarios'
-              ? 'bg-[#EEF1FE] text-[#4F6AF0]'
+              ? 'bg-[#EEF1FE] text-[#01017b]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -409,7 +409,7 @@ export default function SuperAdminDashboard() {
             <div className="premium-card p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Colegios Totales</span>
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4F6AF0]/10 text-[#4F6AF0]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b]/10 text-[#01017b]">
                   <Building2 className="h-5 w-5" />
                 </div>
               </div>
@@ -482,8 +482,8 @@ export default function SuperAdminDashboard() {
                 <AreaChart data={saasGrowthData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorSaaS" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4F6AF0" stopOpacity={0.15}/>
-                      <stop offset="95%" stopColor="#4F6AF0" stopOpacity={0.01}/>
+                      <stop offset="5%" stopColor="#01017b" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#01017b" stopOpacity={0.01}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EAECF0" />
@@ -492,7 +492,7 @@ export default function SuperAdminDashboard() {
                   <Tooltip 
                     contentStyle={{ background: '#FFF', borderRadius: '12px', border: '1px solid #EAECF0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }} 
                   />
-                  <Area type="monotone" dataKey="Ingresos" stroke="#4F6AF0" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSaaS)" />
+                  <Area type="monotone" dataKey="Ingresos" stroke="#01017b" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSaaS)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -536,7 +536,7 @@ export default function SuperAdminDashboard() {
                       </div>
                       <button
                         onClick={() => handleOpenEditColegio(col)}
-                        className="p-2 bg-gray-50 hover:bg-[#EEF1FE] hover:text-[#4F6AF0] rounded-xl text-gray-400 transition-all cursor-pointer shrink-0"
+                        className="p-2 bg-gray-50 hover:bg-[#EEF1FE] hover:text-[#01017b] rounded-xl text-gray-400 transition-all cursor-pointer shrink-0"
                         title="Editar Colegio"
                       >
                         <Edit className="w-4 h-4" />
@@ -616,7 +616,7 @@ export default function SuperAdminDashboard() {
                 <select
                   value={selectedColegioId}
                   onChange={(e) => setSelectedColegioId(e.target.value)}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm font-semibold"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm font-semibold"
                 >
                   {colegios.map(c => (
                     <option key={c.id} value={c.id}>{c.nombre}</option>
@@ -633,7 +633,7 @@ export default function SuperAdminDashboard() {
                       onClick={() => setSelectedRol(rol)}
                       className={`block w-full text-left px-3 py-2 rounded-lg text-xs font-bold capitalize transition-colors cursor-pointer ${
                         selectedRol === rol
-                          ? 'bg-[#EEF1FE] text-[#4F6AF0]'
+                          ? 'bg-[#EEF1FE] text-[#01017b]'
                           : 'text-gray-500 hover:bg-gray-50'
                       }`}
                     >
@@ -660,7 +660,7 @@ export default function SuperAdminDashboard() {
                     placeholder="Buscar por DNI, correo..."
                     value={searchUsuario}
                     onChange={(e) => setSearchUsuario(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+                    className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
                   />
                 </div>
               </div>
@@ -694,7 +694,7 @@ export default function SuperAdminDashboard() {
                         <td className="p-3 font-semibold text-xs text-gray-500">{usr.dni}</td>
                         <td className="p-3">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                            usr.rol === 'director' ? 'bg-[#EEF1FE] text-[#4F6AF0]' :
+                            usr.rol === 'director' ? 'bg-[#EEF1FE] text-[#01017b]' :
                             usr.rol === 'docente' ? 'bg-[#EAF7F7] text-[#7EC8C8]' :
                             usr.rol === 'padre' ? 'bg-[#FEF6E8] text-[#F5A623]' :
                             'bg-[#F3EFFE] text-[#9B7FD4]'
@@ -756,7 +756,7 @@ export default function SuperAdminDashboard() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setShowAddColegio(false)}></div>
           <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-base font-extrabold text-gray-950 mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-[#4F6AF0]" />
+              <Building2 className="w-5 h-5 text-[#01017b]" />
               Registrar Colegio
             </h3>
             <form onSubmit={handleAddColegio} className="space-y-4">
@@ -767,7 +767,7 @@ export default function SuperAdminDashboard() {
                   placeholder="Ej: Colegio San Agustín"
                   value={newColegio.nombre}
                   onChange={(e) => setNewColegio({ ...newColegio, nombre: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
                   required
                 />
               </div>
@@ -780,7 +780,7 @@ export default function SuperAdminDashboard() {
                   maxLength={11}
                   value={newColegio.ruc}
                   onChange={(e) => setNewColegio({ ...newColegio, ruc: e.target.value.replace(/\D/g,'') })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
                   required
                 />
               </div>
@@ -830,7 +830,7 @@ export default function SuperAdminDashboard() {
                         placeholder="Pega un URL de imagen"
                         value={newColegio.logo.startsWith('data:') ? '' : newColegio.logo}
                         onChange={(e) => setNewColegio({ ...newColegio, logo: e.target.value })}
-                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-xs"
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs"
                       />
                     </div>
                   </div>
@@ -843,7 +843,7 @@ export default function SuperAdminDashboard() {
                   <select
                     value={newColegio.plan}
                     onChange={(e) => setNewColegio({ ...newColegio, plan: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
                   >
                     <option value="Premium SaaS">Premium SaaS</option>
                     <option value="Estandar SaaS">Estandar SaaS</option>
@@ -857,7 +857,7 @@ export default function SuperAdminDashboard() {
                     placeholder="1200"
                     value={newColegio.mensualidad}
                     onChange={(e) => setNewColegio({ ...newColegio, mensualidad: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
                     required
                   />
                 </div>
@@ -869,7 +869,7 @@ export default function SuperAdminDashboard() {
                   type="date"
                   value={newColegio.vencimiento}
                   onChange={(e) => setNewColegio({ ...newColegio, vencimiento: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
                   required
                 />
               </div>
@@ -884,7 +884,7 @@ export default function SuperAdminDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Dar de Alta
                 </button>
@@ -900,7 +900,7 @@ export default function SuperAdminDashboard() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setShowEditColegio(false)}></div>
           <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-base font-extrabold text-gray-950 mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-[#4F6AF0]" />
+              <Building2 className="w-5 h-5 text-[#01017b]" />
               Editar Colegio
             </h3>
             <form onSubmit={handleEditColegio} className="space-y-4">
@@ -911,7 +911,7 @@ export default function SuperAdminDashboard() {
                   placeholder="Ej: Colegio San Agustín"
                   value={editColegioForm.nombre}
                   onChange={(e) => setEditColegioForm({ ...editColegioForm, nombre: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
                   required
                 />
               </div>
@@ -924,7 +924,7 @@ export default function SuperAdminDashboard() {
                   maxLength={11}
                   value={editColegioForm.ruc}
                   onChange={(e) => setEditColegioForm({ ...editColegioForm, ruc: e.target.value.replace(/\D/g,'') })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
                   required
                 />
               </div>
@@ -974,7 +974,7 @@ export default function SuperAdminDashboard() {
                         placeholder="Pega un URL de imagen"
                         value={editColegioForm.logo.startsWith('data:') ? '' : editColegioForm.logo}
                         onChange={(e) => setEditColegioForm({ ...editColegioForm, logo: e.target.value })}
-                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-xs"
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs"
                       />
                     </div>
                   </div>
@@ -987,7 +987,7 @@ export default function SuperAdminDashboard() {
                   <select
                     value={editColegioForm.plan}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, plan: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
                   >
                     <option value="Premium SaaS">Premium SaaS</option>
                     <option value="Estandar SaaS">Estandar SaaS</option>
@@ -1001,7 +1001,7 @@ export default function SuperAdminDashboard() {
                     placeholder="1200"
                     value={editColegioForm.mensualidad}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, mensualidad: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
                     required
                   />
                 </div>
@@ -1013,7 +1013,7 @@ export default function SuperAdminDashboard() {
                   type="date"
                   value={editColegioForm.vencimiento}
                   onChange={(e) => setEditColegioForm({ ...editColegioForm, vencimiento: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
                   required
                 />
               </div>
@@ -1028,7 +1028,7 @@ export default function SuperAdminDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Guardar Cambios
                 </button>

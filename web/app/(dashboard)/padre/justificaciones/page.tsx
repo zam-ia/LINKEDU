@@ -173,7 +173,7 @@ export default function JustificacionesPadre() {
                 placeholder="Ej. Fiebre y malestar general. Adjunto descanso..."
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}
-                className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/10"
+                className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/10"
               />
             </div>
 
@@ -196,7 +196,7 @@ export default function JustificacionesPadre() {
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-[#4F6AF0] hover:bg-[#4F6AF0]/95 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-[#01017b] hover:bg-[#01017b]/95 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
               <Send className="w-4 h-4" />
               Enviar Justificación

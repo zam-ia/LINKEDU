@@ -40,7 +40,7 @@ const INITIAL_TAREAS: TareaItem[] = [
     curso: 'Lenguaje y Literatura', 
     vencimiento: 'Viernes, 14:00', 
     prioridad: 'media', 
-    color: '#4F6AF0',
+    color: '#01017b',
     estado: 'Pendiente'
   },
   { 
@@ -59,7 +59,7 @@ const INITIAL_TAREAS: TareaItem[] = [
     curso: 'Matemática Divertida',
     vencimiento: 'Expirado',
     prioridad: 'media',
-    color: '#4F6AF0',
+    color: '#01017b',
     estado: 'Calificado',
     nota: 16,
     entregadoEl: '2026-05-10',
@@ -150,7 +150,7 @@ export default function TareasAlumno() {
                   </span>
                   <button
                     onClick={() => handleOpenUpload(task)}
-                    className="px-3.5 py-1.5 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white font-bold text-[10px] rounded-lg shadow-xs cursor-pointer transition-all"
+                    className="px-3.5 py-1.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-[10px] rounded-lg shadow-xs cursor-pointer transition-all"
                   >
                     Subir Trabajo
                   </button>
@@ -236,7 +236,7 @@ export default function TareasAlumno() {
                   onClick={handleSubmitTarea}
                   disabled={!fileName}
                   className={`px-4 py-2 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
-                    fileName ? 'bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 shadow-xs' : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                    fileName ? 'bg-[#01017b] hover:bg-[#01017b]/90 shadow-xs' : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
                   }`}
                 >
                   <Send className="w-4 h-4" />

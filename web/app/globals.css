@@ -3,20 +3,20 @@
 @layer base {
   :root {
     --font-inter: 'Inter', sans-serif;
-    --background: 220 33% 98%; /* #F8F9FB */
+    --background: 220 11% 96%; /* #F4F5F7 (Gris Perla) */
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
     
-    --primary: 228 86% 62%; /* #4F6AF0 */
+    --primary: 240 98% 24%; /* #01017b (Azul Profundo) */
     --primary-foreground: 210 20% 98%;
-    --primary-light: 228 78% 96%; /* #EEF1FE */
+    --primary-light: 240 98% 97%; /* #F3F4FF (Ultra-light tint) */
     
-    --secondary: 180 43% 64%; /* #7EC8C8 */
+    --secondary: 197 100% 46%; /* #00a7eb (Celeste) */
     --secondary-foreground: 220 40% 10%;
-    --secondary-light: 180 38% 94%; /* #EAF7F7 */
+    --secondary-light: 197 100% 95%; /* #E5F6FD (Celeste-light) */
     
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
@@ -25,19 +25,19 @@
     --accent-foreground: 220 40% 10%;
     --accent-light: 38 88% 96%; /* #FEF6E8 */
     
-    --success: 154 36% 52%; /* #5BAD8A */
-    --success-light: 154 30% 94%; /* #EAF5EF */
+    --success: 145 36% 87%; /* #D1E7DD (Verde Menta Claro) */
+    --success-light: 145 36% 96%; /* #EAF5EF (Verde Menta ultra-light) */
     
-    --destructive: 8 70% 65%; /* #E07B6A */
-    --destructive-foreground: 210 20% 98%;
-    --destructive-light: 8 68% 95%; /* #FDECEA */
+    --destructive: 8 70% 92%; /* #FDECEA (Rojo Pastel Suave) */
+    --destructive-foreground: 224 71.4% 4.1%;
+    --destructive-light: 8 70% 97%; /* #FFF5F4 */
     
     --purple: 259 49% 66%; /* #9B7FD4 */
     --purple-light: 259 45% 96%; /* #F3EFFE */
     
     --border: 220 13% 91%; /* #EAECF0 */
     --input: 220 13% 91%;
-    --ring: 228 86% 62%;
+    --ring: 240 98% 24%;
     --radius: 0.75rem; /* 12px */
   }
 }
@@ -48,7 +48,7 @@
 }
 
 body {
-  background-color: #F8F9FB; /* Capa 0: Lienzo completamente plano y mate */
+  background-color: #F4F5F7; /* Capa 0: Gris Perla base */
   color: #111827;
   overflow-x: hidden;
 }
@@ -56,10 +56,10 @@ body {
 /* Micro-animaciones y Utilidades Premium: SOFT MINIMALISM (Card-Based Design) */
 .premium-card {
   background: #FFFFFF; /* Capa 1: Blanco sólido flotante */
-  border: 1px solid rgba(234, 236, 240, 0.6);
+  border: 1px solid rgba(1, 1, 123, 0.06);
   border-radius: 16px; /* Bordes generosos y modernos (16px) */
-  /* Sombras "de aire" difusas y suaves con blur muy amplio y opacidad del 4% al 6% */
-  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.04), 0 8px 24px -5px rgba(0, 0, 0, 0.02);
+  /* Sombras "de aire" difusas y suaves con blur muy amplio y opacidad del 4% al 5% en Azul Profundo */
+  box-shadow: 0 16px 40px -10px rgba(1, 1, 123, 0.05), 0 8px 24px -5px rgba(1, 1, 123, 0.03);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   z-index: 10; /* Capa 1 */
@@ -67,9 +67,9 @@ body {
 
 .premium-card:hover {
   transform: translateY(-3px); /* Elevación sutil */
-  /* Sombra de aire más amplia y un halo de color primario muy suave (opacidad del 5%) */
-  box-shadow: 0 30px 60px -15px rgba(79, 106, 240, 0.06), 0 12px 30px -5px rgba(79, 106, 240, 0.03);
-  border-color: rgba(79, 106, 240, 0.2);
+  /* Sombra de aire más amplia y un halo de color primario muy suave (opacidad del 8%) */
+  box-shadow: 0 30px 60px -15px rgba(1, 1, 123, 0.08), 0 12px 30px -5px rgba(1, 1, 123, 0.04);
+  border-color: rgba(1, 1, 123, 0.15);
 }
 
 .interactive-element {

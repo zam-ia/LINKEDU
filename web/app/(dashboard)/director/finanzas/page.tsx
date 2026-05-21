@@ -293,7 +293,7 @@ export default function FinanzasPage() {
           {!isBasico && (
             <button 
               onClick={() => setShowAddEgreso(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#4F6AF0]/20 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/20 cursor-pointer"
             >
               <Plus className="w-4.5 h-4.5" />
               Registrar Egreso
@@ -305,9 +305,9 @@ export default function FinanzasPage() {
       {/* 2. PLAN STATUS INDICATOR (SAAS TIERING) */}
       <div className="flex items-center justify-between p-3.5 bg-white border border-gray-150 rounded-2xl shadow-xs">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-2.5 w-2.5 rounded-full bg-[#4F6AF0] animate-pulse" />
+          <span className="flex h-2.5 w-2.5 rounded-full bg-[#01017b] animate-pulse" />
           <span className="text-xs font-semibold text-gray-500">Plan del Colegio:</span>
-          <span className="text-xs font-black uppercase tracking-wider text-[#4F6AF0]">{schoolPlan}</span>
+          <span className="text-xs font-black uppercase tracking-wider text-[#01017b]">{schoolPlan}</span>
         </div>
         {isBasico && (
           <span className="text-[10px] font-bold text-[#E07B6A] bg-[#FDECEA] px-2.5 py-1 rounded-full uppercase tracking-wider">
@@ -330,7 +330,7 @@ export default function FinanzasPage() {
           </div>
           <button 
             onClick={() => alert('¡Solicitud de Upgrade enviada! Nuestro equipo comercial se comunicará contigo en breve para activar tu Plan Premium.')}
-            className="px-6 py-3 bg-[#4F6AF0] text-white hover:bg-[#4F6AF0]/90 font-bold text-xs rounded-xl shadow-lg shadow-[#4F6AF0]/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center gap-2"
+            className="px-6 py-3 bg-[#01017b] text-white hover:bg-[#01017b]/90 font-bold text-xs rounded-xl shadow-lg shadow-[#01017b]/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center gap-2"
           >
             <Sparkles className="w-4.5 h-4.5 text-[#F5A623]" />
             Solicitar Upgrade a Plan Premium
@@ -376,7 +376,7 @@ export default function FinanzasPage() {
             <div className="premium-card p-5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Saldo de Caja Neto</span>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#4F6AF0]/10 text-[#4F6AF0]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#01017b]/10 text-[#01017b]">
                   <Wallet className="h-4.5 w-4.5" />
                 </div>
               </div>
@@ -413,7 +413,7 @@ export default function FinanzasPage() {
               onClick={() => setActiveTab('cobrar')}
               className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
                 activeTab === 'cobrar'
-                  ? 'border-[#4F6AF0] text-[#4F6AF0]'
+                  ? 'border-[#01017b] text-[#01017b]'
                   : 'border-transparent text-gray-500 hover:text-gray-900'
               }`}
             >
@@ -423,7 +423,7 @@ export default function FinanzasPage() {
               onClick={() => setActiveTab('egresos')}
               className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
                 activeTab === 'egresos'
-                  ? 'border-[#4F6AF0] text-[#4F6AF0]'
+                  ? 'border-[#01017b] text-[#01017b]'
                   : 'border-transparent text-gray-500 hover:text-gray-900'
               }`}
             >
@@ -433,7 +433,7 @@ export default function FinanzasPage() {
               onClick={() => setActiveTab('planillas')}
               className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'planillas'
-                  ? 'border-[#4F6AF0] text-[#4F6AF0]'
+                  ? 'border-[#01017b] text-[#01017b]'
                   : 'border-transparent text-gray-500 hover:text-gray-900'
               }`}
             >
@@ -444,7 +444,7 @@ export default function FinanzasPage() {
               onClick={() => setActiveTab('dashboard')}
               className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
                 activeTab === 'dashboard'
-                  ? 'border-[#4F6AF0] text-[#4F6AF0]'
+                  ? 'border-[#01017b] text-[#01017b]'
                   : 'border-transparent text-gray-500 hover:text-gray-900'
               }`}
             >
@@ -460,7 +460,7 @@ export default function FinanzasPage() {
                   <select
                     value={filterEstadoCobrar}
                     onChange={(e) => setFilterEstadoCobrar(e.target.value as any)}
-                    className="rounded-xl border border-gray-300 py-1.5 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+                    className="rounded-xl border border-gray-300 py-1.5 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
                   >
                     <option value="todos">Todos los Estados</option>
                     <option value="pendiente">Pendientes</option>
@@ -470,7 +470,7 @@ export default function FinanzasPage() {
                   <select
                     value={filterGradoCobrar}
                     onChange={(e) => setFilterGradoCobrar(e.target.value)}
-                    className="rounded-xl border border-gray-300 py-1.5 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+                    className="rounded-xl border border-gray-300 py-1.5 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
                   >
                     <option value="todos">Todos los Grados</option>
                     {gradosDisponibles.map(g => (
@@ -487,7 +487,7 @@ export default function FinanzasPage() {
                     placeholder="Buscar estudiante..."
                     value={searchCobrar}
                     onChange={(e) => setSearchCobrar(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-1.5 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+                    className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-1.5 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
                   />
                 </div>
               </div>
@@ -545,7 +545,7 @@ export default function FinanzasPage() {
                                   </button>
                                   <button
                                     onClick={() => handleSendReminder(pago)}
-                                    className="p-1.5 bg-gray-50 hover:bg-[#EEF1FE] hover:text-[#4F6AF0] rounded-lg text-gray-400 transition-all cursor-pointer"
+                                    className="p-1.5 bg-gray-50 hover:bg-[#EEF1FE] hover:text-[#01017b] rounded-lg text-gray-400 transition-all cursor-pointer"
                                     title="Enviar Recordatorio"
                                   >
                                     <Send className="w-3.5 h-3.5" />
@@ -580,7 +580,7 @@ export default function FinanzasPage() {
                 <select
                   value={filterCatEgreso}
                   onChange={(e) => setFilterCatEgreso(e.target.value)}
-                  className="rounded-xl border border-gray-300 py-1.5 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+                  className="rounded-xl border border-gray-300 py-1.5 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
                 >
                   <option value="todos">Todas las Categorías</option>
                   <option value="Planilla">Planilla</option>
@@ -700,7 +700,7 @@ export default function FinanzasPage() {
                                 className={`px-3 py-1.5 text-[10px] font-bold rounded-lg shadow-xs cursor-pointer ${
                                   yaPagado 
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' 
-                                    : 'bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white shadow-[#4F6AF0]/10'
+                                    : 'bg-[#01017b] hover:bg-[#01017b]/90 text-white shadow-[#01017b]/10'
                                 }`}
                               >
                                 {yaPagado ? 'Pagado ✓' : 'Pagar Sueldo'}
@@ -734,7 +734,7 @@ export default function FinanzasPage() {
                           cursor={{ fill: 'rgba(79, 106, 240, 0.03)' }}
                         />
                         <Legend iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: 'bold' }} />
-                        <Bar dataKey="Ingresos" fill="#4F6AF0" name="Ingresos Cobrados" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="Ingresos" fill="#01017b" name="Ingresos Cobrados" radius={[4, 4, 0, 0]} />
                         <Bar dataKey="Egresos" fill="#E07B6A" name="Gastos Reales" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
@@ -804,7 +804,7 @@ export default function FinanzasPage() {
                 <select
                   value={newEgreso.categoria}
                   onChange={(e) => setNewEgreso({ ...newEgreso, categoria: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm font-semibold"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm font-semibold"
                 >
                   <option value="Servicios">Servicios Básicos (Luz, internet, agua)</option>
                   <option value="Proveedores">Proveedores Académicos</option>
@@ -821,7 +821,7 @@ export default function FinanzasPage() {
                   placeholder="Ej: Pago de recibo de internet fibra óptica Claro"
                   value={newEgreso.descripcion}
                   onChange={(e) => setNewEgreso({ ...newEgreso, descripcion: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm font-semibold text-gray-900"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm font-semibold text-gray-900"
                   required
                 />
               </div>
@@ -833,7 +833,7 @@ export default function FinanzasPage() {
                   placeholder="350.00"
                   value={newEgreso.monto}
                   onChange={(e) => setNewEgreso({ ...newEgreso, monto: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm font-black text-gray-900"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm font-black text-gray-900"
                   required
                 />
               </div>

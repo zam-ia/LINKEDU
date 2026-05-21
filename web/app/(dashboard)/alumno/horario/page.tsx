@@ -13,13 +13,13 @@ interface HorarioItem {
 }
 
 const MOCK_HORARIO: HorarioItem[] = [
-  { dia: 'Lunes', hora: '08:00 - 09:30', curso: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#4F6AF0' },
+  { dia: 'Lunes', hora: '08:00 - 09:30', curso: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#01017b' },
   { dia: 'Lunes', hora: '09:45 - 11:15', curso: 'Lenguaje y Literatura', aula: 'Aula 101', docente: 'Juan Pérez', color: '#9B7FD4' },
   { dia: 'Martes', hora: '08:00 - 09:30', curso: 'Historia del Perú', aula: 'Aula 101', docente: 'Carlos Prado', color: '#F5A623' },
-  { dia: 'Martes', hora: '09:45 - 11:15', curso: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#4F6AF0' },
+  { dia: 'Martes', hora: '09:45 - 11:15', curso: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#01017b' },
   { dia: 'Miércoles', hora: '08:00 - 09:30', curso: 'Ciencias Naturales', aula: 'Laboratorio A', docente: 'Rosa Luna', color: '#5BAD8A' },
   { dia: 'Miércoles', hora: '09:45 - 11:15', curso: 'Lenguaje y Literatura', aula: 'Aula 101', docente: 'Juan Pérez', color: '#9B7FD4' },
-  { dia: 'Jueves', hora: '08:00 - 09:30', curso: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#4F6AF0' },
+  { dia: 'Jueves', hora: '08:00 - 09:30', curso: 'Matemática Divertida', aula: 'Aula 101', docente: 'María Gutiérrez', color: '#01017b' },
   { dia: 'Jueves', hora: '09:45 - 11:15', curso: 'Inglés Avanzado', aula: 'Aula 102', docente: 'Wilson Smith', color: '#E07B6A' },
   { dia: 'Viernes', hora: '08:00 - 09:30', curso: 'Ciencias Naturales', aula: 'Laboratorio A', docente: 'Rosa Luna', color: '#5BAD8A' },
   { dia: 'Viernes', hora: '09:45 - 11:15', curso: 'Historia del Perú', aula: 'Aula 101', docente: 'Carlos Prado', color: '#F5A623' },
@@ -46,7 +46,7 @@ export default function HorarioAlumno() {
             onClick={() => setSelectedDia(d)}
             className={`px-4.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               selectedDia === d 
-                ? 'bg-white text-[#4F6AF0] shadow-xs' 
+                ? 'bg-white text-[#01017b] shadow-xs' 
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >
@@ -93,7 +93,7 @@ export default function HorarioAlumno() {
                   <div key={idx} className="p-3 bg-gray-50 border rounded-xl space-y-1.5 hover:border-gray-300 transition-all text-center">
                     <span className="block text-[10px] font-black text-gray-950 truncate leading-snug">{item.curso}</span>
                     <span className="block text-[8px] text-gray-400 font-bold uppercase">{item.hora.split(' - ')[0]}</span>
-                    <span className="block text-[8px] text-[#4F6AF0] font-black uppercase tracking-widest">{item.aula}</span>
+                    <span className="block text-[8px] text-[#01017b] font-black uppercase tracking-widest">{item.aula}</span>
                   </div>
                 ))}
               </div>

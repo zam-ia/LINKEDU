@@ -155,7 +155,7 @@ export default function ControlAsistencia() {
           <select
             value={selectedCurso}
             onChange={(e) => setSelectedCurso(e.target.value)}
-            className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+            className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
           >
             <option value="Matemática Divertida">Matemática Divertida</option>
             <option value="Lenguaje y Literatura">Lenguaje y Literatura</option>
@@ -167,7 +167,7 @@ export default function ControlAsistencia() {
           <select
             value={selectedSeccion}
             onChange={(e) => setSelectedSeccion(e.target.value)}
-            className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+            className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
           >
             <option value="1ro Primaria - A">1ro Primaria - Sección A</option>
             <option value="2do Primaria - A">2do Primaria - Sección A</option>
@@ -180,7 +180,7 @@ export default function ControlAsistencia() {
             type="date"
             value={activeDate}
             onChange={(e) => setActiveDate(e.target.value)}
-            className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15"
+            className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
           />
         </div>
       </div>
@@ -189,7 +189,7 @@ export default function ControlAsistencia() {
       <div className="premium-card p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-gray-150 pb-3">
           <span className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-            <BookOpen className="w-4 h-4 text-[#4F6AF0]" />
+            <BookOpen className="w-4 h-4 text-[#01017b]" />
             Listado de Alumnos ({alumnos.length})
           </span>
           <div className="hidden sm:flex gap-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">
@@ -212,7 +212,7 @@ export default function ControlAsistencia() {
                 <div className="flex items-center gap-3">
                   <img src={alumno.foto_url} alt="" className="w-9 h-9 rounded-full object-cover border" />
                   <div>
-                    <h3 className="text-xs font-bold text-gray-900 group-hover:text-[#4F6AF0] transition-colors">{alumno.nombre} {alumno.apellido}</h3>
+                    <h3 className="text-xs font-bold text-gray-900 group-hover:text-[#01017b] transition-colors">{alumno.nombre} {alumno.apellido}</h3>
                     <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">DNI {alumno.dni}</p>
                   </div>
                 </div>

@@ -172,7 +172,7 @@ export default function ImageCropperModal({
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-gray-150">
           <h3 className="text-base font-extrabold text-gray-950 flex items-center gap-2">
-            <ImageIcon className="w-5 h-5 text-[#4F6AF0]" />
+            <ImageIcon className="w-5 h-5 text-[#01017b]" />
             Recortar Foto de Perfil
           </h3>
           <button
@@ -231,7 +231,7 @@ export default function ImageCropperModal({
               step="0.1"
               value={scale}
               onChange={(e) => setScale(parseFloat(e.target.value))}
-              className="w-24 accent-[#4F6AF0] h-1.5 rounded-lg appearance-none bg-gray-200 cursor-pointer"
+              className="w-24 accent-[#01017b] h-1.5 rounded-lg appearance-none bg-gray-200 cursor-pointer"
             />
             <button
               onClick={() => setScale(prev => Math.min(3, prev + 0.1))}
@@ -268,7 +268,7 @@ export default function ImageCropperModal({
             type="button"
             onClick={handleCrop}
             disabled={isUploading || !imageEl}
-            className="px-4 py-2 bg-[#4F6AF0] hover:bg-[#4F6AF0]/90 text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-md shadow-[#4F6AF0]/10 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-md shadow-[#01017b]/10 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isUploading ? (
               <>

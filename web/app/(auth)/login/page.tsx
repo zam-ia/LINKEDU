@@ -70,9 +70,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col justify-center bg-[#F8F9FB] px-6 py-12 lg:px-8 relative overflow-hidden">
+    <div className="flex min-h-screen flex-col justify-center bg-[#F4F5F7] px-6 py-12 lg:px-8 relative overflow-hidden">
       {/* Elementos decorativos de fondo con gradientes suaves */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-[#4F6AF0] opacity-5 blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-[#01017b] opacity-5 blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-[#7EC8C8] opacity-5 blur-[120px] pointer-events-none"></div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
@@ -80,11 +80,11 @@ export default function LoginPage() {
           onClick={handleLogoClick}
           className="flex items-center justify-center gap-3 cursor-pointer select-none active:scale-[0.95] transition-all duration-150"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#4F6AF0] text-white shadow-md shadow-[#4F6AF0]/20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#01017b] text-white shadow-md shadow-[#01017b]/20">
             <GraduationCap className="h-7 w-7" />
           </div>
           <span className="text-2xl font-bold tracking-tight text-gray-900">
-            Link<span className="text-[#4F6AF0]">edu</span>
+            Link<span className="text-[#01017b]">edu</span>
           </span>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-gray-900">
@@ -121,7 +121,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ejemplo@colegio.edu.pe"
-                  className="block w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] sm:text-sm transition-all"
+                  className="block w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] sm:text-sm transition-all"
                 />
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function LoginPage() {
                   Contraseña
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-[#4F6AF0] hover:text-[#4F6AF0]/80 transition-colors">
+                  <a href="#" className="font-semibold text-[#01017b] hover:text-[#01017b]/80 transition-colors">
                     ¿La olvidaste?
                   </a>
                 </div>
@@ -149,7 +149,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Introduce tu contraseña"
-                  className="block w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] sm:text-sm transition-all"
+                  className="block w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] sm:text-sm transition-all"
                 />
               </div>
             </div>
@@ -158,7 +158,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full justify-center items-center gap-2 rounded-xl bg-[#4F6AF0] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#4f6af0]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4F6AF0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                className="flex w-full justify-center items-center gap-2 rounded-xl bg-[#01017b] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#01017b]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#01017b] active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
               >
                 {loading ? (
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -177,9 +177,9 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowDemoModal(true)}
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#4F6AF0] hover:text-[#4f6af0]/80 active:scale-[0.98] transition-all cursor-pointer group"
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#01017b] hover:text-[#01017b]/80 active:scale-[0.98] transition-all cursor-pointer group"
             >
-              <Sparkles className="h-4 w-4 text-[#4F6AF0] group-hover:animate-pulse" />
+              <Sparkles className="h-4 w-4 text-[#01017b] group-hover:animate-pulse" />
               ¿No eres cliente? Descubre la plataforma y prueba la demo aquí
             </button>
           </div>
@@ -200,7 +200,7 @@ export default function LoginPage() {
 
             {/* Encabezado del Modal */}
             <div className="p-6 pb-4 border-b border-gray-100 text-center">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-xs font-bold text-[#4F6AF0] mb-3">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-xs font-bold text-[#01017b] mb-3">
                 <Sparkles className="h-3 w-3" />
                 Tour de Linkedu
               </div>
@@ -227,7 +227,7 @@ export default function LoginPage() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex-1 min-w-[100px] text-center pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                       activeTab === tab.id
-                        ? 'border-[#4F6AF0] text-[#4F6AF0]'
+                        ? 'border-[#01017b] text-[#01017b]'
                         : 'border-transparent text-gray-400 hover:text-gray-600'
                     }`}
                   >
@@ -241,7 +241,7 @@ export default function LoginPage() {
               <div className="space-y-4 py-2">
                 {activeTab === 'director' && (
                   <div className="space-y-3.5">
-                    <span className="block text-xs font-extrabold text-[#4F6AF0] uppercase tracking-wider">Centro de Mando Contable y Operativo</span>
+                    <span className="block text-xs font-extrabold text-[#01017b] uppercase tracking-wider">Centro de Mando Contable y Operativo</span>
                     <div className="grid gap-3.5">
                       {[
                         { title: 'Caja chica y Finanzas', desc: 'Gestiona egresos y planillas docentes en tiempo real. Visualiza gráficos interactivos de ingresos vs gastos de tu institución.' },
@@ -249,7 +249,7 @@ export default function LoginPage() {
                         { title: 'Reportes de Alerta Temprana', desc: 'Detección automática de morosidad comercial y alumnos con riesgo de deserción por inasistencias acumuladas.' }
                       ].map((item, idx) => (
                         <div key={idx} className="flex gap-3 items-start p-3.5 bg-indigo-50/20 border border-indigo-50/40 rounded-xl">
-                          <CheckCircle2 className="h-5 w-5 text-[#4F6AF0] shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-5 w-5 text-[#01017b] shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-bold text-gray-800">{item.title}</h4>
                             <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
@@ -325,7 +325,7 @@ export default function LoginPage() {
               </div>
 
               {/* Banner de Captación Comercial a WhatsApp */}
-              <div className="p-5 bg-gradient-to-br from-[#4F6AF0]/5 to-[#7EC8C8]/5 border border-[#4F6AF0]/10 rounded-2xl flex flex-col sm:flex-row items-center gap-4 justify-between">
+              <div className="p-5 bg-gradient-to-br from-[#01017b]/5 to-[#7EC8C8]/5 border border-[#01017b]/10 rounded-2xl flex flex-col sm:flex-row items-center gap-4 justify-between">
                 <div className="text-left">
                   <h4 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
                     ✨ ¡Digitaliza tu institución hoy!
@@ -379,10 +379,10 @@ export default function LoginPage() {
                         setShowDemoModal(false);
                       }}
                       disabled={loading}
-                      className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EEF1FE] hover:border-[#4F6AF0]/30 transition-all text-left group cursor-pointer"
+                      className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EEF1FE] hover:border-[#01017b]/30 transition-all text-left group cursor-pointer"
                     >
                       <span className="text-xs font-bold text-gray-800">Dirección</span>
-                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#4F6AF0] transition-colors">director@linkedu.com</span>
+                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#01017b] transition-colors">director@linkedu.com</span>
                     </button>
                     <button
                       onClick={() => {
