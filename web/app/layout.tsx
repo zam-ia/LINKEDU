@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -13,7 +13,11 @@ export const metadata: Metadata = {
   description: "Centraliza la gestión académica, administrativa y financiera de tu colegio en un solo ecosistema moderno. Reemplaza WhatsApp, papeles y hojas de cálculo.",
   keywords: ["intranet escolar", "colegio privado", "plataforma educativa", "SaaS colegios", "gestión académica"],
   authors: [{ name: "Linkedu Dev Team" }],
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
