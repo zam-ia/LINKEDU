@@ -29,6 +29,20 @@ export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('••••••••');
   const [error, setError] = useState('');
+  const [logoClickCount, setLogoClickCount] = useState(0);
+  const [showSuperAdmin, setShowSuperAdmin] = useState(false);
+
+  const handleLogoPress = () => {
+    setLogoClickCount(prev => {
+      const next = prev + 1;
+      if (next >= 5) {
+        setShowSuperAdmin(true);
+        Alert.alert('Modo Desarrollador 🌐', 'Acceso de Super Administrador Global habilitado.');
+        return 0;
+      }
+      return next;
+    });
+  };
 
   // Edición de Perfil en Móvil
   const [showMobileSettingsModal, setShowMobileSettingsModal] = useState(false);
@@ -157,13 +171,17 @@ export default function HomeScreen() {
     return (
       <PaperProvider>
         <ScrollView contentContainerStyle={styles.loginContainer}>
-          <View style={styles.logoContainer}>
+          <TouchableOpacity 
+            activeOpacity={0.8}
+            onPress={handleLogoPress}
+            style={styles.logoContainer}
+          >
             <View style={styles.logoBadge}>
               <Text style={styles.logoBadgeText}>🎓</Text>
             </View>
             <Text style={styles.logoTitle}>Link<Text style={{ color: '#4F6AF0' }}>edu</Text></Text>
             <Text style={styles.logoSubtitle}>Plataforma Educativa Integral</Text>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.loginCard}>
             <Text style={styles.cardHeader}>Iniciar Sesión</Text>
@@ -206,10 +224,12 @@ export default function HomeScreen() {
               <Text style={styles.quickAccessHeader}>Acceso Rápido (Perfiles Demo)</Text>
               
               <View style={styles.quickGrid}>
-                <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#9B7FD4', width: '100%', marginBottom: 6 }]} onPress={() => handleQuickLogin('superadmin@linkedu.com')}>
-                  <Text style={styles.quickRole}>🌐 Administrador Global</Text>
-                  <Text style={styles.quickEmail}>superadmin@linkedu.com</Text>
-                </TouchableOpacity>
+                {showSuperAdmin && (
+                  <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#9B7FD4', width: '100%', marginBottom: 6 }]} onPress={() => handleQuickLogin('superadmin@linkedu.com')}>
+                    <Text style={styles.quickRole}>🌐 Administrador Global</Text>
+                    <Text style={styles.quickEmail}>superadmin@linkedu.com</Text>
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#4F6AF0' }]} onPress={() => handleQuickLogin('director@linkedu.com')}>
                   <Text style={styles.quickRole}>Director</Text>
                   <Text style={styles.quickEmail}>director@linkedu.com</Text>

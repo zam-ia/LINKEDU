@@ -9,8 +9,21 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('••••••••'); // Valor fijo simulado
   const [error, setError] = useState('');
+  const [clickCount, setClickCount] = useState(0);
+  const [showSuperAdmin, setShowSuperAdmin] = useState(false);
   const { login, loading } = useAuthStore();
   const router = useRouter();
+
+  const handleLogoClick = () => {
+    setClickCount((prev) => {
+      const next = prev + 1;
+      if (next >= 5) {
+        setShowSuperAdmin(true);
+        return 0;
+      }
+      return next;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +58,10 @@ export default function LoginPage() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-[#7EC8C8] opacity-5 blur-[120px] pointer-events-none"></div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <div className="flex items-center justify-center gap-3">
+        <div 
+          onClick={handleLogoClick}
+          className="flex items-center justify-center gap-3 cursor-pointer select-none active:scale-[0.95] transition-all duration-150"
+        >
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#4F6AF0] text-white shadow-md shadow-[#4F6AF0]/20">
             <GraduationCap className="h-7 w-7" />
           </div>
@@ -143,21 +159,23 @@ export default function LoginPage() {
               Acceso Rápido (Perfiles Demo)
             </span>
             <div className="space-y-3">
-              {/* Botón Destacado: Super Admin */}
-              <button
-                onClick={() => handleQuickLogin('superadmin@linkedu.com')}
-                disabled={loading}
-                className="flex items-center justify-between w-full p-3.5 border border-[#9B7FD4]/30 bg-[#F3EFFE]/20 hover:bg-[#F3EFFE]/70 rounded-xl transition-all cursor-pointer group"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">🌐</span>
-                  <div className="text-left">
-                    <span className="block text-xs font-extrabold text-gray-800">Super Administrador Global</span>
-                    <span className="block text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">superadmin@linkedu.com</span>
+              {/* Botón Destacado: Super Admin (Oculto tras easter egg de 5 clics en logo) */}
+              {showSuperAdmin && (
+                <button
+                  onClick={() => handleQuickLogin('superadmin@linkedu.com')}
+                  disabled={loading}
+                  className="flex items-center justify-between w-full p-3.5 border border-[#9B7FD4]/30 bg-[#F3EFFE]/20 hover:bg-[#F3EFFE]/70 rounded-xl transition-all cursor-pointer group"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">🌐</span>
+                    <div className="text-left">
+                      <span className="block text-xs font-extrabold text-gray-800">Super Administrador Global</span>
+                      <span className="block text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">superadmin@linkedu.com</span>
+                    </div>
                   </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-[#9B7FD4] group-hover:translate-x-0.5 transition-transform" />
-              </button>
+                  <ArrowRight className="w-4 h-4 text-[#9B7FD4] group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              )}
 
               {/* Grid para el resto de roles del colegio */}
               <div className="grid grid-cols-2 gap-3">
