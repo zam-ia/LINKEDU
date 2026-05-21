@@ -108,10 +108,10 @@ export default function SuperAdminDashboard() {
 
   // VSL Config State
   const [vslForm, setVslForm] = useState({
-    titlePart1: "Elimine la Morosidad y el Caos de Excel.",
-    titlePart2: "Recupere el Control de su Colegio",
-    titlePart3: " en Tiempo Real",
-    subheadline: "LINKEDU es el ecosistema All-in-One que integra la tesorería del colegio, las calificaciones docentes y la comunicación con las familias en una sola aplicación nativa. Despliegue automático en 60 segundos.",
+    heroTitle: "El Excel del colegio se quedó en el pasado:",
+    heroGradient: "controla pensiones, notas y comunicación",
+    heroTitleEnd: " desde una sola plataforma.",
+    heroSubtitle: "Centraliza pensiones, notas, asistencias, comunicados, tareas y reportes en una sola plataforma con app móvil para dirección, docentes, padres y alumnos.",
     videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
     whatsappNumber: "51987088359",
     whatsappTemplate: 'Hola! Vengo de la landing page de Linkedu. Me interesa agendar una demostración gratuita en vivo. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}". ¿Cuándo podríamos programarla?',
@@ -879,8 +879,8 @@ export default function SuperAdminDashboard() {
                     <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 1 (Texto Regular inicial)</span>
                     <input 
                       type="text" 
-                      value={vslForm.titlePart1}
-                      onChange={(e) => setVslForm({ ...vslForm, titlePart1: e.target.value })}
+                      value={vslForm.heroTitle}
+                      onChange={(e) => setVslForm({ ...vslForm, heroTitle: e.target.value })}
                       className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
                       required
                     />
@@ -889,8 +889,8 @@ export default function SuperAdminDashboard() {
                     <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 2 (Texto en Gradiente Llamativo)</span>
                     <input 
                       type="text" 
-                      value={vslForm.titlePart2}
-                      onChange={(e) => setVslForm({ ...vslForm, titlePart2: e.target.value })}
+                      value={vslForm.heroGradient}
+                      onChange={(e) => setVslForm({ ...vslForm, heroGradient: e.target.value })}
                       className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
                       required
                     />
@@ -899,8 +899,8 @@ export default function SuperAdminDashboard() {
                     <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 3 (Texto Regular final)</span>
                     <input 
                       type="text" 
-                      value={vslForm.titlePart3}
-                      onChange={(e) => setVslForm({ ...vslForm, titlePart3: e.target.value })}
+                      value={vslForm.heroTitleEnd}
+                      onChange={(e) => setVslForm({ ...vslForm, heroTitleEnd: e.target.value })}
                       className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
                     />
                   </div>
@@ -912,8 +912,8 @@ export default function SuperAdminDashboard() {
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">Subtítulo Descriptivo (Subheadline)</label>
                 <textarea 
                   rows={3}
-                  value={vslForm.subheadline}
-                  onChange={(e) => setVslForm({ ...vslForm, subheadline: e.target.value })}
+                  value={vslForm.heroSubtitle}
+                  onChange={(e) => setVslForm({ ...vslForm, heroSubtitle: e.target.value })}
                   className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30 animate-in fade-in"
                   required
                 />
@@ -1002,13 +1002,13 @@ export default function SuperAdminDashboard() {
               {/* Title preview */}
               <div className="space-y-2 text-center">
                 <h4 className="text-lg font-black tracking-tight text-white leading-snug text-balance">
-                  {vslForm.titlePart1} <br />
+                  {vslForm.heroTitle} <br />
                   <span className="bg-gradient-to-r from-[#7EC8C8] via-[#4F6AF0] to-[#9B7FD4] bg-clip-text text-transparent">
-                    {vslForm.titlePart2}
-                  </span>{vslForm.titlePart3}
+                    {vslForm.heroGradient}
+                  </span>{vslForm.heroTitleEnd}
                 </h4>
                 <p className="text-[10px] text-gray-400 max-w-md mx-auto leading-normal">
-                  {vslForm.subheadline}
+                  {vslForm.heroSubtitle}
                 </p>
               </div>
 

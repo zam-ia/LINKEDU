@@ -36,10 +36,10 @@ export default function Home() {
   const router = useRouter();
 
   // Navigation and Interactive States
-  const [activePortalTab, setActivePortalTab] = useState<'director' | 'docente' | 'padre' | 'alumno' | 'superadmin'>('director');
+  const [activePortalTab, setActivePortalTab] = useState<'superadmin' | 'director' | 'docente' | 'padre' | 'alumno'>('director');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const [videoProgress, setVideoProgress] = useState(15); // Simulated progress in VSL
+  const [videoProgress, setVideoProgress] = useState(25); // Simulated progress in VSL
   
   // CTA Form States
   const [directorEmail, setDirectorEmail] = useState('');
@@ -47,21 +47,60 @@ export default function Home() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // VSL Config loaded dynamically from LocalStorage (with SSR safety)
+  // Default values set to the high-converting copy from the commercial dossier
   const [vslConfig, setVslConfig] = useState({
-    titlePart1: "Elimine la Morosidad y el Caos de Excel.",
-    titlePart2: "Recupere el Control de su Colegio",
-    titlePart3: " en Tiempo Real",
-    subheadline: "LINKEDU es el ecosistema All-in-One que integra la tesorería del colegio, las calificaciones docentes y la comunicación con las familias en una sola aplicación nativa. Despliegue automático en 60 segundos.",
+    // Section 1: Hero
+    heroTitle: "El Excel del colegio se quedó en el pasado:",
+    heroGradient: "controla pensiones, notas y comunicación",
+    heroTitleEnd: " desde una sola plataforma.",
+    heroSubtitle: "Centraliza pensiones, notas, asistencias, comunicados, tareas y reportes en una sola plataforma con app móvil para dirección, docentes, padres y alumnos.",
+    heroBullets: [
+      "Control financiero y académico desde un solo dashboard.",
+      "App móvil para padres y alumnos.",
+      "Registro digital de notas, asistencia y materiales.",
+      "Visualización de deudas escolares y alertas configurables.",
+      "Demo personalizada para tu institución."
+    ],
     videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
     whatsappNumber: "51987088359",
-    whatsappTemplate: 'Hola! Vengo de la landing page de Linkedu. Me interesa agendar una demostración gratuita en vivo. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}". ¿Cuándo podríamos programarla?',
+    whatsappTemplate: 'Hola! Vengo de la landing page de Linkedu. Me interesa agendar una demostración gratuita en vivo y mi diagnóstico de digitalización escolar. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}". ¿Cuándo podríamos programarla?',
+    
+    // Subtitles loop based on VSL Hook & Core script
     subtitles: [
-      "Descubre cómo LINKEDU está eliminando el caos administrativo del Excel...",
-      "El 85% de los colegios en América Latina reporta fugas de dinero por morosidad no detectada.",
-      "Orquesta matrículas, pensiones, asistencias y libretas en un solo ecosistema integrado.",
-      "Ahorra hasta 15 horas semanales a tus profesores y pacifica la comunicación con los padres.",
-      "Registra hoy tu institución y despliega tu propia intranet escolar en 60 segundos."
-    ]
+      "¿Tu colegio todavía depende de Excel, cuadernos, circulares de papel y grupos de WhatsApp?",
+      "Presta atención, porque voy a mostrarte cómo pasar de una administración lenta y estresante...",
+      "A un sistema digital donde dirección, docentes, padres y alumnos están conectados en una sola app.",
+      "Sin perseguir padres todos los días, sin depender de circulares que se pierden.",
+      "Linkedu es una intranet moderna que centraliza la contabilidad, notas y asistencias.",
+      "¡Agenda tu Demo Personalizada hoy y recibe tu Diagnóstico de Digitalización 100% Gratuito!"
+    ],
+
+    // Section 2: Problema
+    problemTitle: "Tu colegio no necesita más papeles. Necesita más control.",
+    problemSubtitle: "Si hoy tu institución depende de Excel, cuadernos, comunicados impresos y grupos de WhatsApp, cada día pierdes tiempo, claridad y oportunidades de cobranza.",
+    problemMessage: "El problema no es tu equipo. El problema es que la información está dispersa.",
+
+    // Section 3: Nueva Solución
+    solutionTitle: "Presentamos Linkedu: el ecosistema digital All-in-One para colegios modernos.",
+    solutionSubtitle: "Linkedu conecta a toda la comunidad educativa desde una plataforma web y app móvil. Dirección, docentes, padres y alumnos tienen su propio portal, con información organizada según su rol.",
+
+    // Section 5: Beneficios
+    benefitsTitle: "Lo que cambia cuando tu colegio deja de operar en desorden.",
+
+    // Section 6: Prueba
+    proofTitle: "Mira Linkedu funcionando con datos reales de prueba.",
+    proofSubtitle: "En la demo personalizada podrás ver cómo se visualiza el panel de dirección, cómo se registran alumnos, cómo un docente marca asistencia, cómo un padre revisa pensiones y cómo un alumno consulta tareas.",
+
+    // Section 7: Oferta
+    offerTitle: "Agenda una demo personalizada de Linkedu.",
+
+    // Section 9: Garantía
+    guaranteeTitle: "Primero mira la plataforma. Luego decides.",
+    guaranteeText: "Agenda una demo sin compromiso. Si Linkedu no encaja con el tamaño, procesos o necesidades de tu colegio, te lo diremos claramente y te recomendaremos la mejor ruta para digitalizar tu institución.",
+
+    // Section 10: CTA Final
+    ctaFinalTitle: "Tu colegio puede seguir administrándose con Excel… o puede dar el salto a una gestión moderna.",
+    ctaFinalText: "Cada mes que pasa con información desordenada significa más tiempo perdido, más consultas repetidas, más riesgo de morosidad y menos control para dirección."
   });
 
   const [subtitleIndex, setSubtitleIndex] = useState(0);
@@ -87,10 +126,10 @@ export default function Home() {
     let interval: any;
     if (isVideoPlaying) {
       interval = setInterval(() => {
-        setVideoProgress(prev => (prev >= 100 ? 0 : prev + 0.5));
+        setVideoProgress(prev => (prev >= 100 ? 0 : prev + 0.4));
         // Rotate subtitle simulation every 6 seconds
         setSubtitleIndex(prev => (prev >= vslConfig.subtitles.length - 1 ? 0 : prev + 1));
-      }, 300);
+      }, 350);
     }
     return () => clearInterval(interval);
   }, [isVideoPlaying, vslConfig.subtitles]);
@@ -116,14 +155,14 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#F4F5F7] min-h-screen text-gray-900 overflow-x-hidden font-sans">
+    <div className="bg-[#F8F9FA] min-h-screen text-gray-900 overflow-x-hidden font-sans">
       
-      {/* --- PREMIUM GLASSMORPHIC HEADER --- */}
-      <header className="sticky top-0 z-50 w-full glassmorphism border-b border-gray-200/50 py-3.5 px-4 sm:px-6">
+      {/* --- ELITE GLASSMORPHIC HEADER --- */}
+      <header className="sticky top-0 z-50 w-full glassmorphism border-b border-gray-200/40 py-3 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo Brand */}
           <div className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-xl bg-[#01017b] flex items-center justify-center text-white font-black text-xl shadow-md shadow-[#01017b]/10 tracking-tighter">
+            <div className="h-10 w-10 rounded-xl bg-[#01017b] flex items-center justify-center text-white font-black text-xl shadow-md shadow-[#01017b]/15 tracking-tighter">
               L
             </div>
             <div>
@@ -134,10 +173,12 @@ export default function Home() {
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-8 text-xs font-extrabold uppercase tracking-wider text-gray-500">
-            <a href="#beneficios" className="hover:text-[#01017b] transition-colors">Beneficios</a>
+            <a href="#problema" className="hover:text-[#01017b] transition-colors">El Problema</a>
+            <a href="#solucion" className="hover:text-[#01017b] transition-colors">La Solución</a>
             <a href="#portales" className="hover:text-[#01017b] transition-colors">Los 5 Portales</a>
-            <a href="#comparativa" className="hover:text-[#01017b] transition-colors">Comparativa</a>
-            <a href="#precios" className="hover:text-[#01017b] transition-colors">Planes VIP</a>
+            <a href="#beneficios" className="hover:text-[#01017b] transition-colors">Beneficios</a>
+            <a href="#demo" className="hover:text-[#01017b] transition-colors">Agendar Demo</a>
+            <a href="#precios" className="hover:text-[#01017b] transition-colors">Planes</a>
           </nav>
 
           {/* CTA Action Button */}
@@ -147,9 +188,9 @@ export default function Home() {
             ) : user ? (
               <button
                 onClick={() => router.push(`/${user.rol}`)}
-                className="px-5 py-2.5 bg-[#EEF1FE] hover:bg-[#EEF1FE]/80 text-[#01017b] text-xs font-black rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-xs border border-transparent hover:border-[#01017b]/10"
+                className="px-5 py-2.5 bg-[#EEF1FE] hover:bg-[#EEF1FE]/80 text-[#01017b] text-xs font-black rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-xs border border-transparent hover:border-[#01017b]/10 hover:scale-102 active:scale-98"
               >
-                Ir al Panel de Control
+                Ir al Panel
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             ) : (
@@ -165,330 +206,351 @@ export default function Home() {
         </div>
       </header>
 
-      {/* --- HERO SECTION & PROBLEM-FIRST COPY --- */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-[#EEF1FE]/40 via-white to-[#F4F5F7] overflow-hidden">
-        {/* Decorative Grid and Blur Mesh */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] pointer-events-none opacity-50 z-0">
-          <div className="absolute top-12 left-10 w-72 h-72 rounded-full bg-[#7EC8C8]/15 blur-3xl animate-pulse" />
-          <div className="absolute top-36 right-10 w-96 h-96 rounded-full bg-[#9B7FD4]/10 blur-3xl" />
+      {/* --- SECCIÓN 1: HERO & VIDEO SALES LETTER (VSL) --- */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-[#EEF1FE]/50 via-white to-[#F8F9FA] overflow-hidden">
+        {/* Soft Mesh Gradient Backdrop */}
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none opacity-40 z-0">
+          <div className="absolute top-12 left-10 w-96 h-96 rounded-full bg-[#7EC8C8]/20 blur-3xl animate-pulse duration-[8000ms]" />
+          <div className="absolute top-36 right-10 w-[450px] h-[450px] rounded-full bg-[#9B7FD4]/15 blur-3xl" />
         </div>
 
         <div className="max-w-7xl mx-auto text-center relative z-10 space-y-8">
-          {/* Subtle Tag */}
+          {/* VIP Tag */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#01017b]/10 rounded-full text-[10px] font-extrabold text-[#01017b] uppercase tracking-widest shadow-xs">
             <Sparkles className="w-3 h-3 text-[#7EC8C8] animate-spin-slow" />
-            Ecosistema Escolar SaaS VIP 2026
+            B2B High Ticket • Diagnóstico Gratuito 2026
           </div>
 
-          {/* High-Impact Headline B2B */}
+          {/* Dynamic Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-gray-900 max-w-5xl mx-auto leading-[1.08] text-balance">
-            {vslConfig.titlePart1} <br className="hidden sm:block" />
+            {vslConfig.heroTitle} <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-[#01017b] via-[#4F6AF0] to-[#9B7FD4] bg-clip-text text-transparent">
-              {vslConfig.titlePart2}
-            </span>{vslConfig.titlePart3}
+              {vslConfig.heroGradient}
+            </span>
+            {vslConfig.heroTitleEnd}
           </h1>
 
-          {/* Solution-oriented Subtitle */}
+          {/* Subtitle */}
           <p className="text-sm sm:text-lg text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed">
-            {vslConfig.subheadline}
+            {vslConfig.heroSubtitle}
           </p>
 
-          {/* Dynamic VSL Player Block */}
-          <div className="max-w-4xl mx-auto mt-10">
-            <div className="premium-card p-2.5 bg-gray-900/5 border border-gray-200/60 rounded-3xl overflow-hidden shadow-2xl relative">
-              {/* Custom Simulated Video Player UI with Glassmorphic controls */}
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 group">
+          {/* Main Hero Grid: Video Player + Conversion Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-6 max-w-6xl mx-auto text-left">
+            
+            {/* Interactive VSL Video Player */}
+            <div className="lg:col-span-7 premium-card p-3 bg-gray-900/5 border border-gray-200/50 rounded-3xl overflow-hidden shadow-2xl relative">
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950">
                 
-                {/* Simulated Educational Background Loop / Video Overlay */}
-                <div className="absolute inset-0 flex flex-col justify-between p-6 z-10 select-none bg-gradient-to-t from-black/80 via-black/30 to-black/60">
-                  {/* Top Bar Info */}
+                {/* Simulated Player Controls and Text Overlays */}
+                <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-5 z-10 select-none bg-gradient-to-t from-black/85 via-black/20 to-black/60">
+                  
+                  {/* Top bar info */}
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <div className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
-                      <span className="text-[10px] font-black text-white uppercase tracking-wider bg-black/45 px-2.5 py-1 rounded-md backdrop-blur-xs">
-                        🔴 Demostración VIP en Vivo
+                      <span className="text-[9px] font-black text-white uppercase tracking-wider bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-xs">
+                        🔴 Demostración VSL en Vivo
                       </span>
                     </div>
-                    <span className="text-[10px] text-gray-300 font-bold uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded backdrop-blur-xs">
-                      VSL • 3 Minutos
+                    <span className="text-[9px] text-gray-300 font-bold uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded backdrop-blur-xs">
+                      Demo Call • 7-10 Min
                     </span>
                   </div>
 
-                  {/* Center Play Big Button Overlay (Visible when paused) */}
+                  {/* Play Center Overlay */}
                   {!isVideoPlaying && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <button
                         onClick={() => setIsVideoPlaying(true)}
                         className="h-16 w-16 rounded-full bg-white/95 text-[#01017b] flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-95 cursor-pointer z-30 animate-pulse"
                       >
-                        <Play className="w-7 h-7 fill-[#01017b] ml-1" />
+                        <Play className="w-6 h-6 fill-[#01017b] ml-1" />
                       </button>
                     </div>
                   )}
 
-                  {/* Interactive Dashboard Graphic Mockup in the center (Dynamic visual placeholder) */}
-                  <div className="flex-1 flex items-center justify-center p-4">
-                    <div className="w-full max-w-lg bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 shadow-2xl text-left scale-90 sm:scale-100 transition-transform">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-2.5 mb-3">
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
-                        </div>
-                        <span className="text-[9px] text-white/70 font-mono">LINKEDU Contabilidad</span>
+                  {/* Dashboard Live Graphic inside player */}
+                  <div className="flex-1 flex items-center justify-center p-3 opacity-90">
+                    <div className="w-full max-w-sm bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3.5 shadow-2xl text-left scale-90 sm:scale-100 transition-transform">
+                      <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-2 text-[8px] text-white/60 font-mono">
+                        <span>📊 LINKEDU Ecosistema Escolar</span>
+                        <span>Multi-tenant</span>
                       </div>
                       
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-2 gap-2 text-white">
                         <div className="bg-white/5 border border-white/10 rounded-lg p-2">
-                          <span className="text-[8px] text-white/50 block font-bold uppercase">Pensiones Cobradas</span>
-                          <span className="text-sm font-black text-[#7EC8C8] block mt-0.5">S/. 124,500</span>
+                          <span className="text-[7px] text-white/50 block font-bold uppercase">Pensiones Cobradas</span>
+                          <span className="text-xs font-black text-[#7EC8C8] block">S/. 142,500</span>
                         </div>
                         <div className="bg-white/5 border border-white/10 rounded-lg p-2">
-                          <span className="text-[8px] text-white/50 block font-bold uppercase">Morosidad Actual</span>
-                          <span className="text-sm font-black text-red-300 block mt-0.5">4.2%</span>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-lg p-2">
-                          <span className="text-[8px] text-white/50 block font-bold uppercase">Eficiencia Recaudo</span>
-                          <span className="text-sm font-black text-green-300 block mt-0.5">95.8%</span>
+                          <span className="text-[7px] text-white/50 block font-bold uppercase">Eficiencia de Recaudo</span>
+                          <span className="text-xs font-black text-green-300 block">96.8%</span>
                         </div>
                       </div>
 
-                      <div className="mt-3 bg-white/5 border border-white/10 rounded-lg p-2 flex items-center justify-between">
-                        <span className="text-[9px] text-white/80 font-semibold">📣 Alertas de morosidad automáticas</span>
-                        <span className="text-[8px] bg-red-400/20 text-red-300 border border-red-400/30 px-2 py-0.5 rounded font-extrabold uppercase">Activas</span>
+                      <div className="mt-2 bg-[#EEF1FE]/10 border border-[#EEF1FE]/20 rounded-lg p-2 flex items-center justify-between text-[8px] text-white/90 font-bold">
+                        <span>🔔 Notificaciones de Deuda automáticas:</span>
+                        <span className="px-1.5 py-0.5 bg-green-500/20 text-green-300 rounded uppercase font-black">Activas</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Subtitles Overlay Bar */}
+                  {/* Subtitle simulation bar */}
                   <div className="w-full text-center">
-                    <p className="inline-block text-xs sm:text-sm font-extrabold text-white bg-black/60 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-xs min-h-[40px] leading-relaxed transition-all max-w-2xl mx-auto">
+                    <p className="inline-block text-[11px] sm:text-xs font-black text-white bg-black/60 px-3.5 py-2 rounded-xl border border-white/10 backdrop-blur-xs min-h-[40px] leading-relaxed transition-all max-w-xl mx-auto text-center">
                       📢 {vslConfig.subtitles[subtitleIndex]}
                     </p>
                   </div>
 
-                  {/* Bottom Controls Bar */}
-                  <div className="flex items-center gap-3 border-t border-white/10 pt-3 mt-2 bg-black/40 p-2.5 rounded-xl backdrop-blur-xs">
+                  {/* Player bottom controls bar */}
+                  <div className="flex items-center gap-2 border-t border-white/10 pt-2.5 mt-1.5 bg-black/45 p-2 rounded-xl backdrop-blur-xs">
                     <button 
                       onClick={() => setIsVideoPlaying(!isVideoPlaying)}
                       className="text-white hover:text-[#7EC8C8] transition-colors cursor-pointer"
                     >
-                      {isVideoPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white" />}
+                      {isVideoPlaying ? <Pause className="w-3.5 h-3.5 fill-white" /> : <Play className="w-3.5 h-3.5 fill-white" />}
                     </button>
 
-                    {/* Progress Bar Container */}
-                    <div className="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden relative cursor-pointer">
+                    <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden relative cursor-pointer">
                       <div 
                         className="h-full bg-gradient-to-r from-[#7EC8C8] to-[#9B7FD4] transition-all" 
                         style={{ width: `${videoProgress}%` }}
                       />
                     </div>
 
-                    <div className="text-[9px] text-white font-mono">
-                      {Math.floor((videoProgress * 1.8) / 60)}:{(Math.floor((videoProgress * 1.8) % 60)).toString().padStart(2, '0')} / 3:00
+                    <div className="text-[8px] text-white font-mono">
+                      {Math.floor((videoProgress * 4.8) / 60)}:{(Math.floor((videoProgress * 4.8) % 60)).toString().padStart(2, '0')} / 8:00
                     </div>
 
                     <button 
                       onClick={() => setIsMuted(!isMuted)}
                       className="text-white hover:text-[#7EC8C8] transition-colors cursor-pointer"
                     >
-                      {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                      {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
 
-                {/* Simulated Stock Video Image Backdrop */}
+                {/* Simulated Backdrop Image */}
                 <div 
-                  className={`absolute inset-0 bg-cover bg-center transition-transform duration-[6000ms] ${
+                  className={`absolute inset-0 bg-cover bg-center transition-transform duration-[8000ms] ${
                     isVideoPlaying ? 'scale-110 rotate-1' : 'scale-100'
                   }`}
                   style={{ backgroundImage: `url(${vslConfig.videoUrl})` }}
                 />
               </div>
             </div>
-          </div>
 
-          {/* --- HERO CTA ULTRA-SIMPLIFIED FORM (PROBLEM-FIRST BLOCK) --- */}
-          <div className="max-w-xl mx-auto mt-12 bg-white border border-gray-200 p-6 sm:p-8 rounded-3xl shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[#7EC8C8]/10 rounded-full blur-2xl" />
-            <h3 className="text-base sm:text-lg font-black text-gray-900 text-center flex items-center justify-center gap-2 mb-2">
-              🔥 ¿Listo para pacificar la gestión escolar?
-            </h3>
-            <p className="text-xs text-gray-500 text-center mb-6 leading-relaxed">
-              Ingresa los datos para agendar tu demostración en vivo. Te redireccionaremos de inmediato a nuestro WhatsApp comercial.
-            </p>
+            {/* Above the fold Form & Bullets */}
+            <div className="lg:col-span-5 space-y-5 bg-white border border-gray-200 p-6 sm:p-7 rounded-3xl shadow-xl relative overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#7EC8C8]/10 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="space-y-3">
+                <h3 className="text-base sm:text-lg font-black text-gray-900 leading-tight">
+                  Agendar Demo Gratuita y Diagnóstico ➔
+                </h3>
+                
+                <ul className="space-y-2">
+                  {vslConfig.heroBullets.map((bullet, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs text-gray-600 font-semibold leading-relaxed">
+                      <Check className="w-4 h-4 text-[#7EC8C8] shrink-0 mt-0.5" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <form onSubmit={handleCtaSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5 text-left">
-                    Correo del Director
-                  </label>
+              <form onSubmit={handleCtaSubmit} className="space-y-3 pt-3 border-t border-gray-100">
+                <div className="space-y-2">
                   <input
                     type="email"
                     required
-                    placeholder="director@colegio.edu.pe"
+                    placeholder="Tu Correo Corporativo del Director"
                     value={directorEmail}
                     onChange={(e) => setDirectorEmail(e.target.value)}
                     className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold text-gray-900 bg-gray-50/50"
                   />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1.5 text-left">
-                    Nombre del Colegio
-                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="Colegio San Ignacio"
+                    placeholder="Nombre Oficial del Colegio"
                     value={schoolName}
                     onChange={(e) => setSchoolName(e.target.value)}
                     className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold text-gray-900 bg-gray-50/50"
                   />
                 </div>
+
+                <button
+                  type="submit"
+                  className="w-full flex justify-center items-center gap-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md shadow-[#01017b]/15 active:scale-98 cursor-pointer relative overflow-hidden"
+                >
+                  {isSubmitted ? (
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <>
+                      Solicitar Demo por WhatsApp
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div className="text-[9px] text-gray-400 font-bold uppercase tracking-wider text-center flex justify-center gap-3">
+                <span>🛡️ Diagnóstico Incluido</span>
+                <span>•</span>
+                <span>⚡ Cero Costos Iniciales</span>
               </div>
-
-              <button
-                type="submit"
-                className="w-full flex justify-center items-center gap-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md shadow-[#01017b]/15 active:scale-98 cursor-pointer relative overflow-hidden"
-              >
-                {isSubmitted ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                ) : (
-                  <>
-                    Agendar Demostración Gratuita Hoy
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-
-            <div className="mt-4 flex items-center justify-center gap-4 text-[9px] text-gray-450 font-bold uppercase tracking-wider">
-              <span className="flex items-center gap-1">🛡️ Sin Tarjeta</span>
-              <span>•</span>
-              <span className="flex items-center gap-1">⚡ Configuración en 1 Minuto</span>
-              <span>•</span>
-              <span className="flex items-center gap-1">📞 Soporte Directo B2B</span>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* --- ELIMINE EL TCO Y MOROSIDAD (MIGRATION SECTION) --- */}
-      <section id="beneficios" className="py-20 px-4 sm:px-6 bg-white border-y border-gray-200">
+      {/* --- SECCIÓN 2: EL PROBLEMA --- */}
+      <section id="problema" className="py-20 px-4 sm:px-6 bg-white border-y border-gray-200">
+        <div className="max-w-5xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <span className="text-[10px] font-extrabold bg-red-50 text-red-600 px-3 py-1 rounded-full uppercase tracking-wider">
+              Diagnóstico Operativo
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+              {vslConfig.problemTitle}
+            </h2>
+            <p className="text-sm sm:text-base text-gray-500 max-w-2xl mx-auto font-medium">
+              {vslConfig.problemSubtitle}
+            </p>
+          </div>
+
+          <div className="p-6 bg-red-50/40 border border-red-100 rounded-3xl flex items-center justify-center text-center max-w-3xl mx-auto">
+            <p className="text-sm font-black text-red-700 uppercase tracking-wide">
+              🚨 {vslConfig.problemMessage}
+            </p>
+          </div>
+
+          {/* 5 B2B Pain Points grid */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {[
+              { title: "Pensiones Difíciles", desc: "Conciliaciones manuales en Excel que generan morosidad silenciosa y faltas de caja.", emoji: "💰" },
+              { title: "Padres Insistentes", desc: "Consultas telefónicas repetitivas preguntando notas y deudas vencidas.", emoji: "📞" },
+              { title: "Docentes Saturados", desc: "Profesores perdiendo horas en registrar asistencia y libretas de papel.", emoji: "📝" },
+              { title: "Dirección a Ciegas", desc: "Toma de decisiones con reportes financieros incompletos o desactualizados.", emoji: "📊" },
+              { title: "WhatsApp Saturado", desc: "Comunicados y circulares perdidos en el mar de chats informales.", emoji: "💬" }
+            ].map((pain, idx) => (
+              <div key={idx} className="premium-card p-5 bg-white border border-gray-150 rounded-2xl flex flex-col justify-between hover:border-red-200 transition-all">
+                <span className="text-2xl mb-2 block">{pain.emoji}</span>
+                <div>
+                  <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">{pain.title}</h4>
+                  <p className="text-[10px] text-gray-500 font-medium leading-relaxed mt-1">{pain.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- SECCIÓN 3: LA NUEVA SOLUCIÓN --- */}
+      <section id="solucion" className="py-20 px-4 sm:px-6 bg-[#F8F9FA] overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          
           <div className="space-y-6">
             <span className="text-[10px] font-extrabold bg-[#EEF1FE] text-[#01017b] px-3 py-1 rounded-full uppercase tracking-wider">
-              Análisis de Costo Oculto (TCO)
+              Ecosistema Integral SaaS
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight">
-              ¿Por qué seguir perdiendo dinero en hojas de cálculo "gratuitas"?
+              {vslConfig.solutionTitle}
             </h2>
             <p className="text-sm text-gray-500 font-medium leading-relaxed">
-              Google Sheets y WhatsApp parecen gratuitos, pero su costo operativo oculto es devastador. La fragmentación administrativa causa errores de conciliación contable y morosidad de pensiones no reclamada a tiempo, costando miles de soles al año.
+              {vslConfig.solutionSubtitle}
             </p>
 
             <div className="space-y-4">
-              {[
-                { title: "Doble digitación y errores humanos crónicos", desc: "El personal administrativo pierde horas transcribiendo del cuaderno al Excel y de ahí al SIAGIE del Minedu." },
-                { title: "Morosidad asfixiante sin control en vivo", desc: "Sin alertas automáticas, la cobranza de mensualidades depende de llamadas telefónicas manuales e incómodas." },
-                { title: "Fragmentación ruidosa en WhatsApp", desc: "Docentes saturados en grupos de chat desordenados, y comunicados que se extravían constantemente." },
-                { title: "Desconexión e incertidumbre de las familias", desc: "Padres que solo se enteran de las notas desaprobadas o inasistencias en la entrega de libretas de fin de año." }
-              ].map((item, idx) => (
-                <div key={idx} className="flex gap-3">
-                  <div className="h-5 w-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold shrink-0 mt-0.5">✕</div>
-                  <div>
-                    <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">{item.title}</h4>
-                    <p className="text-xs text-gray-500 font-medium leading-relaxed mt-0.5">{item.desc}</p>
-                  </div>
+              <div className="flex gap-3">
+                <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold shrink-0 text-xs">✓</div>
+                <div>
+                  <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Control centralizado y auditable</h4>
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed mt-0.5">Dirección y tesorería conectadas en vivo con padres, docentes y alumnos.</p>
                 </div>
-              ))}
+              </div>
+              <div className="flex gap-3">
+                <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold shrink-0 text-xs">✓</div>
+                <div>
+                  <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Despliegue Multi-tenant en 60 segundos</h4>
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed mt-0.5">Configuración automática de base de datos PostgreSQL y logotipos de tu colegio.</p>
+                </div>
+              </div>
             </div>
 
-            {/* Excel Migration Guarantee */}
-            <div className="p-4 bg-gradient-to-r from-[#EEF1FE]/30 to-white border border-[#01017b]/10 rounded-2xl flex items-start gap-3 mt-6">
-              <Sparkles className="w-5 h-5 text-[#01017b] shrink-0 mt-0.5 animate-pulse" />
-              <div>
-                <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Garantía de Migración Gratuita de Excel</h4>
-                <p className="text-xs text-gray-500 mt-1 font-medium leading-relaxed">
-                  ¿Temes perder tus registros históricos? Nuestro equipo migrará, normalizará y cargará todas tus bases de datos de alumnos, docentes y pagos a LINKEDU de forma 100% gratuita y sin fricciones operativas.
-                </p>
-              </div>
+            <div className="pt-4">
+              <a 
+                href="#demo"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-black rounded-xl transition-all shadow-md shadow-[#01017b]/10 hover:scale-102 active:scale-98"
+              >
+                Quiero ver cómo funciona
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
             </div>
           </div>
 
           {/* Interactive Screen Dashboard Showcase */}
-          <div className="premium-card p-4 bg-gray-50 border border-gray-150 rounded-3xl relative overflow-hidden flex flex-col justify-between">
+          <div className="premium-card p-4 bg-white border border-gray-150 rounded-3xl relative overflow-hidden flex flex-col justify-between shadow-xl">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#9B7FD4]/10 rounded-full blur-2xl" />
             <div className="flex items-center justify-between border-b pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <span className="h-3.5 w-3.5 rounded-full bg-[#01017b] flex items-center justify-center text-white font-extrabold text-[8px]">✓</span>
-                <span className="text-xs font-black text-gray-900 uppercase tracking-wider">El Efecto Linkedu en tus Finanzas</span>
+                <span className="h-3 w-3 rounded-full bg-[#01017b] flex items-center justify-center text-white text-[8px] font-black">✓</span>
+                <span className="text-xs font-black text-gray-900 uppercase tracking-wider">Simulación Intranet Linkedu</span>
               </div>
-              <span className="text-[9px] text-[#7EC8C8] font-black uppercase bg-[#7EC8C8]/10 px-2 py-0.5 rounded">Inteligente</span>
+              <span className="text-[9px] text-[#7EC8C8] font-black uppercase bg-[#7EC8C8]/10 px-2 py-0.5 rounded">VIP 2026</span>
             </div>
 
             {/* Comparison graphic */}
-            <div className="space-y-4">
-              <div className="p-3.5 bg-white border border-gray-200 rounded-xl space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-extrabold text-gray-500 uppercase tracking-wider text-[9px]">Método Tradicional (Caos Excel)</span>
-                  <span className="font-bold text-red-500">12% Morosidad</span>
+            <div className="space-y-4 text-xs font-semibold text-gray-600">
+              <div className="p-3 bg-gray-50 border rounded-xl space-y-2">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="font-extrabold text-gray-400 uppercase tracking-wider">Matrícula y Cobranza Manual</span>
+                  <span className="font-bold text-red-500">12% Pérdidas</span>
                 </div>
-                <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-400 w-[65%] rounded-full" />
+                <div className="w-full h-2.5 bg-gray-250 rounded-full overflow-hidden">
+                  <div className="h-full bg-red-400 w-[60%] rounded-full" />
                 </div>
-                <span className="text-[9px] text-gray-400 font-semibold block">Cobros manuales incómodos y reportes fragmentados.</span>
+                <span className="text-[9px] text-gray-400 font-semibold block">Errores de cuadratura, pensiones olvidadas, recibos en papel.</span>
               </div>
 
-              <div className="p-3.5 bg-[#EEF1FE]/30 border border-[#01017b]/10 rounded-xl space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-extrabold text-[#01017b] uppercase tracking-wider text-[9px]">Método LINKEDU (Automatizado)</span>
+              <div className="p-3 bg-[#EEF1FE]/30 border border-[#01017b]/10 rounded-xl space-y-2">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="font-black text-[#01017b] uppercase tracking-wider">Ecosistema LINKEDU</span>
                   <span className="font-black text-green-600">1.8% Morosidad</span>
                 </div>
-                <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-[#01017b] to-[#7EC8C8] w-[92%] rounded-full" />
+                <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#01017b] to-[#7EC8C8] w-[95%] rounded-full" />
                 </div>
-                <span className="text-[9px] text-gray-500 font-semibold block">Recordatorios por email, estados de cuenta al día y visualización 100% móvil.</span>
-              </div>
-
-              {/* Value stats */}
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="p-3 bg-white border border-gray-150 rounded-xl text-center">
-                  <span className="text-[8px] text-gray-400 font-black uppercase tracking-wider block">Tiempo Ahorrado</span>
-                  <span className="text-xl font-black text-[#01017b] block mt-0.5">80% menos</span>
-                  <span className="text-[8px] text-gray-500 font-semibold block">en digitación contable</span>
-                </div>
-                <div className="p-3 bg-white border border-gray-150 rounded-xl text-center">
-                  <span className="text-[8px] text-gray-400 font-black uppercase tracking-wider block">Despliegue</span>
-                  <span className="text-xl font-black text-[#7EC8C8] block mt-0.5">Instantáneo</span>
-                  <span className="text-[8px] text-gray-500 font-semibold block">Instancia en 1 minuto</span>
-                </div>
+                <span className="text-[9px] text-gray-500 font-semibold block">Conciliación bancaria al día, recordatorios automatizados, app unificada.</span>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
-      {/* --- THE 5 PORTALS INTERACTIVE DEMO (DISECCIÓN DE PORTALES) --- */}
-      <section id="portales" className="py-20 px-4 sm:px-6 bg-[#F4F5F7]">
+      {/* --- SECCIÓN 4: PORTALES (MÓDULOS DEL SAAS) --- */}
+      <section id="portales" className="py-20 px-4 sm:px-6 bg-white border-y border-gray-200">
         <div className="max-w-7xl mx-auto text-center space-y-12">
-          <div className="space-y-4">
+          <div className="space-y-3">
             <span className="text-[10px] font-extrabold bg-[#9B7FD4]/10 text-[#9B7FD4] px-3 py-1 rounded-full uppercase tracking-wider">
-              Disección de Arquitectura de Negocios
+              Disección de Roles
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              Un Ecosistema unificado de 5 Portales
+              Todo tu colegio conectado desde 5 portales
             </h2>
             <p className="text-sm text-gray-500 max-w-2xl mx-auto font-medium">
-              Elimine la fricción de instalar múltiples plataformas. LINKEDU integra roles dinámicos que se adaptan tras el inicio de sesión del usuario en cualquier dispositivo.
+              Segmentación dinámica de accesos y permisos. El sistema detecta el rol del usuario tras el inicio de sesión y adapta instantáneamente la interfaz.
             </p>
           </div>
 
-          {/* Elegant tab selectors for 5 Portals */}
-          <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-none max-w-4xl mx-auto gap-2 bg-white/60 p-2 rounded-2xl border border-gray-200/50">
+          {/* Portal selectors */}
+          <div className="flex border border-gray-200/50 bg-gray-50 p-1.5 rounded-2xl max-w-4xl mx-auto overflow-x-auto scrollbar-none gap-1">
             {[
-              { id: 'superadmin', label: 'Súper Admin', icon: '🛠️' },
+              { id: 'superadmin', label: 'Super Admin', icon: '🛠️' },
               { id: 'director', label: 'Dirección', icon: '📊' },
               { id: 'docente', label: 'Docente', icon: '👩‍🏫' },
               { id: 'padre', label: 'Familia', icon: '👨‍👩‍👦' },
@@ -497,7 +559,7 @@ export default function Home() {
               <button
                 key={tab.id}
                 onClick={() => setActivePortalTab(tab.id as any)}
-                className={`flex-1 min-w-[110px] py-3.5 px-2 text-xs font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer ${
+                className={`flex-1 min-w-[110px] py-3 px-2 text-[10px] font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer ${
                   activePortalTab === tab.id
                     ? 'bg-[#01017b] text-white shadow-md'
                     : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
@@ -509,428 +571,492 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Interactive Portal Display Area */}
-          <div className="max-w-5xl mx-auto premium-card bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 text-left grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[480px]">
+          {/* Tab display card */}
+          <div className="max-w-5xl mx-auto premium-card bg-white p-6 sm:p-8 border rounded-3xl text-left grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[440px]">
             
-            {/* Left Content Column */}
-            <div className="lg:col-span-5 space-y-5">
+            {/* Tab content */}
+            <div className="lg:col-span-5 space-y-4">
               {activePortalTab === 'superadmin' && (
                 <>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-lg text-[9px] font-black text-gray-700 uppercase tracking-widest">
-                    Portal 0 • Centro de Control del SaaS
+                  <div className="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-2.5 py-1 rounded text-[9px] font-black uppercase">
+                    Portal 0 • Control del SaaS
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-gray-900">
-                    Orquestación y escalamiento del negocio EdTech
+                    Administración y control del modelo SaaS
                   </h3>
-                  <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                    Diseñado para el operador corporativo de LINKEDU. Administra las instancias de colegios activos y controla el flujo del negocio desde una única pantalla global.
+                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                    Diseñado para el creador del software. Administra colegios asociados (tenants), mensualidades, fechas de renovación y gestiona la suspensión inmediata de colegios morosos.
                   </p>
-                  <ul className="space-y-2.5 text-xs text-gray-700 font-semibold">
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Panel de Ingresos recurrentes mensuales (MRR).</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Autoprovisionamiento instantáneo de nuevos colegios por RUC.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Botón de suspensión de colegios morosos en un solo clic.</span></li>
+                  <ul className="space-y-2 text-xs font-semibold text-gray-700">
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Métricas de ingresos recurrentes (MRR).</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Alta y edición de colegios por RUC.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Dashboard global de suscripciones.</span></li>
                   </ul>
                 </>
               )}
 
               {activePortalTab === 'director' && (
                 <>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-[#01017b] rounded-lg text-[9px] font-black uppercase tracking-widest">
-                    Portal 1 • Inteligencia Financiera
+                  <div className="inline-flex items-center gap-1 bg-[#EEF1FE] text-[#01017b] px-2.5 py-1 rounded text-[9px] font-black uppercase">
+                    Portal 1 • Cerebro Financiero
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-gray-900">
-                    Control financiero y operativo institucional absoluto
+                    Control financiero y administrativo absoluto
                   </h3>
-                  <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                    El centro neurálgico de la dirección del colegio. Facilita la toma de decisiones basada en datos empíricos y erradica los cobros manuales.
+                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                    El centro de control del colegio. Monitorea morosidades en vivo, ingresos frente a gastos, matrículas, expedientes médicos de alumnos y asignación salarial docente.
                   </p>
-                  <ul className="space-y-2.5 text-xs text-gray-700 font-semibold">
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Visualización de morosidad escolar en estricto tiempo real.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Wizard de matrícula directa con creación inteligente de ficha médica.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Administración de nómina y color temático VIP del colegio.</span></li>
+                  <ul className="space-y-2 text-xs font-semibold text-gray-700">
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Gráfico de morosidad escolar en tiempo real.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Edición completa de expedientes y tutores.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Motor HSL VIP de colores adaptativos.</span></li>
                   </ul>
                 </>
               )}
 
               {activePortalTab === 'docente' && (
                 <>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-[#7EC8C8] rounded-lg text-[9px] font-black uppercase tracking-widest">
-                    Portal 2 • Alivio Administrativo
+                  <div className="inline-flex items-center gap-1 bg-[#EAF7F7] text-[#7EC8C8] px-2.5 py-1 rounded text-[9px] font-black uppercase">
+                    Portal 2 • Alivio Burocrático
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-gray-900">
-                    Menos burocracia, más tiempo para la enseñanza
+                    Menos papeleo, más tiempo de enseñanza
                   </h3>
-                  <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                    Construido para reducir el agotamiento de los profesores. Simplifica todas las tareas rutinarias en interfaces fluidas de toque rápido.
+                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                    Diseñado para reducir el agotamiento docente. Facilita el cálculo automático de promedios ponderados, cargas de asistencia interactiva en un toque y casillero virtual.
                   </p>
-                  <ul className="space-y-2.5 text-xs text-gray-700 font-semibold">
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Registro cíclico de asistencia diaria en 1-Tap.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Cuaderno de calificaciones interactivo con promedios automáticos.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Casillero virtual para subir materiales con lector de peso real.</span></li>
+                  <ul className="space-y-2 text-xs font-semibold text-gray-700">
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Cálculo en vivo de notas bimestrales ponderadas.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Cargador y medidor real de bytes de materiales.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Ajustes personales seguros (Correo bloqueado).</span></li>
                   </ul>
                 </>
               )}
 
               {activePortalTab === 'padre' && (
                 <>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black uppercase tracking-widest">
-                    Portal 3 • Vínculo y Confianza Familiar
+                  <div className="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2.5 py-1 rounded text-[9px] font-black uppercase">
+                    Portal 3 • Transparencia Familiar
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-gray-900">
-                    Tranquilidad y transparencia para las familias
+                    Tranquilidad y fidelización de las familias
                   </h3>
-                  <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                    Conecta a los padres con la vida académica de sus hijos, incrementando la fidelidad escolar y el compromiso de pago.
+                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                    Ofrece transparencia inmediata a los tutores. Pueden revisar libremente estados de cuenta, promedios de cursos en vivo y enviar justificaciones médicas digitales en segundos.
                   </p>
-                  <ul className="space-y-2.5 text-xs text-gray-700 font-semibold">
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Monitoreo en vivo de libretas y comentarios bimestrales.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Estado de cuenta transparente y registro rápido de pagos.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Buzón digital para envío de justificaciones médicas en segundos.</span></li>
+                  <ul className="space-y-2 text-xs font-semibold text-gray-700">
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Estados de cuenta con semáforos de pago.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Visualización interactiva de libretas escolares.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Buzón directo de justificaciones médicas.</span></li>
                   </ul>
                 </>
               )}
 
               {activePortalTab === 'alumno' && (
                 <>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-[#9B7FD4] rounded-lg text-[9px] font-black uppercase tracking-widest">
-                    Portal 4 • Aula Virtual Autónoma
+                  <div className="inline-flex items-center gap-1 bg-[#F3EFFE] text-[#9B7FD4] px-2.5 py-1 rounded text-[9px] font-black uppercase">
+                    Portal 4 • Aula Autónoma
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-gray-900">
-                    Autogestión de responsabilidades para el estudiante
+                    Autogestión académica para estudiantes
                   </h3>
-                  <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                    Una interfaz amigable y estimulante para que los estudiantes controlen sus quehaceres con total autonomía e inmediatez.
+                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                    Una agenda digital interactiva para que los alumnos controlen sus responsabilidades con total autonomía. Horarios visuales, entregables y registro de promedios históricos.
                   </p>
-                  <ul className="space-y-2.5 text-xs text-gray-700 font-semibold">
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Visualización de horario y agenda escolar diaria en modo VIP.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Caja de entrega virtual para subir tareas directo al profesor.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500 font-medium">Historial interactivo de promedios para incentivar la responsabilidad.</span></li>
+                  <ul className="space-y-2 text-xs font-semibold text-gray-700">
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Módulo de entrega de tareas directo al profesor.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Horarios en cuadrícula interactiva premium.</span></li>
+                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Control de calificaciones y metas académicas.</span></li>
                   </ul>
                 </>
               )}
             </div>
 
-            {/* Right Interactive Mockup Dashboard Drawing Column */}
-            <div className="lg:col-span-7 bg-gray-50 border border-gray-200/80 rounded-2xl p-5 relative overflow-hidden min-h-[300px] flex flex-col justify-between">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#01017b]/5 rounded-full blur-xl" />
+            {/* Tab Graphic Preview */}
+            <div className="lg:col-span-7 bg-gray-50 border border-gray-150 rounded-2xl p-5 relative overflow-hidden min-h-[300px] flex flex-col justify-between">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#01017b]/5 rounded-full blur-xl pointer-events-none" />
               
-              {/* Render dynamic dashboard visual depending on tab */}
               {activePortalTab === 'superadmin' && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2 mb-2 text-xs font-black text-gray-550 uppercase tracking-wider text-[9px]">
-                    <span>Gestión de Tenants (Linkedu)</span>
-                    <span className="text-green-600">Conectado</span>
+                  <div className="flex justify-between items-center text-[9px] font-bold text-gray-450 border-b pb-2">
+                    <span>CONSOLA GLOBAL SAAS (SUPERADMIN)</span>
+                    <span className="text-green-500">Online</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white border rounded-xl p-3 shadow-xs">
-                      <span className="text-[8px] text-gray-400 font-bold uppercase">SaaS MRR Global</span>
-                      <span className="text-lg font-black text-[#01017b] block mt-0.5">S/. 45,900</span>
-                      <span className="text-[8px] text-green-500 font-extrabold uppercase">+14% este mes</span>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white p-3 border rounded-xl">
+                      <span className="text-[8px] text-gray-400 font-bold block uppercase">MRR SaaS Global</span>
+                      <span className="text-lg font-black text-[#01017b] block">S/. 48,900</span>
                     </div>
-                    <div className="bg-white border rounded-xl p-3 shadow-xs">
-                      <span className="text-[8px] text-gray-400 font-bold uppercase">Colegios Activos</span>
-                      <span className="text-lg font-black text-gray-900 block mt-0.5">38 Colegios</span>
-                      <span className="text-[8px] text-gray-400 font-semibold uppercase">375 alumnos prom.</span>
+                    <div className="bg-white p-3 border rounded-xl">
+                      <span className="text-[8px] text-gray-400 font-bold block uppercase">Colegios Suscritos</span>
+                      <span className="text-lg font-black text-gray-900 block">42 Colegios</span>
                     </div>
                   </div>
-                  <div className="bg-white border rounded-xl p-3 shadow-xs space-y-2">
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="font-black text-gray-800">Colegio Innova School S.A.C.</span>
-                      <span className="px-2 py-0.5 bg-red-100 text-red-700 rounded font-black uppercase text-[8px]">Moroso</span>
+                  <div className="bg-white p-3 border rounded-xl flex items-center justify-between text-xs">
+                    <div>
+                      <span className="font-black text-gray-900 block text-[11px]">Colegio Innova School</span>
+                      <span className="text-[9px] text-red-500 font-bold uppercase mt-0.5 block">Suscripción Morosa Vencida</span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-[9px] text-gray-400 font-bold">Última Cuota: S/. 1,199 (Vencida)</span>
-                      <button className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white font-black text-[8px] uppercase tracking-wider rounded-lg transition-colors cursor-pointer">
-                        Suspender Tenant
-                      </button>
-                    </div>
+                    <span className="px-2.5 py-1 bg-red-500 text-white rounded-lg text-[9px] font-black uppercase">Suspender Colegio</span>
                   </div>
                 </div>
               )}
 
               {activePortalTab === 'director' && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2 mb-2 text-xs font-black text-gray-550 uppercase tracking-wider text-[9px]">
-                    <span>Consola Financiera Institucional</span>
-                    <span className="text-[#01017b]">Director Activo</span>
+                  <div className="flex justify-between items-center text-[9px] font-bold text-gray-450 border-b pb-2">
+                    <span>CONTROL DE DIRECCIÓN (COLEGIO ACTIVO)</span>
+                    <span className="text-[#01017b]">Director</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-white border rounded-xl p-2.5 shadow-xs">
-                      <span className="text-[8px] text-gray-400 font-bold uppercase">Pensiones Cobradas</span>
-                      <span className="text-sm font-black text-gray-900 block">S/. 85,300</span>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="bg-white p-2 border rounded-lg text-center">
+                      <span className="text-[7px] text-gray-400 font-bold uppercase block">Cobradas</span>
+                      <span className="text-xs font-black text-gray-900 block">S/. 92,400</span>
                     </div>
-                    <div className="bg-white border rounded-xl p-2.5 shadow-xs">
-                      <span className="text-[8px] text-gray-400 font-bold uppercase">Por Cobrar (Pendiente)</span>
-                      <span className="text-sm font-black text-[#01017b] block">S/. 12,400</span>
+                    <div className="bg-white p-2 border rounded-lg text-center">
+                      <span className="text-[7px] text-gray-400 font-bold uppercase block">Pendientes</span>
+                      <span className="text-xs font-black text-[#01017b] block">S/. 8,300</span>
                     </div>
-                    <div className="bg-white border rounded-xl p-2.5 shadow-xs">
-                      <span className="text-[8px] text-gray-400 font-bold uppercase">Morosidad Crítica</span>
-                      <span className="text-sm font-black text-red-500 block">3.1%</span>
+                    <div className="bg-white p-2 border rounded-lg text-center">
+                      <span className="text-[7px] text-gray-400 font-bold uppercase block">Morosidad</span>
+                      <span className="text-xs font-black text-red-500 block">2.8%</span>
                     </div>
                   </div>
-                  <div className="bg-white border rounded-xl p-3 shadow-xs space-y-2">
-                    <span className="text-[9px] text-gray-450 font-black uppercase tracking-wider block">Historial de Transacciones</span>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-[10px] text-gray-600 border-b pb-1">
-                        <span>Ficha Alumno: Juan Pérez (5to Secundaria)</span>
-                        <span className="font-bold text-green-600">✓ S/. 450.00</span>
-                      </div>
-                      <div className="flex justify-between text-[10px] text-gray-600">
-                        <span>Ficha Alumno: María Gómez (3er Grado)</span>
-                        <span className="font-bold text-green-600">✓ S/. 400.00</span>
-                      </div>
-                    </div>
+                  <div className="p-2 bg-[#EEF1FE]/40 border border-[#01017b]/10 rounded-lg text-[10px] font-semibold flex justify-between text-[#01017b]">
+                    <span>🎨 Color VIP Temático Armonizado HSL:</span>
+                    <span className="font-extrabold uppercase bg-white px-2 py-0.5 rounded border border-[#01017b]/10">Royal Blue</span>
                   </div>
                 </div>
               )}
 
               {activePortalTab === 'docente' && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2 mb-2 text-xs font-black text-gray-550 uppercase tracking-wider text-[9px]">
-                    <span>Spreadsheet de Notas Interactivas</span>
-                    <span className="text-[#7EC8C8]">5to B • Matemática</span>
+                  <div className="flex justify-between items-center text-[9px] font-bold text-gray-450 border-b pb-2">
+                    <span>CALIFICACIONES Y REGISTROS</span>
+                    <span className="text-[#7EC8C8]">Matemáticas • 5to B</span>
                   </div>
-                  <div className="bg-white border rounded-xl overflow-hidden shadow-xs">
-                    <table className="w-full text-[10px] text-left border-collapse">
-                      <thead>
-                        <tr className="bg-gray-50 border-b font-black text-gray-400 uppercase tracking-wider text-[8px]">
+                  <div className="bg-white border rounded-lg overflow-hidden text-[9px] shadow-xs">
+                    <table className="w-full text-left">
+                      <thead className="bg-gray-50 border-b text-[8px] font-bold text-gray-450">
+                        <tr>
                           <th className="p-2 border-r">Estudiante</th>
                           <th className="p-2 text-center border-r">Examen (40%)</th>
-                          <th className="p-2 text-center border-r">Tareas (30%)</th>
                           <th className="p-2 text-center">Promedio</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr className="border-b">
-                          <td className="p-2 border-r font-bold">Juan Carlos Pérez</td>
-                          <td className="p-2 text-center border-r font-semibold text-gray-800">16</td>
-                          <td className="p-2 text-center border-r font-semibold text-gray-800">18</td>
-                          <td className="p-2 text-center font-black text-green-600">16.8</td>
+                          <td className="p-2 border-r font-bold">Carlos Quispe</td>
+                          <td className="p-2 text-center border-r font-semibold">18</td>
+                          <td className="p-2 text-center font-black text-green-600">17.2</td>
                         </tr>
                         <tr>
-                          <td className="p-2 border-r font-bold">Ana María Gutiérrez</td>
-                          <td className="p-2 text-center border-r font-semibold text-gray-800">11</td>
-                          <td className="p-2 text-center border-r font-semibold text-gray-800">15</td>
-                          <td className="p-2 text-center font-black text-yellow-600">12.2</td>
+                          <td className="p-2 border-r font-bold">Sofía Benítez</td>
+                          <td className="p-2 text-center border-r font-semibold">12</td>
+                          <td className="p-2 text-center font-black text-yellow-600">13.0</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  <div className="bg-[#EEF1FE]/40 p-2.5 rounded-xl border border-[#01017b]/10 flex justify-between items-center">
-                    <span className="text-[9px] text-[#01017b] font-bold">📂 Subida de Guía Ecuaciones de 2do Grado.pdf</span>
-                    <span className="text-[8px] bg-[#01017b] text-white px-2 py-0.5 rounded uppercase font-black">2.4 MB</span>
+                  <div className="bg-[#EAF7F7]/50 p-2 rounded-lg border border-[#7EC8C8]/10 text-[9px] flex justify-between items-center">
+                    <span>📂 Guía de Álgebra Lineal.pdf uploaded:</span>
+                    <span className="px-1.5 py-0.5 bg-[#7EC8C8] text-white rounded font-bold">3.2 MB</span>
                   </div>
                 </div>
               )}
 
               {activePortalTab === 'padre' && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2 mb-2 text-xs font-black text-gray-550 uppercase tracking-wider text-[9px]">
-                    <span>Intranet del Tutor (Padre)</span>
-                    <span className="text-amber-600">Familia Pérez</span>
+                  <div className="flex justify-between items-center text-[9px] font-bold text-gray-450 border-b pb-2">
+                    <span>INTRANET DE FAMILIAS</span>
+                    <span className="text-amber-600">Tutor Activo</span>
                   </div>
-                  <div className="p-3 bg-white border rounded-xl shadow-xs flex justify-between items-center">
+                  <div className="bg-white p-3 border rounded-xl flex items-center justify-between">
                     <div>
-                      <span className="text-[8px] text-gray-400 font-bold uppercase tracking-wider">Estado de Pensión Escolar</span>
-                      <h4 className="text-sm font-black text-gray-900 mt-0.5">Mes de Mayo: S/. 450.00</h4>
+                      <span className="text-[7px] text-gray-400 font-bold block uppercase">Mensualidad Mayo 2026</span>
+                      <span className="text-xs font-black text-gray-900 block mt-0.5">S/. 450.00</span>
                     </div>
-                    <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-md font-black text-[9px] uppercase">Cancelado</span>
+                    <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded font-black text-[9px] uppercase">Cancelado</span>
                   </div>
-                  <div className="p-3 bg-white border rounded-xl shadow-xs space-y-2">
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="font-black text-gray-800">✍️ Buzón de Justificaciones</span>
-                      <span className="text-[8px] text-gray-400 font-bold uppercase">Formulario Rápido</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <input 
-                        type="text" 
-                        readOnly 
-                        value="Inasistencia por cita odontológica preventiva." 
-                        className="flex-1 bg-gray-50 border rounded-lg p-1.5 text-[9px] text-gray-650 font-semibold focus:outline-none" 
-                      />
-                      <button className="px-3 bg-amber-500 text-white font-black text-[9px] uppercase tracking-wider rounded-lg cursor-default">
-                        Enviado
-                      </button>
-                    </div>
+                  <div className="p-2 bg-amber-50/50 border border-amber-200/50 rounded-lg flex items-center justify-between text-[9px]">
+                    <span className="font-bold text-gray-700">🩺 Justificación Médica (Gripe de Alumno):</span>
+                    <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded font-extrabold uppercase">Enviada</span>
                   </div>
                 </div>
               )}
 
               {activePortalTab === 'alumno' && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2 mb-2 text-xs font-black text-gray-550 uppercase tracking-wider text-[9px]">
-                    <span>Mi Aula Escolar VIP</span>
-                    <span className="text-[#9B7FD4]">Alumno: Juan Pérez</span>
+                  <div className="flex justify-between items-center text-[9px] font-bold text-gray-450 border-b pb-2">
+                    <span>AULA VIRTUAL Y TAREAS</span>
+                    <span className="text-[#9B7FD4]">Estudiante</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-2.5 bg-white border rounded-xl shadow-xs">
-                      <span className="text-[8px] text-[#9B7FD4] font-black uppercase tracking-wider">Clase de Hoy</span>
-                      <span className="text-xs font-black text-gray-800 block mt-0.5">Matemática (8:00 AM)</span>
+                  <div className="bg-white border rounded-lg p-2.5 space-y-1.5">
+                    <div className="flex justify-between items-center text-[10px]">
+                      <span className="font-black text-gray-800 block">📝 Tarea: Ecuaciones de 2do Grado</span>
+                      <span className="text-red-500 font-extrabold text-[9px]">Vence Mañana</span>
                     </div>
-                    <div className="p-2.5 bg-white border rounded-xl shadow-xs">
-                      <span className="text-[8px] text-red-400 font-black uppercase tracking-wider">Tarea Pendiente</span>
-                      <span className="text-xs font-black text-gray-800 block mt-0.5">Álgebra: Tarea 3</span>
+                    <div className="py-2 bg-gray-50 border border-dashed rounded-lg text-center text-[9px] font-bold text-gray-400 cursor-pointer">
+                      📁 Subir archivo entregable (PDF/Base64)
                     </div>
-                  </div>
-                  <div className="bg-[#9B7FD4]/10 border border-[#9B7FD4]/20 p-3 rounded-xl flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">🎒</span>
-                      <div>
-                        <span className="text-[9px] text-[#9B7FD4] font-extrabold uppercase tracking-wider block">Entregar Trabajo</span>
-                        <span className="text-[10px] font-black text-gray-800">Proyecto_Algebra_Final.pdf</span>
-                      </div>
-                    </div>
-                    <span className="text-[8px] bg-green-600 text-white px-2 py-0.5 rounded font-black uppercase">Entregado</span>
                   </div>
                 </div>
               )}
 
-              {/* Bottom Visual Mockup Badge */}
-              <div className="flex items-center justify-center gap-2 bg-white/40 p-2.5 border-t border-gray-150 text-[9px] text-gray-400 font-extrabold uppercase tracking-widest mt-4">
-                <Smartphone className="w-3.5 h-3.5" />
-                Diseño Fluido Optimizado Móvil-Primero
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- SECCIÓN 5: BENEFICIOS PRINCIPALES --- */}
+      <section id="beneficios" className="py-20 px-4 sm:px-6 bg-[#F8F9FA]">
+        <div className="max-w-5xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <span className="text-[10px] font-extrabold bg-[#7EC8C8]/10 text-[#7EC8C8] px-3 py-1 rounded-full uppercase tracking-wider">
+              Beneficios de Alto Impacto
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+              {vslConfig.benefitsTitle}
+            </h2>
+            <p className="text-sm text-gray-500 max-w-2xl mx-auto font-medium">
+              Diseñado matemáticamente para simplificar operaciones, eliminar dolores de cabeza y rentabilizar tu institución.
+            </p>
+          </div>
+
+          {/* 6 Conversion Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { title: "Control de Pensiones sin Fricción", desc: "Te revelamos una nueva manera de controlar pensiones sin perseguir manualmente a cada padre por WhatsApp.", color: "border-blue-100 bg-white" },
+              { title: "Información en un Solo Lugar", desc: "Descubre cómo centralizar notas, asistencias y comunicados sin depender de papeles, cuadernos o archivos perdidos.", color: "border-teal-100 bg-white" },
+              { title: "Prestigio y Modernidad", desc: "Implementa una app móvil que mejora la percepción de modernidad de tu colegio frente a los padres.", color: "border-purple-100 bg-white" },
+              { title: "Dashboard en Tiempo Real", desc: "Dale a dirección un dashboard financiero para tomar decisiones con información actualizada.", color: "border-amber-100 bg-white" },
+              { title: "Alivio para los Profesores", desc: "Ayuda a tus docentes a ahorrar tiempo registrando asistencia y calificaciones desde un entorno digital.", color: "border-green-100 bg-white" },
+              { title: "Tranquilidad para las Familias", desc: "Dale a los padres la tranquilidad de revisar pagos, notas y justificaciones desde un solo lugar.", color: "border-indigo-100 bg-white" }
+            ].map((item, idx) => (
+              <div key={idx} className={`premium-card p-6 border rounded-3xl ${item.color} shadow-xs hover:shadow-md transition-all`}>
+                <div className="h-6 w-6 rounded-full bg-[#EEF1FE] text-[#01017b] flex items-center justify-center font-black text-xs mb-3">
+                  {idx + 1}
+                </div>
+                <h4 className="text-xs font-black text-gray-950 uppercase tracking-wider mb-2">{item.title}</h4>
+                <p className="text-xs text-gray-500 font-semibold leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- SECCIÓN 6: PRUEBA / DEMOSTRACIÓN EN ACCIÓN --- */}
+      <section className="py-20 px-4 sm:px-6 bg-white border-y border-gray-200">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          
+          {/* Left Text */}
+          <div className="space-y-6">
+            <span className="text-[10px] font-extrabold bg-[#7EC8C8]/10 text-[#7EC8C8] px-3 py-1 rounded-full uppercase tracking-wider">
+              Prueba de Concepto
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight">
+              {vslConfig.proofTitle}
+            </h2>
+            <p className="text-sm text-gray-500 font-medium leading-relaxed">
+              {vslConfig.proofSubtitle}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-50 border rounded-2xl space-y-1">
+                <span className="text-xs font-black text-gray-900 uppercase">📱 Mockup de App Móvil</span>
+                <span className="text-[11px] text-gray-400 font-medium block">Expo React Native multi-perfil unificado.</span>
+              </div>
+              <div className="p-4 bg-gray-50 border rounded-2xl space-y-1">
+                <span className="text-xs font-black text-gray-900 uppercase">📊 Dashboard Financiero</span>
+                <span className="text-[11px] text-gray-400 font-medium block">Estado de morosidad y egresos bimestrales.</span>
+              </div>
+              <div className="p-4 bg-gray-50 border rounded-2xl space-y-1">
+                <span className="text-xs font-black text-gray-900 uppercase">🧾 Estado de Cuenta</span>
+                <span className="text-[11px] text-gray-400 font-medium block">Historial de mensualidades canceladas y vencidas.</span>
+              </div>
+              <div className="p-4 bg-gray-50 border rounded-2xl space-y-1">
+                <span className="text-xs font-black text-gray-900 uppercase">⏱️ Registro en 1-Tap</span>
+                <span className="text-[11px] text-gray-400 font-medium block">Asistencias rápidas sin papeleo docente.</span>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* --- MARKET COMPARISON TABLE (OCEANO AZUL SECTION) --- */}
-      <section id="comparativa" className="py-20 px-4 sm:px-6 bg-white border-y border-gray-200">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <div className="text-center space-y-4">
-            <span className="text-[10px] font-extrabold bg-[#7EC8C8]/10 text-[#7EC8C8] px-3 py-1 rounded-full uppercase tracking-wider">
-              Análisis Competitivo EdTech B2B
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              ¿Por qué LINKEDU es Imbatible?
-            </h2>
-            <p className="text-sm text-gray-500 max-w-2xl mx-auto font-medium">
-              Evaluamos la arquitectura técnica, la usabilidad y los tiempos de despliegue de las soluciones más representativas del mercado.
-            </p>
-          </div>
+          {/* Right Live Interactive Mockup Dashboard Area */}
+          <div className="premium-card p-6 bg-slate-900 border border-slate-800 text-white rounded-3xl relative overflow-hidden shadow-2xl min-h-[400px] flex flex-col justify-between">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#01017b]/20 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+              </div>
+              <span className="text-[8px] text-white/50 font-mono">Consola de Simulación Activa</span>
+            </div>
 
-          {/* Premium responsive table container */}
-          <div className="premium-card bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-xl max-w-5xl mx-auto">
-            <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-xs text-left border-collapse">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                    <th className="p-4 sm:p-5">Plataforma / Funcionalidad</th>
-                    <th className="p-4 sm:p-5 text-center bg-[#EEF1FE]/30 text-[#01017b] font-black border-x border-gray-100">
-                      LINKEDU VIP
-                    </th>
-                    <th className="p-4 sm:p-5 text-center">SophIA (IA)</th>
-                    <th className="p-4 sm:p-5 text-center">Sieweb (Corp.)</th>
-                    <th className="p-4 sm:p-5 text-center">Cubicol (Trad.)</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-150 font-semibold text-gray-700">
-                  <tr>
-                    <td className="p-4 sm:p-5">
-                      <span className="block font-black text-gray-900 uppercase tracking-wider text-[9px]">Arquitectura Movil</span>
-                      <span className="text-[10px] text-gray-400 font-medium mt-0.5">Tipo de descarga e interfaz móvil</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center bg-[#EEF1FE]/10 font-black border-x border-gray-100 text-[#01017b]">
-                      📱 React Native Unificada <br className="hidden sm:block" />
-                      <span className="text-[9px] text-[#7EC8C8] font-black uppercase">App Unica Multiusuario</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Web Adaptable (No App Nata)</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Múltiples Apps Fragmentadas</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Nativa Tradicional</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5">
-                      <span className="block font-black text-gray-900 uppercase tracking-wider text-[9px]">Tiempo de Despliegue</span>
-                      <span className="text-[10px] text-gray-400 font-medium mt-0.5">Levantar la intranet escolar</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center bg-[#EEF1FE]/10 font-black border-x border-gray-100 text-[#01017b]">
-                      ⚡ Instantáneo <br className="hidden sm:block" />
-                      <span className="text-[9px] text-[#7EC8C8] font-black uppercase">Aprovisionamiento en 1 min</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Menos de 1 semana</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Lento (Semanas o Meses)</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Promedio</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5">
-                      <span className="block font-black text-gray-900 uppercase tracking-wider text-[9px]">Cobranzas e Integración</span>
-                      <span className="text-[10px] text-gray-400 font-medium mt-0.5">Conciliación de pensiones</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center bg-[#EEF1FE]/10 font-black border-x border-gray-100 text-[#01017b]">
-                      💰 Completa en Vivo <br className="hidden sm:block" />
-                      <span className="text-[9px] text-[#7EC8C8] font-black uppercase">Alertas automáticas</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Completa (Bancos)</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Completa (Adquirente)</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Parcial o Limitada</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5">
-                      <span className="block font-black text-gray-900 uppercase tracking-wider text-[9px]">Estilo e Identidad VIP</span>
-                      <span className="text-[10px] text-gray-400 font-medium mt-0.5">Estética y marca institucional</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center bg-[#EEF1FE]/10 font-black border-x border-gray-100 text-[#01017b]">
-                      🎨 Motor HSL VIP 2026 <br className="hidden sm:block" />
-                      <span className="text-[9px] text-[#7EC8C8] font-black uppercase">Colores pasteles adaptativos</span>
-                    </td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Estándar web responsivo</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Clásica / Corporativa Rígida</td>
-                    <td className="p-4 sm:p-5 text-center text-gray-500 font-medium">Tradicional Simple</td>
-                  </tr>
-                </tbody>
-              </table>
+            {/* Simulated Live chart of school income increase */}
+            <div className="space-y-4 flex-1 flex flex-col justify-center">
+              <div className="bg-white/5 border border-white/10 p-4 rounded-xl space-y-3">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="font-extrabold uppercase text-gray-400">Incremento de Recaudación Anual</span>
+                  <span className="text-[#7EC8C8] font-black">+14.5% Recuperado</span>
+                </div>
+                {/* Visual bar graph block */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-[9px] text-gray-300">
+                    <span>Ene-Abr (Cobro Manual)</span>
+                    <span>S/. 78,500</span>
+                  </div>
+                  <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-400 w-[55%]" />
+                  </div>
+
+                  <div className="flex justify-between text-[9px] text-white pt-1">
+                    <span>May-Dic (Con LINKEDU)</span>
+                    <span className="font-black text-[#7EC8C8]">S/. 124,500</span>
+                  </div>
+                  <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#01017b] to-[#7EC8C8] w-[95%]" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3 bg-white/5 border border-white/10 rounded-xl flex items-center justify-between text-[9.5px]">
+                <span className="text-gray-300">📱 Recorte Circular de fotos, DNI institucional y SIAGIE compatible:</span>
+                <span className="px-2 py-0.5 bg-green-400/20 text-green-300 border border-green-400/30 rounded font-black">Activo</span>
+              </div>
+            </div>
+
+            <div className="text-[9px] text-gray-500 font-bold uppercase tracking-wider text-center pt-4 border-t border-white/5 mt-4">
+              🛡️ Datos encriptados con tecnología PostgreSQL SSL
             </div>
           </div>
+
         </div>
       </section>
 
-      {/* --- PRICING & SAAS MONETIZATION (STRATEGY SECTION) --- */}
-      <section id="precios" className="py-20 px-4 sm:px-6 bg-[#F4F5F7]">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <span className="text-[10px] font-extrabold bg-[#01017b] text-white px-3 py-1 rounded uppercase tracking-widest">
-              Arquitectura Comercial SaaS
+      {/* --- SECCIÓN 7: LA OFERTA DE DEMO B2B --- */}
+      <section id="demo" className="py-20 px-4 sm:px-6 bg-[#F8F9FA]">
+        <div className="max-w-4xl mx-auto bg-white border border-gray-250 rounded-3xl p-6 sm:p-10 relative overflow-hidden shadow-xl space-y-8">
+          <div className="absolute top-0 left-0 w-32 h-32 bg-[#7EC8C8]/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="text-center space-y-2">
+            <span className="text-[10px] font-extrabold bg-[#EEF1FE] text-[#01017b] px-3 py-1 rounded-full uppercase tracking-wider">
+              Diagnóstico Sin Compromiso
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              Precios Claros y ROI Inmediato
-            </h2>
-            <p className="text-sm text-gray-500 max-w-2xl mx-auto font-medium">
-              Diseñado bajo esquemas B2B flexibles que mitigan barreras presupuestales y garantizan predictibilidad operativa.
+            <h3 className="text-2xl sm:text-3xl font-black text-gray-900">
+              {vslConfig.offerTitle}
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-500 font-medium">
+              Revisamos contigo los cuellos de botella de tu institución y te entregamos un plan de digitalización escolar gratuito.
             </p>
           </div>
 
-          {/* Pricing Tiers (Model 2: Flat subscriptions/Tiers) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            
+            {/* Inclusions */}
+            <div className="space-y-4">
+              <span className="text-[10px] font-black text-gray-450 uppercase tracking-wider block">¿Qué Incluye esta Sesión Comercial?</span>
+              
+              <div className="space-y-3 text-xs font-semibold text-gray-700">
+                {[
+                  "Revisión completa de tus procesos de gestión actuales.",
+                  "Diagnóstico de digitalización escolar y áreas de fuga.",
+                  "Demo en vivo del portal de dirección y contabilidad.",
+                  "Demostración del cuaderno digital y asistencia docente.",
+                  "Demo del portal de consulta y app móvil para padres.",
+                  "Recomendación honesta del plan de suscripción ideal."
+                ].map((inc, i) => (
+                  <div key={i} className="flex gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+                    <span>{inc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Catch form */}
+            <div className="bg-gray-50 border rounded-2xl p-5 space-y-4">
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block text-center">Completa los Datos</span>
+              
+              <form onSubmit={handleCtaSubmit} className="space-y-3">
+                <input
+                  type="email"
+                  required
+                  placeholder="director@colegio.edu.pe"
+                  value={directorEmail}
+                  onChange={(e) => setDirectorEmail(e.target.value)}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs text-gray-900 bg-white"
+                />
+                <input
+                  type="text"
+                  required
+                  placeholder="Nombre de tu Colegio"
+                  value={schoolName}
+                  onChange={(e) => setSchoolName(e.target.value)}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs text-gray-900 bg-white"
+                />
+
+                <button
+                  type="submit"
+                  className="w-full flex justify-center items-center gap-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow shadow-[#01017b]/10 cursor-pointer active:scale-98"
+                >
+                  Solicitar Demo Gratis
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* --- SECCIÓN 8: PLANES Y FIJACIÓN DE PRECIOS SAAS B2B --- */}
+      <section id="precios" className="py-20 px-4 sm:px-6 bg-white border-y border-gray-200">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center space-y-3">
+            <span className="text-[10px] font-extrabold bg-[#01017b] text-white px-3 py-1 rounded uppercase tracking-widest">
+              Fijación de Precios Claros
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+              Planes Adaptados al Tamaño de tu Colegio
+            </h2>
+            <p className="text-sm text-gray-500 max-w-2xl mx-auto font-medium">
+              Sin sorpresas ni contratos de desarrollo pesados. Elige el plan que más encaje con el volumen de tu alumnado.
+            </p>
+          </div>
+
+          {/* Subscription Tiers */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Plan Basico */}
-            <div className="premium-card bg-white border border-gray-200 p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col justify-between">
+            <div className="premium-card bg-white border border-gray-200 p-6 sm:p-8 rounded-3xl relative flex flex-col justify-between">
               <div className="space-y-4">
-                <span className="text-[9px] font-black bg-gray-100 text-gray-600 px-2 py-0.5 rounded uppercase tracking-wider">Plan Básico</span>
+                <span className="text-[9px] font-black bg-gray-150 text-gray-600 px-2 py-0.5 rounded uppercase tracking-wider">Plan Básico</span>
                 <h3 className="text-base font-black text-gray-900">Instituciones Iniciales</h3>
                 <p className="text-xs text-gray-400 font-semibold leading-relaxed">
-                  Ideal para colegios pequeños que dan sus primeros pasos hacia la transformación digital.
+                  Ideal para colegios pequeños que inician su transformación digital.
                 </p>
                 <div className="pt-4 border-t border-gray-100">
                   <span className="text-3xl font-black text-[#01017b]">S/. 399</span>
-                  <span className="text-xs text-gray-400 font-extrabold uppercase block">al mes (Facturación plana)</span>
+                  <span className="text-xs text-gray-400 font-extrabold uppercase block">al mes (Plano)</span>
                 </div>
                 <ul className="space-y-2.5 text-xs text-gray-500 font-medium">
                   <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Hasta 150 estudiantes</span></li>
-                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Matrícula y Finanzas Básicas</span></li>
+                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Matrícula y Cobranza básica</span></li>
                   <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Portal del Docente y Notas</span></li>
                   <li className="flex items-center gap-2">✕ <span className="text-gray-400 line-through">Color VIP Temático</span></li>
                 </ul>
               </div>
-              <button 
-                onClick={() => router.push('/login')}
-                className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-black text-xs rounded-xl transition-all uppercase tracking-wider mt-6 cursor-pointer"
+              <a 
+                href="#demo"
+                className="w-full py-2.5 bg-gray-150 hover:bg-gray-200 text-gray-800 font-black text-xs rounded-xl transition-all uppercase tracking-wider mt-6 text-center cursor-pointer"
               >
-                Registrar Colegio
-              </button>
+                Agendar e Implementar
+              </a>
             </div>
 
-            {/* Plan Estandar (Anchored Tier / Recommended) */}
-            <div className="premium-card bg-white border-2 border-[#01017b] p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col justify-between shadow-2xl scale-102">
+            {/* Plan Estandar (Recommended) */}
+            <div className="premium-card bg-white border-2 border-[#01017b] p-6 sm:p-8 rounded-3xl relative flex flex-col justify-between shadow-2xl scale-102">
               <div className="absolute top-0 right-0 bg-[#01017b] text-white text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-xl">
                 Recomendado
               </div>
@@ -938,29 +1064,29 @@ export default function Home() {
                 <span className="text-[9px] font-black bg-[#EEF1FE] text-[#01017b] px-2 py-0.5 rounded uppercase tracking-wider">Plan Estándar</span>
                 <h3 className="text-base font-black text-gray-900">Colegios en Crecimiento</h3>
                 <p className="text-xs text-gray-400 font-semibold leading-relaxed">
-                  Diseñado para instituciones consolidadas que requieren predictibilidad financiera e inmediatez.
+                  Perfecto para instituciones consolidadas que requieren predictibilidad y soporte.
                 </p>
                 <div className="pt-4 border-t border-gray-100">
                   <span className="text-3xl font-black text-[#01017b]">S/. 799</span>
-                  <span className="text-xs text-gray-400 font-extrabold uppercase block">al mes (Facturación plana)</span>
+                  <span className="text-xs text-gray-400 font-extrabold uppercase block">al mes (Plano)</span>
                 </div>
                 <ul className="space-y-2.5 text-xs text-gray-500 font-medium">
                   <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Hasta 400 estudiantes</span></li>
-                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Ficha Médica y Justificaciones</span></li>
-                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Soporte técnico preferente</span></li>
-                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Exportador para SIAGIE / UGEL</span></li>
+                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Justificaciones y Ficha Médica</span></li>
+                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Soporte Técnico de confianza</span></li>
+                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Exportador compatible SIAGIE</span></li>
                 </ul>
               </div>
-              <button 
-                onClick={() => router.push('/login')}
-                className="w-full py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-black text-xs rounded-xl transition-all uppercase tracking-wider mt-6 cursor-pointer shadow-md shadow-[#01017b]/20"
+              <a 
+                href="#demo"
+                className="w-full py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-black text-xs rounded-xl transition-all uppercase tracking-wider mt-6 text-center cursor-pointer shadow-md shadow-[#01017b]/20"
               >
-                Registrar Colegio
-              </button>
+                Agendar e Implementar
+              </a>
             </div>
 
             {/* Plan Premium VIP */}
-            <div className="premium-card bg-white border border-gray-200 p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col justify-between">
+            <div className="premium-card bg-white border border-gray-200 p-6 sm:p-8 rounded-3xl relative flex flex-col justify-between">
               <div className="space-y-4">
                 <span className="text-[9px] font-black bg-purple-50 text-[#9B7FD4] px-2 py-0.5 rounded uppercase tracking-wider">Plan Premium VIP</span>
                 <h3 className="text-base font-black text-gray-900">Alto Rendimiento</h3>
@@ -969,57 +1095,110 @@ export default function Home() {
                 </p>
                 <div className="pt-4 border-t border-gray-100">
                   <span className="text-3xl font-black text-[#01017b]">S/. 1,199</span>
-                  <span className="text-xs text-gray-400 font-extrabold uppercase block">al mes (Facturación plana)</span>
+                  <span className="text-xs text-gray-400 font-extrabold uppercase block">al mes (Plano)</span>
                 </div>
                 <ul className="space-y-2.5 text-xs text-gray-500 font-medium">
                   <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Alumnos Ilimitados</span></li>
                   <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Motor HSL de Colores VIP</span></li>
                   <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Soporte 24/7 B2B prioritario</span></li>
-                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Estadísticas e IA Avanzada</span></li>
+                  <li className="flex items-center gap-2">✓ <span className="text-gray-900 font-bold">Métricas y Reportes de IA</span></li>
                 </ul>
               </div>
-              <button 
-                onClick={() => router.push('/login')}
-                className="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-black text-xs rounded-xl transition-all uppercase tracking-wider mt-6 cursor-pointer"
+              <a 
+                href="#demo"
+                className="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-black text-xs rounded-xl transition-all uppercase tracking-wider mt-6 text-center cursor-pointer"
               >
-                Registrar Colegio
-              </button>
+                Agendar e Implementar
+              </a>
             </div>
           </div>
 
-          {/* Pricing Model 1: Pay-per-use & Setup Fee Details (VIP Commercial structure) */}
-          <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-8 items-center relative overflow-hidden shadow-xl">
-            <div className="absolute top-0 left-0 w-24 h-24 bg-[#7EC8C8]/10 rounded-full blur-2xl" />
-            
-            {/* Pay per use block */}
+          {/* Model 2: Pay per use block */}
+          <div className="max-w-4xl mx-auto bg-gray-50 border border-gray-200 rounded-3xl p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-8 items-center relative overflow-hidden shadow-md">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EEF1FE] text-[#01017b] rounded-full text-[9px] font-black uppercase tracking-wider">
-                Modelo Alternativo B2B
-              </div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EEF1FE] text-[#01017b] rounded-full text-[9px] font-black uppercase tracking-wider">
+                Modelo por Alumno Registrado
+              </span>
               <h4 className="text-base font-black text-gray-900">
                 Pago por Alumno Activo
               </h4>
               <p className="text-xs text-gray-500 leading-relaxed font-medium">
-                ¿Prefieres pagar por uso real? Cobramos de <strong className="text-gray-900 font-black">S/. 2.00 a S/. 5.00 mensuales por alumno</strong>. Sin costos fijos rígidos, adaptado orgánicamente al crecimiento de tus matrículas anuales.
+                ¿Prefieres pagar por volumen real? Cobramos de <strong className="text-gray-900 font-black">S/. 2.00 a S/. 5.00 mensuales por alumno</strong>. Sin costos fijos rígidos, adaptado orgánicamente al crecimiento de tus matrículas.
               </p>
             </div>
 
-            {/* Setup Fee block */}
-            <div className="p-5 bg-gray-50 border border-gray-200 rounded-2xl space-y-3">
-              <span className="text-[9px] font-black bg-amber-100 text-amber-800 px-2 py-0.5 rounded uppercase tracking-wider">Setup Fee Único</span>
-              <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Inversión Inicial de Configuración: S/. 500</h4>
+            <div className="p-5 bg-white border border-gray-200 rounded-2xl space-y-2">
+              <span className="text-[9px] font-black bg-amber-100 text-amber-800 px-2 py-0.5 rounded uppercase tracking-wider">Onboarding e Inducción</span>
+              <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Setup Fee Único: S/. 500</h4>
               <p className="text-[11px] text-gray-500 font-medium leading-relaxed">
-                Este cobro único cubre el onboarding guiado, capacitación intensiva presencial o virtual a docentes, y la migración total de bases de datos desde tus planillas de Excel heredadas.
+                Este cobro único cubre el onboarding guiado, capacitación intensiva presencial o virtual a tu cuerpo docente, y la migración total de bases de datos desde tus planillas Excel heredadas de manera gratuita.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- PREMIUM FOOTER --- */}
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 border-b border-gray-800 pb-8 mb-8">
-          {/* Logo brand */}
+      {/* --- SECCIÓN 9: GARANTÍA / REVERSIÓN DE RIESGO --- */}
+      <section className="py-16 px-4 sm:px-6 bg-[#F8F9FA]">
+        <div className="max-w-3xl mx-auto bg-gradient-to-r from-[#EEF1FE]/30 to-[#EAF7F7]/30 border border-[#01017b]/10 p-8 rounded-3xl text-center space-y-4 shadow-xl">
+          <Shield className="w-10 h-10 text-[#7EC8C8] mx-auto animate-pulse" />
+          <h3 className="text-xl sm:text-2xl font-black text-gray-950">
+            {vslConfig.guaranteeTitle}
+          </h3>
+          <p className="text-xs sm:text-sm text-gray-500 leading-relaxed max-w-2xl mx-auto font-medium">
+            {vslConfig.guaranteeText}
+          </p>
+        </div>
+      </section>
+
+      {/* --- SECCIÓN 10: CTA FINAL --- */}
+      <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-[#01017b] to-slate-950 text-white relative overflow-hidden">
+        {/* Soft Background mesh */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-10 z-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#7EC8C8] blur-3xl animate-pulse" />
+        </div>
+
+        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8">
+          <span className="text-[10px] font-black bg-white/10 text-[#7EC8C8] px-3 py-1 rounded-full uppercase tracking-widest border border-white/10">
+            ⏳ Etapa de Expansión Limitada
+          </span>
+
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+            {vslConfig.ctaFinalTitle}
+          </h2>
+
+          <p className="text-xs sm:text-base text-gray-300 max-w-2xl mx-auto font-medium leading-relaxed">
+            {vslConfig.ctaFinalText}
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+            <a 
+              href={`https://wa.me/${vslConfig.whatsappNumber.replace(/\D/g, '')}?text=Hola!%20Vengo%20de%20la%20landing%20page%20de%20Linkedu.%20Me%20interesa%20agendar%20mi%20demo%20personalizada%20de%20inmediato.`}
+              target="_blank"
+              className="px-8 py-4 bg-green-500 hover:bg-green-600 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-green-500/20 flex items-center gap-2 hover:scale-103 active:scale-97 cursor-pointer transition-all border border-green-400"
+            >
+              <MessageSquare className="w-5 h-5" />
+              Agendar Demo por WhatsApp
+            </a>
+            
+            <a 
+              href="#demo"
+              className="px-8 py-4 bg-white/10 hover:bg-white/15 text-white border border-white/20 font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl cursor-pointer hover:scale-103 active:scale-97 transition-all"
+            >
+              Comenzar Diagnóstico Gratis
+            </a>
+          </div>
+
+          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider pt-6">
+            📞 Soporte WhatsApp Directo: +51 987 088 359
+          </div>
+        </div>
+      </section>
+
+      {/* --- ELITE PREMIUM FOOTER --- */}
+      <footer className="bg-slate-950 text-gray-500 py-12 px-4 sm:px-6 border-t border-white/5">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 border-b border-white/5 pb-8 mb-8">
+          
           <div className="flex items-center gap-2">
             <div className="h-9 w-9 rounded-xl bg-white text-[#01017b] flex items-center justify-center font-black text-lg shadow-sm">
               L
@@ -1031,18 +1210,19 @@ export default function Home() {
           </div>
 
           <div className="text-xs font-semibold flex flex-wrap justify-center gap-6">
+            <a href="#problema" className="hover:text-white transition-colors">El Problema</a>
+            <a href="#solucion" className="hover:text-white transition-colors">La Solución</a>
+            <a href="#portales" className="hover:text-white transition-colors">Los 5 Portales</a>
             <a href="#beneficios" className="hover:text-white transition-colors">Beneficios</a>
-            <a href="#portales" className="hover:text-white transition-colors">Portales</a>
-            <a href="#comparativa" className="hover:text-white transition-colors">Comparativa</a>
-            <a href="#precios" className="hover:text-white transition-colors">Planes</a>
+            <a href="#demo" className="hover:text-white transition-colors">Agendar Demo</a>
           </div>
 
-          <div className="text-xs font-bold text-white bg-white/10 px-4 py-2 rounded-xl border border-white/5">
-            📞 Soporte WhatsApp Directo: +51 987088359
+          <div className="text-xs font-bold text-white bg-white/5 px-4 py-2 rounded-xl border border-white/10">
+            🇵🇪 Hecho en Perú para toda América Latina
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-gray-550 font-medium text-center">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-gray-600 font-medium text-center">
           <p>© 2026 LINKEDU Ecosistema Escolar SaaS. Todos los derechos reservados.</p>
           <div className="flex gap-4">
             <span className="hover:text-white cursor-pointer transition-colors">Términos de Servicio</span>

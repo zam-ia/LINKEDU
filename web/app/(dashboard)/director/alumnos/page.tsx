@@ -167,6 +167,18 @@ export default function AlumnosPage() {
   const handleRegisterAlumno = () => {
     if (!colegio) return;
 
+    // Validar límite de alumnos según el plan
+    const isBasico = schoolPlan.includes('Básico') || schoolPlan.includes('Basico');
+    const isEstandar = schoolPlan.includes('Estandar') || schoolPlan.includes('Estándar');
+    if (isBasico && alumnos.length >= 150) {
+      triggerAlert('⚠️ Límite de Plan: Has alcanzado el límite de 150 alumnos permitidos para tu Plan Básico. Solicita un Upgrade a la administración.');
+      return;
+    }
+    if (isEstandar && alumnos.length >= 400) {
+      triggerAlert('⚠️ Límite de Plan: Has alcanzado el límite de 400 alumnos permitidos para tu Plan Estándar. Solicita un Upgrade a la administración.');
+      return;
+    }
+
     const studentId = 'student-' + Date.now();
     
     // 1. Create student info
