@@ -222,35 +222,6 @@ export default function HomeScreen() {
               )}
             </TouchableOpacity>
 
-            {/* Quick Access */}
-            <View style={styles.quickAccess}>
-              <Text style={styles.quickAccessHeader}>Acceso Rápido (Perfiles Demo)</Text>
-              
-              <View style={styles.quickGrid}>
-                {showSuperAdmin && (
-                  <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#9B7FD4', width: '100%', marginBottom: 6 }]} onPress={() => handleQuickLogin('superadmin@linkedu.com')}>
-                    <Text style={styles.quickRole}>🌐 Administrador Global</Text>
-                    <Text style={styles.quickEmail}>superadmin@linkedu.com</Text>
-                  </TouchableOpacity>
-                )}
-                <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#4F6AF0' }]} onPress={() => handleQuickLogin('director@linkedu.com')}>
-                  <Text style={styles.quickRole}>Director</Text>
-                  <Text style={styles.quickEmail}>director@linkedu.com</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#7EC8C8' }]} onPress={() => handleQuickLogin('docente@linkedu.com')}>
-                  <Text style={styles.quickRole}>Docente</Text>
-                  <Text style={styles.quickEmail}>docente@linkedu.com</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#F5A623' }]} onPress={() => handleQuickLogin('padre@linkedu.com')}>
-                  <Text style={styles.quickRole}>Padre / Tutor</Text>
-                  <Text style={styles.quickEmail}>padre@linkedu.com</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.quickItem, { borderLeftColor: '#9B7FD4' }]} onPress={() => handleQuickLogin('alumno@linkedu.com')}>
-                  <Text style={styles.quickRole}>Alumno</Text>
-                  <Text style={styles.quickEmail}>alumno@linkedu.com</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
           </View>
         </ScrollView>
       </PaperProvider>
