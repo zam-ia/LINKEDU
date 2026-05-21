@@ -36,7 +36,7 @@ export default function Home() {
   const router = useRouter();
 
   // Navigation and Interactive States
-  const [activePortalTab, setActivePortalTab] = useState<'superadmin' | 'director' | 'docente' | 'padre' | 'alumno'>('director');
+  const [activePortalTab, setActivePortalTab] = useState<'director' | 'docente' | 'padre' | 'alumno'>('director');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [videoProgress, setVideoProgress] = useState(25); // Simulated progress in VSL
@@ -175,7 +175,7 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-8 text-xs font-extrabold uppercase tracking-wider text-gray-500">
             <a href="#problema" className="hover:text-[#01017b] transition-colors">El Problema</a>
             <a href="#solucion" className="hover:text-[#01017b] transition-colors">La Solución</a>
-            <a href="#portales" className="hover:text-[#01017b] transition-colors">Los 5 Portales</a>
+            <a href="#portales" className="hover:text-[#01017b] transition-colors">Los 4 Portales</a>
             <a href="#beneficios" className="hover:text-[#01017b] transition-colors">Beneficios</a>
             <a href="#demo" className="hover:text-[#01017b] transition-colors">Agendar Demo</a>
             <a href="#precios" className="hover:text-[#01017b] transition-colors">Planes</a>
@@ -216,13 +216,13 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto text-center relative z-10 space-y-8">
           {/* VIP Tag */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#01017b]/10 rounded-full text-[10px] font-extrabold text-[#01017b] uppercase tracking-widest shadow-xs">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#01017b]/10 rounded-full text-[10px] font-extrabold text-[#01017b] uppercase tracking-widest shadow-xs animate-fade-in-up">
             <Sparkles className="w-3 h-3 text-[#7EC8C8] animate-spin-slow" />
             B2B High Ticket • Diagnóstico Gratuito 2026
           </div>
 
           {/* Dynamic Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-gray-900 max-w-5xl mx-auto leading-[1.08] text-balance">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-gray-900 max-w-5xl mx-auto leading-[1.08] text-balance animate-fade-in-up">
             {vslConfig.heroTitle} <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-[#01017b] via-[#4F6AF0] to-[#9B7FD4] bg-clip-text text-transparent">
               {vslConfig.heroGradient}
@@ -231,7 +231,7 @@ export default function Home() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-sm sm:text-lg text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed">
+          <p className="text-sm sm:text-lg text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed animate-fade-in-up">
             {vslConfig.heroSubtitle}
           </p>
 
@@ -239,7 +239,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-6 max-w-6xl mx-auto text-left">
             
             {/* Interactive VSL Video Player */}
-            <div className="lg:col-span-7 premium-card p-3 bg-gray-900/5 border border-gray-200/50 rounded-3xl overflow-hidden shadow-2xl relative">
+            <div className="lg:col-span-7 premium-card p-3 bg-gray-900/5 border border-gray-200/50 rounded-3xl overflow-hidden shadow-2xl relative animate-float">
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950">
                 
                 {/* Simulated Player Controls and Text Overlays */}
@@ -437,7 +437,7 @@ export default function Home() {
               { title: "Dirección a Ciegas", desc: "Toma de decisiones con reportes financieros incompletos o desactualizados.", emoji: "📊" },
               { title: "WhatsApp Saturado", desc: "Comunicados y circulares perdidos en el mar de chats informales.", emoji: "💬" }
             ].map((pain, idx) => (
-              <div key={idx} className="premium-card p-5 bg-white border border-gray-150 rounded-2xl flex flex-col justify-between hover:border-red-200 transition-all">
+              <div key={idx} className="premium-card p-5 bg-white border border-gray-150 rounded-2xl flex flex-col justify-between hover:border-red-200 hover:scale-103 hover:shadow-xl hover:shadow-red-500/5 transition-all duration-300">
                 <span className="text-2xl mb-2 block">{pain.emoji}</span>
                 <div>
                   <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">{pain.title}</h4>
@@ -540,7 +540,7 @@ export default function Home() {
               Disección de Roles
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              Todo tu colegio conectado desde 5 portales
+              Todo tu colegio conectado desde 4 portales
             </h2>
             <p className="text-sm text-gray-500 max-w-2xl mx-auto font-medium">
               Segmentación dinámica de accesos y permisos. El sistema detecta el rol del usuario tras el inicio de sesión y adapta instantáneamente la interfaz.
@@ -550,7 +550,6 @@ export default function Home() {
           {/* Portal selectors */}
           <div className="flex border border-gray-200/50 bg-gray-50 p-1.5 rounded-2xl max-w-4xl mx-auto overflow-x-auto scrollbar-none gap-1">
             {[
-              { id: 'superadmin', label: 'Super Admin', icon: '🛠️' },
               { id: 'director', label: 'Dirección', icon: '📊' },
               { id: 'docente', label: 'Docente', icon: '👩‍🏫' },
               { id: 'padre', label: 'Familia', icon: '👨‍👩‍👦' },
@@ -575,26 +574,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto premium-card bg-white p-6 sm:p-8 border rounded-3xl text-left grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[440px]">
             
             {/* Tab content */}
-            <div className="lg:col-span-5 space-y-4">
-              {activePortalTab === 'superadmin' && (
-                <>
-                  <div className="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-2.5 py-1 rounded text-[9px] font-black uppercase">
-                    Portal 0 • Control del SaaS
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-black text-gray-900">
-                    Administración y control del modelo SaaS
-                  </h3>
-                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
-                    Diseñado para el creador del software. Administra colegios asociados (tenants), mensualidades, fechas de renovación y gestiona la suspensión inmediata de colegios morosos.
-                  </p>
-                  <ul className="space-y-2 text-xs font-semibold text-gray-700">
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Métricas de ingresos recurrentes (MRR).</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Alta y edición de colegios por RUC.</span></li>
-                    <li className="flex items-center gap-2">✓ <span className="text-gray-500">Dashboard global de suscripciones.</span></li>
-                  </ul>
-                </>
-              )}
-
+            <div className="lg:col-span-5 space-y-4 animate-fade-in-up" key={`content-${activePortalTab}`}>
               {activePortalTab === 'director' && (
                 <>
                   <div className="inline-flex items-center gap-1 bg-[#EEF1FE] text-[#01017b] px-2.5 py-1 rounded text-[9px] font-black uppercase">
@@ -673,35 +653,9 @@ export default function Home() {
             </div>
 
             {/* Tab Graphic Preview */}
-            <div className="lg:col-span-7 bg-gray-50 border border-gray-150 rounded-2xl p-5 relative overflow-hidden min-h-[300px] flex flex-col justify-between">
+            <div className="lg:col-span-7 bg-gray-50 border border-gray-150 rounded-2xl p-5 relative overflow-hidden min-h-[300px] flex flex-col justify-between animate-fade-in-up" key={`preview-${activePortalTab}`}>
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#01017b]/5 rounded-full blur-xl pointer-events-none" />
               
-              {activePortalTab === 'superadmin' && (
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center text-[9px] font-bold text-gray-450 border-b pb-2">
-                    <span>CONSOLA GLOBAL SAAS (SUPERADMIN)</span>
-                    <span className="text-green-500">Online</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white p-3 border rounded-xl">
-                      <span className="text-[8px] text-gray-400 font-bold block uppercase">MRR SaaS Global</span>
-                      <span className="text-lg font-black text-[#01017b] block">S/. 48,900</span>
-                    </div>
-                    <div className="bg-white p-3 border rounded-xl">
-                      <span className="text-[8px] text-gray-400 font-bold block uppercase">Colegios Suscritos</span>
-                      <span className="text-lg font-black text-gray-900 block">42 Colegios</span>
-                    </div>
-                  </div>
-                  <div className="bg-white p-3 border rounded-xl flex items-center justify-between text-xs">
-                    <div>
-                      <span className="font-black text-gray-900 block text-[11px]">Colegio Innova School</span>
-                      <span className="text-[9px] text-red-500 font-bold uppercase mt-0.5 block">Suscripción Morosa Vencida</span>
-                    </div>
-                    <span className="px-2.5 py-1 bg-red-500 text-white rounded-lg text-[9px] font-black uppercase">Suspender Colegio</span>
-                  </div>
-                </div>
-              )}
-
               {activePortalTab === 'director' && (
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-[9px] font-bold text-gray-450 border-b pb-2">
@@ -833,7 +787,7 @@ export default function Home() {
               { title: "Alivio para los Profesores", desc: "Ayuda a tus docentes a ahorrar tiempo registrando asistencia y calificaciones desde un entorno digital.", color: "border-green-100 bg-white" },
               { title: "Tranquilidad para las Familias", desc: "Dale a los padres la tranquilidad de revisar pagos, notas y justificaciones desde un solo lugar.", color: "border-indigo-100 bg-white" }
             ].map((item, idx) => (
-              <div key={idx} className={`premium-card p-6 border rounded-3xl ${item.color} shadow-xs hover:shadow-md transition-all`}>
+              <div key={idx} className={`premium-card p-6 border rounded-3xl ${item.color} shadow-xs hover:shadow-xl hover:shadow-[#01017b]/5 hover:scale-103 transition-all duration-300`}>
                 <div className="h-6 w-6 rounded-full bg-[#EEF1FE] text-[#01017b] flex items-center justify-center font-black text-xs mb-3">
                   {idx + 1}
                 </div>
@@ -1212,7 +1166,7 @@ export default function Home() {
           <div className="text-xs font-semibold flex flex-wrap justify-center gap-6">
             <a href="#problema" className="hover:text-white transition-colors">El Problema</a>
             <a href="#solucion" className="hover:text-white transition-colors">La Solución</a>
-            <a href="#portales" className="hover:text-white transition-colors">Los 5 Portales</a>
+            <a href="#portales" className="hover:text-white transition-colors">Los 4 Portales</a>
             <a href="#beneficios" className="hover:text-white transition-colors">Beneficios</a>
             <a href="#demo" className="hover:text-white transition-colors">Agendar Demo</a>
           </div>
