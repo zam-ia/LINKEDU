@@ -24,7 +24,8 @@ import {
   Play,
   Volume2,
   VolumeX,
-  MessageSquare
+  MessageSquare,
+  Menu
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -106,6 +107,33 @@ export default function SuperAdminDashboard() {
     vencimiento: '2026-06-21' 
   });
 
+  // VSL Custom states for Collapsible Panel, Viewport Toggle, Reloading and Upload Mode
+  const [isSettingsCollapsed, setIsSettingsCollapsed] = useState(false);
+  const [previewViewport, setPreviewViewport] = useState<'web' | 'mobile'>('web');
+  const [previewKey, setPreviewKey] = useState(0);
+  const [bgMode, setBgMode] = useState<'url' | 'upload'>('url');
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert("El archivo es demasiado grande (límite 8MB para almacenamiento local).");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setVslForm(prev => ({
+        ...prev,
+        videoUrl: base64String
+      }));
+      triggerAlert("¡Archivo cargado con éxito en memoria! Guarda los cambios para publicarlo.");
+    };
+    reader.readAsDataURL(file);
+  };
+
   // VSL Config State
   const [vslForm, setVslForm] = useState({
     heroTitle: "El Excel del colegio se quedó en el pasado:",
@@ -146,6 +174,8 @@ export default function SuperAdminDashboard() {
     e.preventDefault();
     localStorage.setItem('linkedu_vsl_config', JSON.stringify(vslForm));
     triggerAlert("¡Configuración del VSL de la Landing Page guardada con éxito!");
+    // Recargar el iframe de vista previa
+    setPreviewKey(prev => prev + 1);
   };
 
   // Sincronizar el colegio del nuevo usuario al abrir el modal
@@ -859,10 +889,13 @@ export default function SuperAdminDashboard() {
           </div>
 
           {/* 2. EDITOR Y PREVIEW */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
             
             {/* FORMULARIO DE EDICIÓN */}
-            <form onSubmit={handleSaveVslConfig} className="lg:col-span-6 premium-card p-6 space-y-5 bg-white border">
+            <form 
+              onSubmit={handleSaveVslConfig} 
+              className={`${isSettingsCollapsed ? 'hidden' : 'lg:col-span-5'} premium-card p-6 space-y-5 bg-white border transition-all duration-300`}
+            >
               <div className="flex items-center justify-between border-b pb-3.5">
                 <div>
                   <h3 className="text-base font-extrabold text-gray-900">Editor del VSL & Landing Page</h3>
@@ -886,7 +919,7 @@ export default function SuperAdminDashboard() {
                     />
                   </div>
                   <div>
-                    <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 2 (Texto en Gradiente Llamativo)</span>
+                    <span className="text-[9px] text-gray-455 font-bold block mb-1">Parte 2 (Texto en Gradiente Llamativo)</span>
                     <input 
                       type="text" 
                       value={vslForm.heroGradient}
@@ -896,7 +929,7 @@ export default function SuperAdminDashboard() {
                     />
                   </div>
                   <div>
-                    <span className="text-[9px] text-gray-450 font-bold block mb-1">Parte 3 (Texto Regular final)</span>
+                    <span className="text-[9px] text-gray-455 font-bold block mb-1">Parte 3 (Texto Regular final)</span>
                     <input 
                       type="text" 
                       value={vslForm.heroTitleEnd}
@@ -919,16 +952,64 @@ export default function SuperAdminDashboard() {
                 />
               </div>
 
-              {/* Video URL backdrop */}
-              <div>
-                <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">URL Imagen del VSL Player (Fondo)</label>
-                <input 
-                  type="text" 
-                  value={vslForm.videoUrl}
-                  onChange={(e) => setVslForm({ ...vslForm, videoUrl: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
-                  required
-                />
+              {/* Video URL / Upload backdrop */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-wider">Fondo del VSL Player (Foto o Vídeo)</label>
+                  <div className="flex gap-1.5 bg-gray-100 p-0.5 rounded-lg text-[9px] font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setBgMode('url')}
+                      className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                        bgMode === 'url' ? 'bg-white text-[#01017b] shadow-xs' : 'text-gray-500 hover:text-gray-900'
+                      }`}
+                    >
+                      🌐 Pegar URL
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBgMode('upload')}
+                      className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                        bgMode === 'upload' ? 'bg-white text-[#01017b] shadow-xs' : 'text-gray-500 hover:text-gray-900'
+                      }`}
+                    >
+                      📤 Subir Archivo
+                    </button>
+                  </div>
+                </div>
+
+                {bgMode === 'url' ? (
+                  <div>
+                    <input 
+                      type="text" 
+                      value={vslForm.videoUrl}
+                      onChange={(e) => setVslForm({ ...vslForm, videoUrl: e.target.value })}
+                      placeholder="https://ejemplo.com/imagen.jpg o video.mp4"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                      required
+                    />
+                    <span className="text-[9px] text-gray-400 font-bold block mt-1">Soporta URLs de imágenes directas o vídeos mp4/webm.</span>
+                  </div>
+                ) : (
+                  <div className="border border-dashed border-gray-300 rounded-xl p-4 text-center hover:bg-gray-50/50 transition-colors relative cursor-pointer group">
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      onChange={handleFileUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div className="space-y-1.5 pointer-events-none">
+                      <div className="text-xl">📁</div>
+                      <p className="text-xs font-bold text-gray-700">Arrastra o haz clic para subir</p>
+                      <p className="text-[10px] text-gray-400 font-semibold">Imágenes o vídeos (Límite 8MB)</p>
+                    </div>
+                    {vslForm.videoUrl && vslForm.videoUrl.startsWith('data:') && (
+                      <div className="mt-3 p-1.5 bg-green-50 border border-green-100 rounded-lg inline-flex items-center gap-1 text-[9px] font-black text-green-700 uppercase">
+                        <span>✓ Archivo cargado en memoria</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* WhatsApp B2B config */}
@@ -971,7 +1052,7 @@ export default function SuperAdminDashboard() {
                           updatedSubs[idx] = e.target.value;
                           setVslForm({ ...vslForm, subtitles: updatedSubs });
                         }}
-                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-950 bg-gray-50/30"
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 text-xs font-semibold text-gray-955 bg-gray-50/30"
                         required
                       />
                     </div>
@@ -989,91 +1070,84 @@ export default function SuperAdminDashboard() {
               </div>
             </form>
 
-            {/* PREVIEW EN VIVO DEL REPRODUCTOR (GLASSMORPHISM) */}
-            <div className="lg:col-span-6 premium-card p-6 bg-slate-900 border border-slate-800 text-white space-y-6 sticky top-24">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            {/* PREVIEW EN VIVO DE ALTA FIDELIDAD CON IFRAME SCROLLABLE */}
+            <div className={`${isSettingsCollapsed ? 'lg:col-span-12' : 'lg:col-span-7'} space-y-4 sticky top-24 transition-all duration-300 w-full`}>
+              
+              {/* Preview Control Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 border border-gray-200 rounded-2xl shadow-sm">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-green-455 bg-green-400 animate-pulse" />
-                  <span className="text-xs font-black uppercase tracking-wider text-gray-400">Live Preview de la Landing VSL</span>
+                  <button
+                    type="button"
+                    onClick={() => setIsSettingsCollapsed(!isSettingsCollapsed)}
+                    className="p-2 text-gray-500 hover:text-[#01017b] hover:bg-gray-100 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 font-bold text-xs"
+                    title={isSettingsCollapsed ? "Mostrar panel de edición" : "Ocultar panel de edición"}
+                  >
+                    <Menu className="w-5 h-5 text-gray-650" />
+                    <span>{isSettingsCollapsed ? "Mostrar Editor" : "Ocultar Editor"}</span>
+                  </button>
                 </div>
-                <span className="text-[9px] bg-white/10 text-[#7EC8C8] px-2 py-0.5 rounded font-black uppercase">Simulado</span>
+
+                <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewViewport('web')}
+                    className={`px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
+                      previewViewport === 'web'
+                        ? 'bg-white text-[#01017b] shadow-xs'
+                        : 'text-gray-500 hover:text-gray-900'
+                    }`}
+                  >
+                    💻 Vista Web
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewViewport('mobile')}
+                    className={`px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
+                      previewViewport === 'mobile'
+                        ? 'bg-white text-[#01017b] shadow-xs'
+                        : 'text-gray-500 hover:text-gray-900'
+                    }`}
+                  >
+                    📱 Vista Móvil
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setPreviewKey(prev => prev + 1)}
+                  className="p-2 text-gray-400 hover:text-gray-650 rounded-lg hover:bg-gray-50 transition-all cursor-pointer"
+                  title="Recargar vista previa"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
               </div>
 
-              {/* Title preview */}
-              <div className="space-y-2 text-center">
-                <h4 className="text-lg font-black tracking-tight text-white leading-snug text-balance">
-                  {vslForm.heroTitle} <br />
-                  <span className="bg-gradient-to-r from-[#7EC8C8] via-[#4F6AF0] to-[#9B7FD4] bg-clip-text text-transparent">
-                    {vslForm.heroGradient}
-                  </span>{vslForm.heroTitleEnd}
-                </h4>
-                <p className="text-[10px] text-gray-400 max-w-md mx-auto leading-normal">
-                  {vslForm.heroSubtitle}
-                </p>
-              </div>
-
-              {/* VSL Simulated player preview */}
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-white/10 group shadow-2xl">
-                <div className="absolute inset-0 flex flex-col justify-between p-4 z-10 select-none bg-gradient-to-t from-black/80 via-black/10 to-black/50">
-                  
-                  {/* Top bar */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[8px] font-black text-white uppercase tracking-wider bg-black/45 px-2 py-0.5 rounded backdrop-blur-xs">
-                      🔴 Vista Previa Activa
-                    </span>
-                    <span className="text-[8px] text-gray-300 font-bold uppercase tracking-wider bg-white/10 px-1.5 py-0.5 rounded">
-                      VSL • 3 Minutos
-                    </span>
-                  </div>
-
-                  {/* Play Button Mock */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-12 w-12 rounded-full bg-white/95 text-[#01017b] flex items-center justify-center shadow-xl">
-                      <Play className="w-5 h-5 fill-[#01017b] ml-0.5" />
+              {/* Viewport Frame Container */}
+              <div className="flex justify-center items-center w-full">
+                {previewViewport === 'mobile' ? (
+                  <div className="relative mx-auto border-[12px] border-slate-950 rounded-[40px] shadow-2xl bg-white w-[375px] h-[720px] transition-all duration-300">
+                    {/* Notch */}
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-32 h-4 bg-slate-950 rounded-full z-20 flex items-center justify-center">
+                      <div className="w-12 h-1 bg-white/20 rounded-full mb-1" />
                     </div>
+                    {/* Iframe pointing to home */}
+                    <iframe 
+                      key={previewKey}
+                      src="/" 
+                      className="w-full h-full border-0 rounded-[28px] pt-4" 
+                      title="VSL Mobile Preview"
+                    />
                   </div>
-
-                  {/* Subtitle simulation preview rotating */}
-                  <div className="w-full text-center mb-6">
-                    <p className="inline-block text-[10px] font-bold text-white bg-black/70 px-3 py-1.5 rounded-xl border border-white/5 backdrop-blur-xs max-w-sm mx-auto leading-relaxed">
-                      📢 {vslForm.subtitles[0]}
-                    </p>
+                ) : (
+                  <div className="w-full h-[720px] border border-gray-200 rounded-2xl overflow-hidden shadow-md bg-white transition-all duration-300">
+                    <iframe 
+                      key={previewKey}
+                      src="/" 
+                      className="w-full h-full border-0" 
+                      title="VSL Web Preview"
+                    />
                   </div>
-
-                  {/* Bottom Controls */}
-                  <div className="flex items-center gap-2 border-t border-white/10 pt-2 bg-black/40 p-2 rounded-xl backdrop-blur-xs">
-                    <Play className="w-3.5 h-3.5 text-white fill-white" />
-                    <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden relative">
-                      <div className="h-full bg-gradient-to-r from-[#7EC8C8] to-[#9B7FD4] w-[45%]" />
-                    </div>
-                    <span className="text-[8px] text-white/70 font-mono">1:12 / 3:00</span>
-                    <Volume2 className="w-3.5 h-3.5 text-white" />
-                  </div>
-                </div>
-
-                {/* Simulated Backdrop Image */}
-                <div 
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${vslForm.videoUrl})` }}
-                />
-              </div>
-
-              {/* Lead form capture mockup */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
-                <h5 className="text-xs font-black text-center text-white">Capture Lead de Director Mockup</h5>
-                <div className="grid grid-cols-2 gap-2 text-[10px]">
-                  <div className="bg-white/10 rounded-lg p-2 text-gray-300">
-                    <span className="text-[7px] text-gray-500 block uppercase font-bold">Correo del Director</span>
-                    director@colegio.edu.pe
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-2 text-gray-300">
-                    <span className="text-[7px] text-gray-500 block uppercase font-bold">Nombre del Colegio</span>
-                    San Ignacio de Recalde
-                  </div>
-                </div>
-                <div className="w-full py-2 bg-white text-gray-900 rounded-xl text-center text-[10px] font-black uppercase tracking-wider shadow">
-                  Agendar Demostración Gratuita Hoy ➔
-                </div>
+                )}
               </div>
             </div>
 

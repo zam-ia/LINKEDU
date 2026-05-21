@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { GraduationCap, ArrowRight, Lock, Mail, AlertCircle, Sparkles, X, Phone, CheckCircle2 } from 'lucide-react';
@@ -13,8 +13,15 @@ export default function LoginPage() {
   const [showSuperAdmin, setShowSuperAdmin] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
   const [activeTab, setActiveTab] = useState('director');
-  const { login, loading } = useAuthStore();
+  const { login, loading, user } = useAuthStore();
   const router = useRouter();
+
+  // Redirigir al panel si ya hay un usuario autenticado
+  useEffect(() => {
+    if (user) {
+      window.location.href = `/${user.rol}`;
+    }
+  }, [user]);
 
   const handleLogoClick = () => {
     setClickCount((prev) => {
@@ -44,7 +51,12 @@ export default function LoginPage() {
 
     const success = await login(email, password);
     if (success) {
-      router.push('/');
+      const activeUser = useAuthStore.getState().user;
+      if (activeUser) {
+        window.location.href = `/${activeUser.rol}`;
+      } else {
+        window.location.href = '/';
+      }
     } else {
       if (isSuperAdmin) {
         setError('Contraseña incorrecta para el Super Administrador (la clave es admin123).');
@@ -65,7 +77,12 @@ export default function LoginPage() {
     setError('');
     const success = await login(demoEmail);
     if (success) {
-      router.push('/');
+      const activeUser = useAuthStore.getState().user;
+      if (activeUser) {
+        window.location.href = `/${activeUser.rol}`;
+      } else {
+        window.location.href = '/';
+      }
     }
   };
 

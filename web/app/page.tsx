@@ -35,6 +35,15 @@ export default function Home() {
   const { user, loading } = useAuthStore();
   const router = useRouter();
 
+  // Redirigir al panel directamente si el usuario ya está autenticado,
+  // pero evitar la redirección si la página se está visualizando en un iframe (como en la vista previa del superadmin).
+  useEffect(() => {
+    const isIframe = typeof window !== 'undefined' && window.self !== window.top;
+    if (user && !loading && !isIframe) {
+      window.location.href = `/${user.rol}`;
+    }
+  }, [user, loading]);
+
   // Navigation and Interactive States
   const [activePortalTab, setActivePortalTab] = useState<'director' | 'docente' | 'padre' | 'alumno'>('director');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -187,7 +196,7 @@ export default function Home() {
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#01017b] border-t-transparent"></div>
             ) : user ? (
               <button
-                onClick={() => router.push(`/${user.rol}`)}
+                onClick={() => window.location.href = `/${user.rol}`}
                 className="px-5 py-2.5 bg-[#EEF1FE] hover:bg-[#EEF1FE]/80 text-[#01017b] text-xs font-black rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-xs border border-transparent hover:border-[#01017b]/10 hover:scale-102 active:scale-98"
               >
                 Ir al Panel
@@ -332,13 +341,28 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Simulated Backdrop Image */}
-                <div 
-                  className={`absolute inset-0 bg-cover bg-center transition-transform duration-[8000ms] ${
-                    isVideoPlaying ? 'scale-110 rotate-1' : 'scale-100'
-                  }`}
-                  style={{ backgroundImage: `url(${vslConfig.videoUrl})` }}
-                />
+                {/* Simulated Backdrop Image or Real Video */}
+                {vslConfig.videoUrl && (
+                  vslConfig.videoUrl.endsWith('.mp4') || 
+                  vslConfig.videoUrl.endsWith('.webm') || 
+                  vslConfig.videoUrl.startsWith('data:video/')
+                ) ? (
+                  <video
+                    src={vslConfig.videoUrl}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    autoPlay
+                    muted={isMuted}
+                    loop
+                    playsInline
+                  />
+                ) : (
+                  <div 
+                    className={`absolute inset-0 bg-cover bg-center transition-transform duration-[8000ms] ${
+                      isVideoPlaying ? 'scale-110 rotate-1' : 'scale-100'
+                    }`}
+                    style={{ backgroundImage: `url(${vslConfig.videoUrl})` }}
+                  />
+                )}
               </div>
             </div>
 

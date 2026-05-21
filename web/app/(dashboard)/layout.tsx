@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 // Componente de navegación de escritorio que usa useSearchParams de forma segura
-function SidebarNav({ menuItems }: { menuItems: any[] }) {
+function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed: boolean }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -50,17 +50,22 @@ function SidebarNav({ menuItems }: { menuItems: any[] }) {
               e.preventDefault();
               router.push(item.path);
             }}
-            className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all group ${
+            title={isCollapsed ? item.name : undefined}
+            className={`flex items-center p-3.5 text-sm font-semibold rounded-xl transition-all group ${
+              isCollapsed ? 'justify-center' : 'px-4'
+            } ${
               isActive 
                 ? 'bg-[#EEF1FE] text-[#01017b]' 
                 : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
             }`}
           >
-            <item.icon className={`mr-3 h-5 w-5 transition-colors ${
+            <item.icon className={`h-5 w-5 transition-colors shrink-0 ${
+              isCollapsed ? '' : 'mr-3'
+            } ${
               isActive ? 'text-[#01017b]' : 'text-gray-400 group-hover:text-gray-600'
             }`} />
-            {item.name}
-            {isActive && (
+            {!isCollapsed && <span className="truncate">{item.name}</span>}
+            {!isCollapsed && isActive && (
               <div className="ml-auto w-1 h-5 rounded-full bg-[#01017b]" />
             )}
           </a>
@@ -124,6 +129,24 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [styleContent, setStyleContent] = useState('');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('linkedu_sidebar_collapsed');
+      if (saved) {
+        setIsSidebarCollapsed(saved === 'true');
+      }
+    }
+  }, []);
+
+  const toggleSidebar = () => {
+    const nextState = !isSidebarCollapsed;
+    setIsSidebarCollapsed(nextState);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('linkedu_sidebar_collapsed', String(nextState));
+    }
+  };
 
   // --- NOTIFICATIONS & ANNOUNCEMENTS SYSTEM ---
   interface Comunicado {
@@ -481,44 +504,74 @@ export default function DashboardLayout({
     <div className="flex h-screen bg-[#F4F5F7] overflow-hidden">
       {styleContent && <style dangerouslySetInnerHTML={{ __html: styleContent }} />}
       {/* 1. SIDEBAR DESKTOP */}
-      <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-white border-r border-gray-200 z-30">
+      <aside className={`hidden md:flex md:flex-col md:fixed md:inset-y-0 bg-white border-r border-gray-200 z-30 transition-all duration-300 ${
+        isSidebarCollapsed ? 'md:w-20' : 'md:w-64'
+      }`}>
         <div className="flex flex-col flex-1 min-h-0">
           {/* Cabecera Sidebar */}
-          <div className="flex items-center h-16 px-6 border-b border-gray-150 gap-2 shrink-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b] text-white">
-              <GraduationCap className="h-5.5 w-5.5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-extrabold tracking-tight text-gray-900">Linkedu</span>
-              <span className="text-[10px] text-gray-400 font-bold -mt-0.5 uppercase tracking-wide">Intranet</span>
-            </div>
+          <div className={`flex items-center h-16 border-b border-gray-150 gap-2 shrink-0 ${
+            isSidebarCollapsed ? 'px-4 justify-center' : 'px-6 justify-between'
+          }`}>
+            {!isSidebarCollapsed ? (
+              <>
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b] text-white shrink-0">
+                    <GraduationCap className="h-5.5 w-5.5" />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-sm font-extrabold tracking-tight text-gray-900 truncate">Linkedu</span>
+                    <span className="text-[10px] text-gray-400 font-bold -mt-0.5 uppercase tracking-wide truncate">Intranet</span>
+                  </div>
+                </div>
+                <button
+                  onClick={toggleSidebar}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-[#01017b] hover:bg-[#EEF1FE] transition-all cursor-pointer shrink-0"
+                  title="Contraer menú"
+                >
+                  <Menu className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={toggleSidebar}
+                className="p-2 rounded-lg text-gray-400 hover:text-[#01017b] hover:bg-[#EEF1FE] transition-all cursor-pointer flex items-center justify-center shrink-0"
+                title="Expandir menú"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
           {/* Menú de Navegación */}
           <Suspense fallback={<div className="flex-1 px-4 py-6 space-y-3"><div className="h-10 bg-gray-100 animate-pulse rounded-xl" /><div className="h-10 bg-gray-100 animate-pulse rounded-xl" /></div>}>
-            <SidebarNav menuItems={menuItems} />
+            <SidebarNav menuItems={menuItems} isCollapsed={isSidebarCollapsed} />
           </Suspense>
 
           {/* Perfil del Usuario al Fondo */}
           <div className="p-4 border-t border-gray-150 bg-gray-50/50">
-            <div className="flex items-center gap-3">
+            <div className={`flex items-center gap-3 ${isSidebarCollapsed ? 'flex-col justify-center' : ''}`}>
               <button
                 onClick={() => router.push(user.rol === 'director' ? '/director/settings' : `/${user.rol}/settings`)}
-                className="flex items-center gap-3 flex-1 min-w-0 text-left hover:opacity-80 transition-opacity cursor-pointer group"
+                className={`flex items-center gap-3 flex-1 min-w-0 text-left hover:opacity-80 transition-opacity cursor-pointer group ${
+                  isSidebarCollapsed ? 'justify-center' : ''
+                }`}
+                title={isSidebarCollapsed ? `${user.nombre} ${user.apellido} (${user.rol})` : undefined}
               >
                 <img 
                   src={user.foto_url} 
                   alt={`${user.nombre} ${user.apellido}`}
                   className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100 group-hover:border-[#01017b] transition-colors" 
                 />
-                <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-xs font-bold text-gray-905 text-gray-900 truncate leading-tight group-hover:text-[#01017b] transition-colors">
-                    {user.nombre} {user.apellido}
-                  </span>
-                  <span className="text-[10px] font-bold text-[#01017b] uppercase tracking-wide mt-0.5">
-                    {user.rol}
-                  </span>
-                </div>
+                {!isSidebarCollapsed && (
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span className="text-xs font-bold text-gray-900 truncate leading-tight group-hover:text-[#01017b] transition-colors">
+                      {user.nombre} {user.apellido}
+                    </span>
+                    <span className="text-[10px] font-bold text-[#01017b] uppercase tracking-wide mt-0.5">
+                      {user.rol}
+                    </span>
+                  </div>
+                )}
               </button>
               <button 
                 onClick={handleLogout}
@@ -533,7 +586,9 @@ export default function DashboardLayout({
       </aside>
 
       {/* 2. AREA DE CONTENIDO PRINCIPAL */}
-      <div className="flex flex-col flex-1 md:pl-64 overflow-hidden">
+      <div className={`flex flex-col flex-1 ${
+        isSidebarCollapsed ? 'md:pl-20' : 'md:pl-64'
+      } overflow-hidden transition-all duration-300`}>
         {/* Cabecera Superior */}
         <header className="flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200 shrink-0 z-20">
           {/* Botón de Menú Móvil */}
@@ -542,6 +597,15 @@ export default function DashboardLayout({
             className="p-2 -ml-2 rounded-lg text-gray-500 md:hidden hover:bg-gray-100 cursor-pointer"
           >
             <Menu className="w-6 h-6" />
+          </button>
+
+          {/* Botón de Expansión/Colapso Desktop */}
+          <button 
+            onClick={toggleSidebar}
+            className="hidden md:flex p-2 -ml-2 rounded-lg text-gray-400 hover:text-gray-650 hover:bg-gray-100 transition-all cursor-pointer mr-3"
+            title={isSidebarCollapsed ? "Mostrar panel lateral" : "Ocultar panel lateral"}
+          >
+            <Menu className="w-5 h-5" />
           </button>
 
           {/* Colegio Activo o Panel Global */}
