@@ -68,10 +68,35 @@ export default function SuperAdminDashboard() {
   const [alertMessage, setAlertMessage] = useState('');
 
   // Formularios
-  const [newColegio, setNewColegio] = useState({ nombre: '', ruc: '', logo: '' });
-  const [newUser, setNewUser] = useState({ nombre: '', apellido: '', dni: '', email: '', rol: 'director' });
+  const [newColegio, setNewColegio] = useState({ 
+    nombre: '', 
+    ruc: '', 
+    logo: '', 
+    plan: 'Premium SaaS', 
+    mensualidad: '1200', 
+    vencimiento: '2026-06-21' 
+  });
+  const [newUser, setNewUser] = useState({ 
+    nombre: '', 
+    apellido: '', 
+    dni: '', 
+    email: '', 
+    rol: 'director',
+    colegio_id: '',
+    password: ''
+  });
   const [activeUserToReset, setActiveUserToReset] = useState<UserProfile | null>(null);
   const [newPassword, setNewPassword] = useState('');
+
+  // Sincronizar el colegio del nuevo usuario al abrir el modal
+  useEffect(() => {
+    if (showAddUser) {
+      setNewUser(prev => ({
+        ...prev,
+        colegio_id: prev.colegio_id || selectedColegioId || (colegios.length > 0 ? colegios[0].id : '')
+      }));
+    }
+  }, [showAddUser, selectedColegioId, colegios]);
 
   // Cargar datos al iniciar
   useEffect(() => {
@@ -126,14 +151,24 @@ export default function SuperAdminDashboard() {
       nombre: newColegio.nombre,
       logo: logoUrl,
       ruc: newColegio.ruc,
-      activo: true
+      activo: true,
+      plan: newColegio.plan,
+      mensualidad: Number(newColegio.mensualidad) || 1200,
+      vencimiento: newColegio.vencimiento
     };
 
     const updated = [...colegios, added];
     setColegios(updated);
     saveStoredColegios(updated);
     setShowAddColegio(false);
-    setNewColegio({ nombre: '', ruc: '', logo: '' });
+    setNewColegio({ 
+      nombre: '', 
+      ruc: '', 
+      logo: '', 
+      plan: 'Premium SaaS', 
+      mensualidad: '1200', 
+      vencimiento: '2026-06-21' 
+    });
     setSelectedColegioId(newId);
     triggerAlert(`¡Colegio "${added.nombre}" registrado exitosamente en la nube!`);
   };
@@ -154,16 +189,17 @@ export default function SuperAdminDashboard() {
 
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newUser.nombre || !newUser.apellido || !newUser.dni || !newUser.email) return;
+    if (!newUser.nombre || !newUser.apellido || !newUser.dni || !newUser.email || !newUser.password) return;
 
     const added: UserProfile = {
       id: crypto.randomUUID(),
-      colegio_id: selectedColegioId,
+      colegio_id: newUser.colegio_id || selectedColegioId || (colegios.length > 0 ? colegios[0].id : null),
       rol: newUser.rol as any,
       nombre: newUser.nombre,
       apellido: newUser.apellido,
       dni: newUser.dni,
       email: newUser.email.toLowerCase().trim(),
+      password: newUser.password, // Contraseña de acceso real
       foto_url: `https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random() * 900000)}?auto=format&fit=crop&w=150&h=150&q=80`,
       activo: true
     };
@@ -172,8 +208,16 @@ export default function SuperAdminDashboard() {
     setUsuarios(updated);
     saveStoredUsers(updated);
     setShowAddUser(false);
-    setNewUser({ nombre: '', apellido: '', dni: '', email: '', rol: 'director' });
-    triggerAlert(`Usuario "${added.nombre} ${added.apellido}" creado con éxito.`);
+    setNewUser({ 
+      nombre: '', 
+      apellido: '', 
+      dni: '', 
+      email: '', 
+      rol: 'director',
+      colegio_id: '',
+      password: ''
+    });
+    triggerAlert(`Usuario "${added.nombre} ${added.apellido}" creado con éxito con su contraseña.`);
   };
 
   const handleOpenResetPassword = (user: UserProfile) => {
@@ -186,7 +230,17 @@ export default function SuperAdminDashboard() {
     e.preventDefault();
     if (!activeUserToReset) return;
 
-    triggerAlert(`Contraseña del usuario ${activeUserToReset.nombre} restablecida a "${newPassword}" en Supabase Auth.`);
+    // Actualizar la contraseña en el listado persistido
+    const updatedUsers = usuarios.map(u => {
+      if (u.id === activeUserToReset.id) {
+        return { ...u, password: newPassword };
+      }
+      return u;
+    });
+    setUsuarios(updatedUsers);
+    saveStoredUsers(updatedUsers);
+
+    triggerAlert(`Contraseña del usuario ${activeUserToReset.nombre} restablecida a "${newPassword}" con éxito.`);
     setShowResetPassword(false);
     setActiveUserToReset(null);
   };
@@ -207,6 +261,21 @@ export default function SuperAdminDashboard() {
     
     return matchesColegio && matchesSearch && matchesRol;
   });
+
+  // Calcular colegios próximos a vencer
+  const colegiosPorRenovar = colegios.filter(c => {
+    if (!c.activo || !c.vencimiento) return false;
+    const fecha = new Date(c.vencimiento);
+    const hoy = new Date('2026-05-21');
+    const diffTime = fecha.getTime() - hoy.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays >= 0 && diffDays <= 10;
+  });
+
+  // Sumar ingresos mensuales reales basados en las mensualidades de colegios activos
+  const totalIngresosReales = colegios
+    .filter(c => c.activo)
+    .reduce((sum, c) => sum + (c.mensualidad || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -285,8 +354,8 @@ export default function SuperAdminDashboard() {
       {/* ================= PESTAÑA: METRICAS GLOBALES ================= */}
       {activeTab === 'dashboard' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="premium-card p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="premium-card p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Colegios Totales</span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4F6AF0]/10 text-[#4F6AF0]">
@@ -294,12 +363,12 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
               <div className="mt-4">
-                <span className="text-3xl font-black text-gray-900">{colegios.length}</span>
-                <p className="text-xs text-gray-500 font-bold mt-1">Multi-tenant registrados</p>
+                <span className="text-2xl font-black text-gray-900">{colegios.length}</span>
+                <p className="text-xs text-gray-500 font-bold mt-1">SaaS registrados</p>
               </div>
             </div>
 
-            <div className="premium-card p-6">
+            <div className="premium-card p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Escuelas Activas</span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#5BAD8A]/10 text-[#5BAD8A]">
@@ -307,14 +376,27 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
               <div className="mt-4">
-                <span className="text-3xl font-black text-gray-900">
+                <span className="text-2xl font-black text-gray-900">
                   {colegios.filter(c => c.activo).length}
                 </span>
                 <p className="text-xs text-gray-500 font-bold mt-1">Suscripción activa</p>
               </div>
             </div>
 
-            <div className="premium-card p-6">
+            <div className="premium-card p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Por Renovar</span>
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E07B6A]/10 text-[#E07B6A]">
+                  <ShieldAlert className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <span className="text-2xl font-black text-gray-900">{colegiosPorRenovar.length}</span>
+                <p className="text-xs text-[#E07B6A] font-bold mt-1">Vence en &lt; 10 días</p>
+              </div>
+            </div>
+
+            <div className="premium-card p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Usuarios Totales</span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#9B7FD4]/10 text-[#9B7FD4]">
@@ -322,24 +404,21 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
               <div className="mt-4">
-                <span className="text-3xl font-black text-gray-900">{usuarios.length}</span>
-                <p className="text-xs text-gray-500 font-bold mt-1">En el ecosistema Linkedu</p>
+                <span className="text-2xl font-black text-gray-900">{usuarios.length}</span>
+                <p className="text-xs text-gray-500 font-bold mt-1">Ecosistema Linkedu</p>
               </div>
             </div>
 
-            <div className="premium-card p-6">
+            <div className="premium-card p-5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Facturación SaaS</span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Ingresos SaaS</span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F5A623]/10 text-[#F5A623]">
                   <DollarSign className="h-5 w-5" />
                 </div>
               </div>
               <div className="mt-4">
-                <span className="text-3xl font-black text-gray-900">S/. 18,900</span>
-                <div className="flex items-center gap-1 mt-1 text-xs text-[#5BAD8A] font-bold">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                  <span>+22.7% este mes</span>
-                </div>
+                <span className="text-2xl font-black text-gray-900">S/. {totalIngresosReales.toLocaleString('es-PE')}</span>
+                <p className="text-xs text-[#5BAD8A] font-bold mt-1">Facturación recurrente</p>
               </div>
             </div>
           </div>
@@ -406,18 +485,34 @@ export default function SuperAdminDashboard() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-6">
+                    <div className="mt-4 grid grid-cols-2 gap-2 text-xs border-t border-gray-100 pt-3">
+                      <div>
+                        <span className="block text-[9px] text-gray-400 font-bold uppercase tracking-wider">Plan SaaS</span>
+                        <span className="font-extrabold text-gray-800 text-xs">{col.plan || 'Premium SaaS'}</span>
+                      </div>
+                      <div>
+                        <span className="block text-[9px] text-gray-400 font-bold uppercase tracking-wider">Mensualidad</span>
+                        <span className="font-extrabold text-gray-800 text-xs">S/. {col.mensualidad || 1200}/mes</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-3">
                       <div className="flex flex-col">
-                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Usuarios</span>
-                        <span className="text-sm font-extrabold text-gray-800">{userCount} registrados</span>
+                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Vence/Renueva</span>
+                        <span className={`text-xs font-bold ${
+                          !col.activo ? 'text-[#E07B6A]' :
+                          col.vencimiento && new Date(col.vencimiento) < new Date('2026-05-31') ? 'text-[#F5A623]' : 'text-gray-600'
+                        }`}>
+                          {col.vencimiento ? new Date(col.vencimiento).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' }) : 'Sin fecha'}
+                        </span>
                       </div>
                       
                       <div className="flex flex-col items-end">
-                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-1">Estatus</span>
+                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Estatus</span>
                         <div className="flex items-center gap-1.5">
                           <span className={`h-2 w-2 rounded-full ${col.activo ? 'bg-[#5BAD8A]' : 'bg-[#E07B6A]'}`} />
                           <span className={`text-xs font-bold ${col.activo ? 'text-[#5BAD8A]' : 'text-[#E07B6A]'}`}>
-                            {col.activo ? 'Matrícula Activa' : 'Suspendido'}
+                            {col.activo ? 'Activo' : 'Suspendido'}
                           </span>
                         </div>
                       </div>
@@ -619,29 +714,106 @@ export default function SuperAdminDashboard() {
                 />
               </div>
 
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">RUC de la Institución</label>
+                <input
+                  type="text"
+                  placeholder="20123456789"
+                  maxLength={11}
+                  value={newColegio.ruc}
+                  onChange={(e) => setNewColegio({ ...newColegio, ruc: e.target.value.replace(/\D/g,'') })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Logo del Colegio</label>
+                <div className="flex gap-3 items-center">
+                  <div className="w-14 h-14 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                    {newColegio.logo ? (
+                      <img src={newColegio.logo} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xl">🏫</span>
+                    )}
+                    {newColegio.logo && (
+                      <button
+                        type="button"
+                        onClick={() => setNewColegio({ ...newColegio, logo: '' })}
+                        className="absolute inset-0 bg-black/50 text-white text-[9px] font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                      >
+                        Quitar
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-1.5">
+                    <div className="flex gap-2">
+                      <label className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 px-2.5 py-2 border border-dashed border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all text-[11px] font-bold text-gray-600">
+                        📁 Subir Logo
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setNewColegio({ ...newColegio, logo: reader.result as string });
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                      <span className="text-[10px] text-gray-400 self-center font-bold">o</span>
+                      <input
+                        type="text"
+                        placeholder="Pega un URL de imagen"
+                        value={newColegio.logo.startsWith('data:') ? '' : newColegio.logo}
+                        onChange={(e) => setNewColegio({ ...newColegio, logo: e.target.value })}
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">RUC</label>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Plan SaaS</label>
+                  <select
+                    value={newColegio.plan}
+                    onChange={(e) => setNewColegio({ ...newColegio, plan: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                  >
+                    <option value="Premium SaaS">Premium SaaS</option>
+                    <option value="Estandar SaaS">Estandar SaaS</option>
+                    <option value="Básico SaaS">Básico SaaS</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Mensualidad (S/.)</label>
                   <input
-                    type="text"
-                    placeholder="20123456789"
-                    maxLength={11}
-                    value={newColegio.ruc}
-                    onChange={(e) => setNewColegio({ ...newColegio, ruc: e.target.value.replace(/\D/g,'') })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
+                    type="number"
+                    placeholder="1200"
+                    value={newColegio.mensualidad}
+                    onChange={(e) => setNewColegio({ ...newColegio, mensualidad: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Logo URL (Opcional)</label>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    value={newColegio.logo}
-                    onChange={(e) => setNewColegio({ ...newColegio, logo: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] text-sm"
-                  />
-                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Fecha de Vencimiento</label>
+                <input
+                  type="date"
+                  value={newColegio.vencimiento}
+                  onChange={(e) => setNewColegio({ ...newColegio, vencimiento: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 text-sm"
+                  required
+                />
               </div>
 
               <div className="flex gap-3 justify-end pt-4 border-t border-gray-150">
@@ -734,7 +906,34 @@ export default function SuperAdminDashboard() {
                   placeholder="carlos@colegio.edu.pe"
                   value={newUser.email}
                   onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#9B7FD4]/15"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#9B7FD4]/15 text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Colegio de Acceso</label>
+                <select
+                  value={newUser.colegio_id}
+                  onChange={(e) => setNewUser({ ...newUser, colegio_id: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#9B7FD4]/15 text-sm font-semibold"
+                  required
+                >
+                  <option value="" disabled>Selecciona un Colegio</option>
+                  {colegios.map(c => (
+                    <option key={c.id} value={c.id}>{c.nombre}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Contraseña de Acceso</label>
+                <input
+                  type="password"
+                  placeholder="Define una contraseña para este usuario"
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#9B7FD4]/15 text-sm"
                   required
                 />
               </div>

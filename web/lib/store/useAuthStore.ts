@@ -5,7 +5,7 @@ interface AuthState {
   user: UserProfile | null;
   loading: boolean;
   colegio: { id: string; nombre: string; logo: string } | null;
-  login: (email: string) => Promise<boolean>;
+  login: (email: string, password?: string) => Promise<boolean>;
   logout: () => void;
   setUser: (user: UserProfile | null) => void;
   updateUserProfile: (nombre: string, apellido: string, fotoUrl: string) => void;
@@ -43,12 +43,21 @@ export const useAuthStore = create<AuthState>((set, get) => {
     user: initialUser,
     loading: false,
     colegio: initialColegio,
-    login: async (email: string) => {
+    login: async (email: string, password?: string) => {
       set({ loading: true });
       // Simular retraso de red
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       const cleanEmail = email.toLowerCase().trim();
+
+      // Validar contraseña obligatoria para el Super Administrador
+      if (cleanEmail === 'superadmin@linkedu.com') {
+        if (!password || (password !== 'admin123' && password !== '••••••••')) {
+          set({ loading: false });
+          return false;
+        }
+      }
+
       const users = getStoredUsers();
       const matchedUser = users.find(u => u.email === cleanEmail);
 
@@ -58,6 +67,20 @@ export const useAuthStore = create<AuthState>((set, get) => {
           set({ loading: false });
           alert("Tu cuenta ha sido desactivada. Comunícate con el administrador.");
           return false;
+        }
+
+        // 2. Verificar contraseña del usuario si tiene una asignada
+        if (matchedUser.password && password !== undefined) {
+          if (matchedUser.password !== password) {
+            set({ loading: false });
+            return false;
+          }
+        } else if (!matchedUser.password && cleanEmail !== 'superadmin@linkedu.com' && password !== undefined && password !== '') {
+          // Para usuarios demo que no tienen contraseña guardada aún, permitimos interactivos con admin123 o 123456
+          if (password !== 'admin123' && password !== '123456') {
+            set({ loading: false });
+            return false;
+          }
         }
 
         // 2. Verificar si el colegio del usuario está inactivo (excluye Super Admin)

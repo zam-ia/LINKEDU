@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { 
   GraduationCap, 
@@ -19,6 +19,98 @@ import {
   ClipboardList,
   Settings
 } from 'lucide-react';
+
+// Componente de navegación de escritorio que usa useSearchParams de forma segura
+function SidebarNav({ menuItems }: { menuItems: any[] }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const tab = searchParams.get('tab');
+
+  return (
+    <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
+      {menuItems.map((item) => {
+        let isActive = false;
+        if (item.path.includes('?')) {
+          const parts = item.path.split('?');
+          const pathNamePart = parts[0];
+          const queryPart = parts[1];
+          const itemTab = new URLSearchParams(queryPart).get('tab');
+          isActive = pathname === pathNamePart && tab === itemTab;
+        } else {
+          isActive = pathname === item.path && (!tab || item.path !== '/superadmin');
+        }
+        return (
+          <a
+            key={item.name}
+            href={item.path}
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(item.path);
+            }}
+            className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all group ${
+              isActive 
+                ? 'bg-[#EEF1FE] text-[#4F6AF0]' 
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+            }`}
+          >
+            <item.icon className={`mr-3 h-5 w-5 transition-colors ${
+              isActive ? 'text-[#4F6AF0]' : 'text-gray-400 group-hover:text-gray-600'
+            }`} />
+            {item.name}
+            {isActive && (
+              <div className="ml-auto w-1 h-5 rounded-full bg-[#4F6AF0]" />
+            )}
+          </a>
+        );
+      })}
+    </nav>
+  );
+}
+
+// Componente de navegación móvil que usa useSearchParams de forma segura
+function MobileSidebarNav({ menuItems, onClose }: { menuItems: any[]; onClose: () => void }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const tab = searchParams.get('tab');
+
+  return (
+    <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+      {menuItems.map((item) => {
+        let isActive = false;
+        if (item.path.includes('?')) {
+          const parts = item.path.split('?');
+          const pathNamePart = parts[0];
+          const queryPart = parts[1];
+          const itemTab = new URLSearchParams(queryPart).get('tab');
+          isActive = pathname === pathNamePart && tab === itemTab;
+        } else {
+          isActive = pathname === item.path && (!tab || item.path !== '/superadmin');
+        }
+        return (
+          <a
+            key={item.name}
+            href={item.path}
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+              router.push(item.path);
+            }}
+            className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all ${
+              isActive 
+                ? 'bg-[#EEF1FE] text-[#4F6AF0]' 
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+            }`}
+          >
+            <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[#4F6AF0]' : 'text-gray-400'}`} />
+            {item.name}
+          </a>
+        );
+      })}
+    </nav>
+  );
+}
 
 export default function DashboardLayout({
   children,
@@ -116,34 +208,9 @@ export default function DashboardLayout({
           </div>
 
           {/* Menú de Navegación */}
-          <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
-            {menuItems.map((item) => {
-              const isActive = pathname === item.path;
-              return (
-                <a
-                  key={item.name}
-                  href={item.path}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    router.push(item.path);
-                  }}
-                  className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all group ${
-                    isActive 
-                      ? 'bg-[#EEF1FE] text-[#4F6AF0]' 
-                      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-                >
-                  <item.icon className={`mr-3 h-5 w-5 transition-colors ${
-                    isActive ? 'text-[#4F6AF0]' : 'text-gray-400 group-hover:text-gray-600'
-                  }`} />
-                  {item.name}
-                  {isActive && (
-                    <div className="ml-auto w-1 h-5 rounded-full bg-[#4F6AF0]" />
-                  )}
-                </a>
-              );
-            })}
-          </nav>
+          <Suspense fallback={<div className="flex-1 px-4 py-6 space-y-3"><div className="h-10 bg-gray-100 animate-pulse rounded-xl" /><div className="h-10 bg-gray-100 animate-pulse rounded-xl" /></div>}>
+            <SidebarNav menuItems={menuItems} />
+          </Suspense>
 
           {/* Perfil del Usuario al Fondo */}
           <div className="p-4 border-t border-gray-150 bg-gray-50/50">
@@ -259,30 +326,9 @@ export default function DashboardLayout({
               </button>
             </div>
 
-            <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-              {menuItems.map((item) => {
-                const isActive = pathname === item.path;
-                return (
-                  <a
-                    key={item.name}
-                    href={item.path}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setMobileMenuOpen(false);
-                      router.push(item.path);
-                    }}
-                    className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all ${
-                      isActive 
-                        ? 'bg-[#EEF1FE] text-[#4F6AF0]' 
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
-                  >
-                    <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[#4F6AF0]' : 'text-gray-400'}`} />
-                    {item.name}
-                  </a>
-                );
-              })}
-            </nav>
+            <Suspense fallback={<div className="flex-1 px-4 py-6 space-y-3"><div className="h-10 bg-gray-100 animate-pulse rounded-xl" /><div className="h-10 bg-gray-100 animate-pulse rounded-xl" /></div>}>
+              <MobileSidebarNav menuItems={menuItems} onClose={() => setMobileMenuOpen(false)} />
+            </Suspense>
 
             <div className="p-4 border-t border-gray-150 bg-gray-50/50">
               <div className="flex items-center gap-3">

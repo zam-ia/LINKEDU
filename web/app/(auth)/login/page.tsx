@@ -7,7 +7,7 @@ import { GraduationCap, ArrowRight, Lock, Mail, AlertCircle } from 'lucide-react
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('••••••••'); // Valor fijo simulado
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [clickCount, setClickCount] = useState(0);
   const [showSuperAdmin, setShowSuperAdmin] = useState(false);
@@ -34,15 +34,31 @@ export default function LoginPage() {
       return;
     }
 
-    const success = await login(email);
+    const isSuperAdmin = email.toLowerCase().trim() === 'superadmin@linkedu.com';
+    if (isSuperAdmin && !password) {
+      setError('Por favor, ingresa la contraseña de Super Administrador.');
+      return;
+    }
+
+    const success = await login(email, password);
     if (success) {
       router.push('/');
     } else {
-      setError('Credenciales inválidas. Usa uno de los correos demo listados abajo.');
+      if (isSuperAdmin) {
+        setError('Contraseña incorrecta para el Super Administrador (la clave es admin123).');
+      } else {
+        setError('Credenciales inválidas o contraseña incorrecta. Por favor, verifica tus datos.');
+      }
     }
   };
 
   const handleQuickLogin = async (demoEmail: string) => {
+    if (demoEmail === 'superadmin@linkedu.com') {
+      setEmail('superadmin@linkedu.com');
+      setPassword('');
+      setError('Por favor, ingresa tu contraseña de Super Administrador (la clave es admin123).');
+      return;
+    }
     setEmail(demoEmail);
     setError('');
     const success = await login(demoEmail);
@@ -129,8 +145,9 @@ export default function LoginPage() {
                   type="password"
                   autoComplete="current-password"
                   value={password}
-                  disabled
-                  className="block w-full rounded-xl border border-gray-300 bg-gray-50 pl-10 pr-3 py-2.5 text-gray-400 focus:outline-none sm:text-sm"
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Introduce tu contraseña"
+                  className="block w-full rounded-xl border border-gray-300 pl-10 pr-3 py-2.5 text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4F6AF0]/15 focus:border-[#4F6AF0] sm:text-sm transition-all"
                 />
               </div>
             </div>
