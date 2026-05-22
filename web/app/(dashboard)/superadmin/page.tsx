@@ -181,6 +181,7 @@ export default function SuperAdminDashboard() {
   const [magicSchoolId, setMagicSchoolId] = useState('');
   const [magicRole, setMagicRole] = useState('director');
   const [magicDomain, setMagicDomain] = useState('');
+  const [magicExpiresIn, setMagicExpiresIn] = useState(15);
 
   useEffect(() => {
     if (activeTab === 'demos_leads') {
@@ -1618,14 +1619,42 @@ export default function SuperAdminDashboard() {
                   </div>
                 </div>
 
+                {/* Expiración del Magic Link */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-450 uppercase tracking-wider mb-2">Expiración del Link</label>
+                  <div className="flex gap-2">
+                    {[
+                      { value: 5, label: '5 min' },
+                      { value: 10, label: '10 min' },
+                      { value: 15, label: '15 min' },
+                      { value: 20, label: '20 min' },
+                      { value: 60, label: '1 hora' },
+                      { value: 0, label: 'Sin límite' }
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setMagicExpiresIn(opt.value)}
+                        className={`flex-1 py-2 px-1 border rounded-xl text-center text-[10px] font-black uppercase transition-all cursor-pointer ${
+                          magicExpiresIn === opt.value
+                            ? 'bg-[#EEF1FE] border-[#01017b] text-[#01017b]'
+                            : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Live URL Output Box */}
                 <div className="pt-2">
                   <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Live Magic URL</span>
                   <div className="p-3 bg-gray-900 rounded-2xl border border-gray-800 text-left relative group">
                     <code className="text-[11px] font-mono text-cyan-400 break-all select-all block pr-8">
                       {typeof window !== 'undefined'
-                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
-                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
+                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`
+                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`
                       }
                     </code>
                   </div>
@@ -1637,8 +1666,8 @@ export default function SuperAdminDashboard() {
                     type="button"
                     onClick={() => {
                       const url = typeof window !== 'undefined'
-                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
-                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`;
+                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`
+                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`;
                       navigator.clipboard.writeText(url);
                       triggerAlert("¡Magic Link copiado al portapapeles con éxito!");
                     }}
@@ -1650,8 +1679,8 @@ export default function SuperAdminDashboard() {
                     type="button"
                     onClick={() => {
                       const url = typeof window !== 'undefined'
-                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
-                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`;
+                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`
+                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`;
                       window.open(url, '_blank');
                     }}
                     className="flex justify-center items-center gap-2 py-2.5 px-4 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl shadow-md shadow-[#01017b]/10 transition-all cursor-pointer active:scale-[0.98]"
@@ -1768,8 +1797,8 @@ export default function SuperAdminDashboard() {
                 // Quick login handler
                 const handleQuickOpen = (role: string) => {
                   const url = typeof window !== 'undefined'
-                    ? `${window.location.origin}/login?magic_email=${role}@${domain}.com`
-                    : `/login?magic_email=${role}@${domain}.com`;
+                    ? `${window.location.origin}/login?magic_email=${role}@${domain}.com&expires_at=${Date.now() + 15 * 60 * 1000}`
+                    : `/login?magic_email=${role}@${domain}.com&expires_at=${Date.now() + 15 * 60 * 1000}`;
                   window.open(url, '_blank');
                 };
 

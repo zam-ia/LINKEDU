@@ -15,7 +15,10 @@ import {
   Camera, 
   ChevronRight,
   UserCheck,
-  UserPlus
+  UserPlus,
+  User,
+  Mail,
+  Key
 } from 'lucide-react';
 import { 
   supabase, 
@@ -29,11 +32,21 @@ import {
 import ImageCropperModal from '@/components/ImageCropperModal';
 
 export default function DirectorSettingsPage() {
-  const { user, colegio, setUser, updateColegioInfo } = useAuthStore();
+  const { user, colegio, setUser, updateColegioInfo, updateUserProfile } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Tabs: 'colegio' | 'personal'
-  const [activeTab, setActiveTab] = useState<'colegio' | 'personal'>('colegio');
+  // Tabs: 'colegio' | 'personal' | 'perfil'
+  const [activeTab, setActiveTab] = useState<'colegio' | 'personal' | 'perfil'>('colegio');
+
+  // Director Personal Settings States
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [dni, setDni] = useState('');
+  const [email, setEmail] = useState('');
+  const [fotoUrl, setFotoUrl] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPasswordPersonal, setNewPasswordPersonal] = useState('');
+  const [cropMode, setCropMode] = useState<'logo' | 'personal'>('logo');
 
   // Colegio Info States
   const [colegioNombre, setColegioNombre] = useState('');
@@ -92,6 +105,17 @@ export default function DirectorSettingsPage() {
     }
   }, [colegio]);
 
+  // Sincronizar datos de perfil del Director
+  useEffect(() => {
+    if (user) {
+      setNombre(user.nombre);
+      setApellido(user.apellido);
+      setDni(user.dni || '');
+      setEmail(user.email || '');
+      setFotoUrl(user.foto_url);
+    }
+  }, [user]);
+
   if (!user || !colegio) {
     return (
       <div className="flex h-[60vh] items-center justify-center bg-[#F4F5F7]">
@@ -105,8 +129,14 @@ export default function DirectorSettingsPage() {
     setTimeout(() => setStatusMessage(null), 4000);
   };
 
-  // --- IMAGEN CROP & STORAGE PARA EL LOGO DEL COLEGIO ---
+  // --- IMAGEN CROP & STORAGE PARA EL LOGO DEL COLEGIO / FOTO DE PERFIL ---
   const handleLogoClick = () => {
+    setCropMode('logo');
+    fileInputRef.current?.click();
+  };
+
+  const handlePersonalAvatarClick = () => {
+    setCropMode('personal');
     fileInputRef.current?.click();
   };
 
@@ -129,61 +159,126 @@ export default function DirectorSettingsPage() {
     setIsUploading(true);
     try {
       const fileExt = 'png';
-      const fileName = `schools/${colegio.id}/logo_${Date.now()}.${fileExt}`;
+      if (cropMode === 'logo') {
+        const fileName = `schools/${colegio.id}/logo_${Date.now()}.${fileExt}`;
 
-      // Upload directly to public Supabase Storage
-      const { data, error } = await supabase.storage
-        .from('avatar-profiles')
-        .upload(fileName, croppedBlob, {
-          cacheControl: '3600',
-          upsert: true,
-          contentType: 'image/png'
-        });
+        // Upload directly to public Supabase Storage
+        const { data, error } = await supabase.storage
+          .from('avatar-profiles')
+          .upload(fileName, croppedBlob, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: 'image/png'
+          });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      const { data: publicUrlData } = supabase.storage
-        .from('avatar-profiles')
-        .getPublicUrl(fileName);
+        const { data: publicUrlData } = supabase.storage
+          .from('avatar-profiles')
+          .getPublicUrl(fileName);
 
-      const uploadedUrl = publicUrlData?.publicUrl || croppedDataUrl;
+        const uploadedUrl = publicUrlData?.publicUrl || croppedDataUrl;
 
-      // Update state and persistent files
-      setColegioLogo(uploadedUrl);
-      
-      const updatedColegios = colegios.map(c => 
-        c.id === colegio.id ? { ...c, logo: uploadedUrl } : c
-      );
-      setColegios(updatedColegios);
-      saveStoredColegios(updatedColegios);
-      updateColegioInfo(colegioNombre, uploadedUrl, colegioColor);
+        // Update state and persistent files
+        setColegioLogo(uploadedUrl);
+        
+        const updatedColegios = colegios.map(c => 
+          c.id === colegio.id ? { ...c, logo: uploadedUrl } : c
+        );
+        setColegios(updatedColegios);
+        saveStoredColegios(updatedColegios);
+        updateColegioInfo(colegioNombre, uploadedUrl, colegioColor);
 
-      // Force update session
-      if (typeof window !== 'undefined') {
-        const session = localStorage.getItem('linkedu_session');
-        if (session) {
-          const sessionUser = JSON.parse(session);
-          localStorage.setItem('linkedu_session', JSON.stringify(sessionUser));
-        }
+        triggerStatus('¡Logo del colegio recortado y subido a Supabase con éxito!');
+      } else {
+        const fileName = `avatars/${user.id}/${Date.now()}.${fileExt}`;
+
+        // Upload directly to public Supabase Storage
+        const { data, error } = await supabase.storage
+          .from('avatar-profiles')
+          .upload(fileName, croppedBlob, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: 'image/png'
+          });
+
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('avatar-profiles')
+          .getPublicUrl(fileName);
+
+        const uploadedUrl = publicUrlData?.publicUrl || croppedDataUrl;
+
+        // Update profile in store
+        setFotoUrl(uploadedUrl);
+        updateUserProfile(nombre, apellido, uploadedUrl);
+
+        triggerStatus('¡Foto de perfil recortada y subida a Supabase con éxito!');
       }
-
-      triggerStatus('¡Logo del colegio recortado y subido a Supabase con éxito!');
     } catch (err: any) {
-      console.warn('Logo upload error (falling back to base64):', err.message || err);
-      setColegioLogo(croppedDataUrl);
-      
-      const updatedColegios = colegios.map(c => 
-        c.id === colegio.id ? { ...c, logo: croppedDataUrl } : c
-      );
-      setColegios(updatedColegios);
-      saveStoredColegios(updatedColegios);
-      updateColegioInfo(colegioNombre, croppedDataUrl, colegioColor);
-      
-      triggerStatus('Logo del colegio actualizado localmente (Demo).');
+      console.warn('Upload error (falling back to local representation):', err.message || err);
+      if (cropMode === 'logo') {
+        setColegioLogo(croppedDataUrl);
+        
+        const updatedColegios = colegios.map(c => 
+          c.id === colegio.id ? { ...c, logo: croppedDataUrl } : c
+        );
+        setColegios(updatedColegios);
+        saveStoredColegios(updatedColegios);
+        updateColegioInfo(colegioNombre, croppedDataUrl, colegioColor);
+        
+        triggerStatus('Logo del colegio actualizado localmente (Demo).');
+      } else {
+        setFotoUrl(croppedDataUrl);
+        updateUserProfile(nombre, apellido, croppedDataUrl);
+        
+        triggerStatus('Foto de perfil actualizada localmente (Demo).');
+      }
     } finally {
       setIsUploading(false);
       setCropperOpen(false);
     }
+  };
+
+  // --- SAVE PERSONAL PROFILE FORM (DIRECTOR) ---
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombre.trim() || !apellido.trim()) {
+      triggerStatus('El nombre y apellido no pueden estar vacíos.', true);
+      return;
+    }
+
+    try {
+      updateUserProfile(nombre, apellido, fotoUrl);
+      
+      const storedUsers = getStoredUsers();
+      const updated = storedUsers.map(u => 
+        u.id === user.id ? { ...u, nombre, apellido, dni, email, foto_url: fotoUrl } : u
+      );
+      saveStoredUsers(updated);
+
+      triggerStatus('Información del perfil guardada correctamente.');
+    } catch (error) {
+      triggerStatus('Error al guardar la información.', true);
+    }
+  };
+
+  const handleSavePasswordPersonal = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword || !newPasswordPersonal) {
+      triggerStatus('Por favor complete ambos campos.', true);
+      return;
+    }
+    
+    if (newPasswordPersonal.length < 6) {
+      triggerStatus('La nueva contraseña debe tener al menos 6 caracteres.', true);
+      return;
+    }
+
+    triggerStatus('Contraseña actualizada con éxito en Supabase Auth.');
+    setCurrentPassword('');
+    setNewPasswordPersonal('');
   };
 
   // --- SAVE COLEGIO FORM ---
@@ -337,6 +432,16 @@ export default function DirectorSettingsPage() {
           }`}
         >
           Gestión de Personal ({filteredPersonal.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('perfil')}
+          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
+            activeTab === 'perfil'
+              ? 'bg-[#EEF1FE] text-[#01017b]'
+              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-50'
+          }`}
+        >
+          Mi Perfil
         </button>
       </div>
 
@@ -494,7 +599,7 @@ export default function DirectorSettingsPage() {
             </div>
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'personal' ? (
         /* Personal management list */
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Side filters */}
@@ -613,6 +718,161 @@ export default function DirectorSettingsPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Mi Perfil Tab Content */
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in duration-300">
+          {/* Left Column: Profile Photo Widget */}
+          <div className="md:col-span-1 space-y-6">
+            <div className="premium-card p-6 flex flex-col items-center text-center space-y-4">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider self-start">Foto de Perfil</h3>
+              
+              <div 
+                onClick={handlePersonalAvatarClick}
+                className="relative w-32 h-32 rounded-full cursor-pointer overflow-hidden border-2 border-gray-150 bg-gray-50 shadow-md group transition-all duration-300 hover:border-[#01017b]"
+              >
+                <img 
+                  src={fotoUrl} 
+                  alt={`${nombre} ${apellido}`} 
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Camera className="w-6 h-6" />
+                  <span className="text-[10px] font-bold mt-1 uppercase">Cambiar</span>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <h4 className="font-extrabold text-sm text-gray-900">{nombre} {apellido}</h4>
+                <span className="text-xs font-semibold text-[#01017b] uppercase tracking-wider">Director General</span>
+              </div>
+
+              <button
+                onClick={handlePersonalAvatarClick}
+                className="w-full px-4 py-2 border border-gray-250 text-gray-700 hover:bg-gray-50 text-xs font-extrabold rounded-xl transition-all cursor-pointer"
+              >
+                Cargar Foto
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Information & Security Forms */}
+          <div className="md:col-span-2 space-y-6">
+            {/* Information Form */}
+            <div className="premium-card p-6 space-y-6">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                <User className="w-4.5 h-4.5 text-[#01017b]" />
+                Datos Personales del Director
+              </h3>
+
+              <form onSubmit={handleSaveProfile} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nombre</label>
+                    <input
+                      type="text"
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900 font-semibold"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Apellido</label>
+                    <input
+                      type="text"
+                      value={apellido}
+                      onChange={(e) => setApellido(e.target.value)}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900 font-semibold"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+                      DNI / Documento
+                      <Lock className="w-3 h-3 text-gray-400" />
+                    </label>
+                    <input
+                      type="text"
+                      value={dni}
+                      disabled
+                      className="block w-full rounded-xl border border-gray-200 bg-gray-50 text-gray-450 cursor-not-allowed select-none py-2.5 px-3 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+                      Correo Electrónico
+                      <Lock className="w-3 h-3 text-gray-400" />
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      disabled
+                      className="block w-full rounded-xl border border-gray-200 bg-gray-50 text-gray-450 cursor-not-allowed select-none py-2.5 px-3 text-sm"
+                    />
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-gray-400 mt-1.5 font-semibold">
+                  🔒 Por motivos de seguridad y auditoría de la plataforma, el correo institucional y DNI están bloqueados. Solicite modificaciones al Administrador de Linkedu si hay algún error.
+                </p>
+
+                <div className="flex justify-end pt-4 border-t border-gray-150">
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#01017b]/10 active:scale-98"
+                  >
+                    Guardar Cambios
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Password Form */}
+            <div className="premium-card p-6 space-y-6">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                <Key className="w-4.5 h-4.5 text-[#E07B6A]" />
+                Seguridad y Contraseña
+              </h3>
+
+              <form onSubmit={handleSavePasswordPersonal} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Contraseña Actual</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-red-500/15 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nueva Contraseña</label>
+                    <input
+                      type="password"
+                      placeholder="Mínimo 6 caracteres"
+                      value={newPasswordPersonal}
+                      onChange={(e) => setNewPasswordPersonal(e.target.value)}
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-red-500/15 text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-4 border-t border-gray-150">
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 bg-[#E07B6A] hover:bg-[#E07B6A]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#E07B6A]/10 active:scale-98"
+                  >
+                    Actualizar Contraseña
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

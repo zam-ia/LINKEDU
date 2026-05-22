@@ -23,12 +23,20 @@ export default function LoginPage() {
     }
   }, [user]);
 
-  // Detección de Magic Links
+  // Detección de Magic Links con expiración controlada
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const magicEmail = params.get('magic_email');
+      const expiresAt = params.get('expires_at');
       if (magicEmail) {
+        if (expiresAt) {
+          const expirationTime = Number(expiresAt);
+          if (expirationTime > 0 && Date.now() > expirationTime) {
+            setError('⚠️ El enlace demo ha caducado por límite de tiempo de seguridad. Solicita un nuevo acceso al administrador de Linkedu.');
+            return;
+          }
+        }
         handleQuickLogin(magicEmail, true);
       }
     }

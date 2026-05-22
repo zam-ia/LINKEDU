@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { 
@@ -199,6 +199,73 @@ export default function DashboardLayout({
   const [showNotifDrawer, setShowNotifDrawer] = useState(false);
   const [showCreateNotifModal, setShowCreateNotifModal] = useState(false);
   const [notifFiltro, setNotifFiltro] = useState<'Todos' | 'Evento' | 'Examen' | 'General'>('Todos');
+
+  // High Priority Exam Notification and Chime Sound states
+  const [activeHighPriorityNotif, setActiveHighPriorityNotif] = useState<Comunicado | null>(null);
+  const prevLengthRef = useRef<number | null>(null);
+
+  const playNotificationSound = () => {
+    if (typeof window === 'undefined') return;
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      
+      // Chime 1
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(880, ctx.currentTime);
+      gain1.gain.setValueAtTime(0, ctx.currentTime);
+      gain1.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.05);
+      gain1.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+      
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(ctx.currentTime);
+      osc1.stop(ctx.currentTime + 0.25);
+      
+      // Chime 2
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(1320, ctx.currentTime + 0.08);
+      gain2.gain.setValueAtTime(0, ctx.currentTime + 0.08);
+      gain2.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.12);
+      gain2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+      
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(ctx.currentTime + 0.08);
+      osc2.stop(ctx.currentTime + 0.35);
+    } catch (err) {
+      console.warn('Web Audio API not supported or blocked by browser policy:', err);
+    }
+  };
+
+  // Monitor changes in announcement list to trigger sound
+  useEffect(() => {
+    if (comunicados.length > 0) {
+      if (prevLengthRef.current !== null && comunicados.length > prevLengthRef.current) {
+        playNotificationSound();
+      }
+      prevLengthRef.current = comunicados.length;
+    }
+  }, [comunicados]);
+
+  // Monitor unread high-priority exam notification on login/mount
+  useEffect(() => {
+    if (user && comunicados.length > 0) {
+      const examNotifications = comunicados.filter(c => c.categoria === 'Examen');
+      if (examNotifications.length > 0) {
+        const latest = examNotifications[0];
+        const dismissed = localStorage.getItem(`linkedu_dismissed_announcement_${user.id}_${latest.id}`);
+        if (dismissed !== 'true') {
+          setActiveHighPriorityNotif(latest);
+        }
+      }
+    }
+  }, [comunicados, user]);
   
   // Form State for new Notification
   const [newNotif, setNewNotif] = useState({
@@ -921,6 +988,79 @@ export default function DashboardLayout({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 6. MODAL FLOTANTE: COMUNICADO CRÍTICO DE ALTA IMPORTANCIA */}
+      {activeHighPriorityNotif && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="relative w-full max-w-lg bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl rounded-3xl p-6 md:p-8 text-left animate-in zoom-in-95 duration-200">
+            {/* Ambient decorative glow */}
+            <div className="absolute -top-12 -left-12 w-32 h-32 bg-red-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-[#01017b]/10 rounded-full blur-2xl pointer-events-none"></div>
+
+            {/* Header / Accent Badge */}
+            <div className="flex items-center justify-between mb-5">
+              <span className="flex items-center gap-2 px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-wider rounded-full ring-1 ring-red-500/20 animate-pulse">
+                <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping"></span>
+                🚨 Notificación Académica Crítica
+              </span>
+              <button
+                onClick={() => {
+                  if (user) {
+                    localStorage.setItem(`linkedu_dismissed_announcement_${user.id}_${activeHighPriorityNotif.id}`, 'true');
+                  }
+                  setActiveHighPriorityNotif(null);
+                  playNotificationSound();
+                }}
+                className="p-1.5 text-gray-400 hover:text-gray-650 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                title="Cerrar y recordar luego"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Announcement Title & Details */}
+            <div className="space-y-4">
+              <h3 className="text-lg md:text-xl font-black text-gray-955 leading-tight">
+                {activeHighPriorityNotif.titulo}
+              </h3>
+              
+              <div className="p-4 bg-white/50 border border-white/60 rounded-2xl">
+                <p className="text-xs md:text-sm text-gray-700 font-semibold leading-relaxed whitespace-pre-line">
+                  {activeHighPriorityNotif.mensaje}
+                </p>
+              </div>
+
+              {/* Sender & Date Meta */}
+              <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] text-gray-400 font-extrabold uppercase tracking-wide border-t border-gray-150/40 pt-4">
+                <div className="flex items-center gap-1">
+                  <span>✍️ Emisor:</span>
+                  <span className="text-gray-600 font-black">{activeHighPriorityNotif.remitente}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span>📅 Publicado:</span>
+                  <span className="text-gray-600 font-black">{activeHighPriorityNotif.fecha}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Close Action */}
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  if (user) {
+                    localStorage.setItem(`linkedu_dismissed_announcement_${user.id}_${activeHighPriorityNotif.id}`, 'true');
+                  }
+                  setActiveHighPriorityNotif(null);
+                  playNotificationSound();
+                }}
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-750 text-white text-xs font-black uppercase tracking-wider rounded-2xl shadow-lg shadow-red-500/20 active:scale-98 transition-all cursor-pointer text-center font-bold"
+              >
+                Entendido, marcar como leído
+              </button>
+            </div>
           </div>
         </div>
       )}
