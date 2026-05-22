@@ -599,15 +599,6 @@ export default function DashboardLayout({
             <Menu className="w-6 h-6" />
           </button>
 
-          {/* Botón de Expansión/Colapso Desktop */}
-          <button 
-            onClick={toggleSidebar}
-            className="hidden md:flex p-2 -ml-2 rounded-lg text-gray-400 hover:text-gray-650 hover:bg-gray-100 transition-all cursor-pointer mr-3"
-            title={isSidebarCollapsed ? "Mostrar panel lateral" : "Ocultar panel lateral"}
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
           {/* Colegio Activo o Panel Global */}
           <div className="hidden sm:flex items-center gap-2">
             {colegio ? (
