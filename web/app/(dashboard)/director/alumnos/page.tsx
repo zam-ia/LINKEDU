@@ -17,6 +17,7 @@ import {
   Activity,
   ArrowRight,
   ArrowLeft,
+  ArrowUpRight,
   ChevronDown
 } from 'lucide-react';
 import { 
@@ -167,16 +168,13 @@ export default function AlumnosPage() {
   const handleRegisterAlumno = () => {
     if (!colegio) return;
 
-    // Validar límite de alumnos según el plan
-    const isBasico = schoolPlan.includes('Básico') || schoolPlan.includes('Basico');
-    const isEstandar = schoolPlan.includes('Estandar') || schoolPlan.includes('Estándar');
-    if (isBasico && alumnos.length >= 150) {
-      triggerAlert('⚠️ Límite de Plan: Has alcanzado el límite de 150 alumnos permitidos para tu Plan Básico. Solicita un Upgrade a la administración.');
-      return;
-    }
-    if (isEstandar && alumnos.length >= 400) {
-      triggerAlert('⚠️ Límite de Plan: Has alcanzado el límite de 400 alumnos permitidos para tu Plan Estándar. Solicita un Upgrade a la administración.');
-      return;
+    // Validar límite de alumnos de manera consultiva (flexible)
+    const limitFinal = colegio?.limite_personalizado && colegio.limite_personalizado > 0
+      ? colegio.limite_personalizado
+      : (colegio?.limite_alumnos || 150);
+    
+    if (alumnos.length >= limitFinal) {
+      triggerAlert('⚠️ Capacidad excedida. La matrícula fue exitosa, pero te recomendamos regularizar tu plan por WhatsApp.');
     }
 
     const studentId = 'student-' + Date.now();
@@ -201,42 +199,41 @@ export default function AlumnosPage() {
         email: newAlumno.tutorEmail
       },
       datos_medicos: {
-        sangre: newAlumno.sangre,
+        sangre: newAlumno.sangre || 'O+',
         alergias: newAlumno.alergias ? newAlumno.alergias.split(',').map(s => s.trim()) : [],
         condiciones: newAlumno.condiciones || 'Ninguna',
-        seguro: newAlumno.seguro
+        seguro: newAlumno.seguro || 'SIS'
       }
     };
 
-    // 2. Create initial tuition fee payment (Matrícula)
-    const initialPayment: PagoInfo = {
-      id: 'p-matricula-' + Date.now(),
+    // 2. Create seed payment for registration
+    const addedPayment: PagoInfo = {
+      id: 'pago-' + Date.now(),
       colegio_id: colegio.id,
       alumno_id: studentId,
-      concepto: 'Matrícula Inicial 2026',
+      concepto: 'Matrícula Escolar 2026',
       monto: parseFloat(newAlumno.montoMatricula) || 350,
       tipo: 'ingreso',
       categoria: 'Matrícula',
       fecha: new Date().toISOString().split('T')[0],
       vencimiento: new Date().toISOString().split('T')[0],
-      estado: 'pendiente',
-      metodo: null,
-      comprobante: null
+      estado: 'pagado',
+      metodo: 'Efectivo',
+      comprobante: 'B001-' + Math.floor(1000 + Math.random() * 9000)
     };
 
-    // Save to localStorage
-    const currentStudents = getStoredAlumnos();
-    const currentPayments = getStoredPagos();
+    // Save to Mock DB
+    const allAlumnos = getStoredAlumnos();
+    const allPagos = getStoredPagos();
 
-    const updatedStudents = [addedStudent, ...currentStudents];
-    const updatedPayments = [initialPayment, ...currentPayments];
+    saveStoredAlumnos([addedStudent, ...allAlumnos]);
+    saveStoredPagos([addedPayment, ...allPagos]);
 
-    saveStoredAlumnos(updatedStudents);
-    saveStoredPagos(updatedPayments);
+    // Update States
+    setAlumnos(prev => [addedStudent, ...prev]);
+    setPagos(prev => [addedPayment, ...prev]);
 
-    setAlumnos(updatedStudents.filter(a => a.colegio_id === colegio.id));
-    setPagos(updatedPayments.filter(p => p.colegio_id === colegio.id));
-
+    // Reset Wizard
     setShowWizard(false);
     setWizardStep(1);
     setNewAlumno({
@@ -258,31 +255,36 @@ export default function AlumnosPage() {
       montoMatricula: '350'
     });
 
-    triggerAlert(`¡Estudiante ${addedStudent.nombre} matriculado con éxito! Se ha generado la orden de pago.`);
+    triggerAlert(`¡Excelente! El alumno ${addedStudent.nombre} ${addedStudent.apellido} ha sido matriculado y registrado exitosamente.`);
   };
 
-  // Filter logic
-  const filteredAlumnos = alumnos.filter(alumno => {
+  const matchesSearchAndFilters = (alumno: AlumnoInfo) => {
     const fullName = `${alumno.nombre} ${alumno.apellido}`.toLowerCase();
-    const matchesSearch = fullName.includes(searchQuery.toLowerCase()) || alumno.dni.includes(searchQuery);
+    const dni = alumno.dni.toLowerCase();
+    const email = (alumno.email || '').toLowerCase();
     
-    // Check actual financial status from payments
-    const studentPayments = pagos.filter(p => p.alumno_id === alumno.id);
-    const hasOverdue = studentPayments.some(p => p.estado === 'vencido');
-    const isPending = studentPayments.some(p => p.estado === 'pendiente') && !hasOverdue;
-    const isAlDia = !hasOverdue && !isPending;
-
-    const actualFinanciero = hasOverdue ? 'en_mora' : isPending ? 'pendiente' : 'al_dia';
-
+    const matchesSearch = fullName.includes(searchQuery.toLowerCase()) || 
+                          dni.includes(searchQuery.toLowerCase()) || 
+                          email.includes(searchQuery.toLowerCase());
+                          
     const matchesGrado = filterGrado === 'todos' || alumno.grado === filterGrado;
     const matchesSeccion = filterSeccion === 'todos' || alumno.seccion === filterSeccion;
-    const matchesFinanciero = filterFinanciero === 'todos' || actualFinanciero === filterFinanciero;
+    
+    let matchesFinanciero = true;
+    if (filterFinanciero !== 'todos') {
+      matchesFinanciero = alumno.financiero === filterFinanciero;
+    }
 
     return matchesSearch && matchesGrado && matchesSeccion && matchesFinanciero;
-  });
+  };
 
+  const filteredAlumnos = alumnos.filter(matchesSearchAndFilters);
   const uniqueGrados = Array.from(new Set(alumnos.map(a => a.grado)));
   const uniqueSecciones = Array.from(new Set(alumnos.map(a => a.seccion)));
+
+  const limitFinal = colegio?.limite_personalizado && colegio.limite_personalizado > 0
+    ? colegio.limite_personalizado
+    : (colegio?.limite_alumnos || 150);
 
   return (
     <div className="space-y-6 relative">
@@ -310,6 +312,30 @@ export default function AlumnosPage() {
           </button>
         </div>
       </div>
+
+      {/* Consultative capacity alert banner */}
+      {alumnos.length >= limitFinal && (
+        <div className="bg-amber-50/50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm animate-fade-in-up">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5.5 h-5.5 text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-xs font-black text-amber-850 uppercase tracking-wider">⚠️ Capacidad Límite de Alumnos Alcanzada</h4>
+              <p className="text-xs text-amber-700 font-semibold mt-1 leading-relaxed">
+                Tu colegio cuenta actualmente con <strong className="text-amber-950 font-black">{alumnos.length}</strong> alumnos registrados de un límite final de <strong className="text-amber-950 font-black">{limitFinal}</strong>.
+                Cada plan se adapta al tamaño de tu institución. Si tu colegio está entre dos rangos, en una demo revisamos tu caso y configuramos el límite ideal para que no pagues de más ni te quedes corto.
+              </p>
+            </div>
+          </div>
+          <a 
+            href="https://wa.me/51987088359?text=Hola!%20Deseo%20solicitar%20un%20aumento%20de%20capacidad%20para%20mi%20colegio%20en%20Linkedu."
+            target="_blank"
+            className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all shadow-md shadow-amber-500/10 flex items-center gap-1.5 cursor-pointer border border-amber-400"
+          >
+            Conversar por WhatsApp
+            <ArrowUpRight className="w-4 h-4" />
+          </a>
+        </div>
+      )}
 
       {/* SEARCH AND FILTERS */}
       <div className="premium-card p-4 flex flex-col md:flex-row items-center justify-between gap-4">

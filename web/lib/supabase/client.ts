@@ -31,10 +31,15 @@ export interface ColegioInfo {
   logo: string;
   ruc: string;
   activo: boolean;
-  plan?: string;
+  plan?: string; // 'Básico SaaS' | 'Estandar SaaS' | 'Premium SaaS'
   mensualidad?: number;
   vencimiento?: string;
   color_primario?: string;
+  // Nuevos atributos comerciales VIP
+  limite_alumnos?: number;
+  soporte_prioritario?: 'estándar' | 'preferente' | 'prioritario';
+  limite_personalizado?: number;
+  observaciones_comerciales?: string;
 }
 
 export const INITIAL_COLEGIOS: ColegioInfo[] = [
@@ -45,8 +50,11 @@ export const INITIAL_COLEGIOS: ColegioInfo[] = [
     ruc: '20123456789',
     activo: true,
     plan: 'Premium SaaS',
-    mensualidad: 1500,
-    vencimiento: '2026-06-15'
+    mensualidad: 1199,
+    vencimiento: '2026-06-15',
+    limite_alumnos: 99999,
+    soporte_prioritario: 'prioritario',
+    observaciones_comerciales: 'Colegio de prueba VIP. Excelente uso de todos los módulos activos.'
   },
   {
     id: 'b2c3d4e5-f67a-8b9c-0d1e-2f3a4b5c6d7e',
@@ -55,8 +63,11 @@ export const INITIAL_COLEGIOS: ColegioInfo[] = [
     ruc: '20987654321',
     activo: true,
     plan: 'Premium SaaS',
-    mensualidad: 1800,
-    vencimiento: '2026-06-02'
+    mensualidad: 1199,
+    vencimiento: '2026-06-02',
+    limite_alumnos: 99999,
+    soporte_prioritario: 'prioritario',
+    observaciones_comerciales: 'Institución de alto nivel. Interesados en activar pasarela bancaria integrada en el próximo trimestre.'
   },
   {
     id: 'c3d4e5f6-7a8b-9c0d-1e2f-3a4b5c6d7e8f',
@@ -65,8 +76,11 @@ export const INITIAL_COLEGIOS: ColegioInfo[] = [
     ruc: '20556677889',
     activo: true,
     plan: 'Estandar SaaS',
-    mensualidad: 950,
-    vencimiento: '2026-05-28' // ¡Próximo a vencer!
+    mensualidad: 799,
+    vencimiento: '2026-05-28', // ¡Próximo a vencer!
+    limite_alumnos: 400,
+    soporte_prioritario: 'preferente',
+    observaciones_comerciales: 'Soporte preferente activo. Tienen planeado migrar al plan Premium para el segundo semestre académico.'
   },
   {
     id: 'd4e5f67a-8b9c-0d1e-2f3a-4b5c6d7e8f9a',
@@ -75,8 +89,11 @@ export const INITIAL_COLEGIOS: ColegioInfo[] = [
     ruc: '20443322115',
     activo: false,
     plan: 'Básico SaaS',
-    mensualidad: 800,
-    vencimiento: '2026-05-10' // ¡Suspendido / Vencido!
+    mensualidad: 399,
+    vencimiento: '2026-05-10', // ¡Suspendido / Vencido!
+    limite_alumnos: 150,
+    soporte_prioritario: 'estándar',
+    observaciones_comerciales: 'Cuenta suspendida temporalmente por falta de pago. Director Roberto Mendoza indica regularización para fines de mayo.'
   }
 ];
 
@@ -167,6 +184,61 @@ export const getStoredUsers = (): UserProfile[] => {
 export const saveStoredUsers = (users: UserProfile[]) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem('linkedu_users', JSON.stringify(users));
+  }
+};
+
+export interface LinkeduLead {
+  id: string;
+  nombre: string;
+  email: string;
+  colegio: string;
+  telefono: string;
+  fecha: string;
+  atendido?: boolean;
+}
+
+export const getStoredLeads = (): LinkeduLead[] => {
+  if (typeof window === 'undefined') return [];
+  const saved = localStorage.getItem('linkedu_leads');
+  if (saved) {
+    try { return JSON.parse(saved); } catch (e) { console.error(e); }
+  }
+  const defaultLeads: LinkeduLead[] = [
+    {
+      id: 'lead-1',
+      nombre: 'Juan Carlos Torres',
+      email: 'jtorres@colegiosanignacio.edu.pe',
+      colegio: 'Colegio San Ignacio',
+      telefono: '+51 983 234 567',
+      fecha: '2026-05-20',
+      atendido: false
+    },
+    {
+      id: 'lead-2',
+      nombre: 'Mirtha Villanueva',
+      email: 'mvillanueva@colegiosantaisabel.com',
+      colegio: 'Colegio Santa Isabel',
+      telefono: '+51 945 876 123',
+      fecha: '2026-05-21',
+      atendido: true
+    },
+    {
+      id: 'lead-3',
+      nombre: 'Alejandro Mendoza',
+      email: 'amendoza@liceobolognesi.edu.pe',
+      colegio: 'Liceo Coronel Bolognesi',
+      telefono: '+51 991 432 098',
+      fecha: '2026-05-22',
+      atendido: false
+    }
+  ];
+  localStorage.setItem('linkedu_leads', JSON.stringify(defaultLeads));
+  return defaultLeads;
+};
+
+export const saveStoredLeads = (leads: LinkeduLead[]) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('linkedu_leads', JSON.stringify(leads));
   }
 };
 

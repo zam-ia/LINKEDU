@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuthStore } from '@/lib/store/useAuthStore';
+import { getStoredAlumnos, AlumnoInfo } from '@/lib/supabase/client';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -47,6 +49,8 @@ const MOCK_DEUDORES = [
 ];
 
 export default function DirectorDashboard() {
+  const { user, colegio } = useAuthStore();
+  const [alumnos, setAlumnos] = useState<AlumnoInfo[]>([]);
   const [deudores, setDeudores] = useState(MOCK_DEUDORES);
   const [showAddEgreso, setShowAddEgreso] = useState(false);
   const [newEgreso, setNewEgreso] = useState({ categoria: 'Servicios', descripcion: '', monto: '' });
@@ -54,6 +58,17 @@ export default function DirectorDashboard() {
     { id: 1, categoria: 'Planilla', descripcion: 'Planillas docentes Mayo 2026', monto: 1500, fecha: '2026-05-15' },
     { id: 2, categoria: 'Servicios', descripcion: 'Pago de luz e internet', monto: 350, fecha: '2026-05-10' },
   ]);
+
+  useEffect(() => {
+    if (colegio) {
+      const stored = getStoredAlumnos().filter(a => a.colegio_id === colegio.id);
+      setAlumnos(stored);
+    }
+  }, [colegio]);
+
+  const limitFinal = colegio?.limite_personalizado && colegio.limite_personalizado > 0
+    ? colegio.limite_personalizado
+    : (colegio?.limite_alumnos || 150);
 
   const handleSendReminder = (id: string, nombre: string) => {
     alert(`Recordatorio de pago enviado con éxito vía Notificación Push y Email al tutor de ${nombre}`);
@@ -103,6 +118,30 @@ export default function DirectorDashboard() {
           </button>
         </div>
       </div>
+
+      {/* Consultative capacity alert banner */}
+      {alumnos.length >= limitFinal && (
+        <div className="bg-amber-50/50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm animate-fade-in-up">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5.5 h-5.5 text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-xs font-black text-amber-850 uppercase tracking-wider">⚠️ Capacidad Límite de Alumnos Alcanzada</h4>
+              <p className="text-xs text-amber-700 font-semibold mt-1 leading-relaxed">
+                Tu colegio cuenta actualmente con <strong className="text-amber-950 font-black">{alumnos.length}</strong> alumnos registrados de un límite final de <strong className="text-amber-950 font-black">{limitFinal}</strong>.
+                Cada plan se adapta al tamaño de tu institución. Si tu colegio está entre dos rangos, en una demo revisamos tu caso y configuramos el límite ideal para que no pagues de más ni te quedes corto.
+              </p>
+            </div>
+          </div>
+          <a 
+            href="https://wa.me/51987088359?text=Hola!%20Deseo%20solicitar%20un%20aumento%20de%20capacidad%20para%20mi%20colegio%20en%20Linkedu."
+            target="_blank"
+            className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all shadow-md shadow-amber-500/10 flex items-center gap-1.5 cursor-pointer border border-amber-400"
+          >
+            Conversar por WhatsApp
+            <ArrowUpRight className="w-4 h-4" />
+          </a>
+        </div>
+      )}
 
       {/* 2. TARJETAS DE KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

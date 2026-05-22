@@ -4,7 +4,7 @@ import { UserProfile, getStoredColegios, saveStoredColegios, getStoredUsers, sav
 interface AuthState {
   user: UserProfile | null;
   loading: boolean;
-  colegio: { id: string; nombre: string; logo: string; plan?: string; color_primario?: string } | null;
+  colegio: { id: string; nombre: string; logo: string; plan?: string; color_primario?: string; limite_alumnos?: number; limite_personalizado?: number } | null;
   login: (email: string, password?: string) => Promise<boolean>;
   logout: () => void;
   setUser: (user: UserProfile | null) => void;
@@ -32,7 +32,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
               nombre: school.nombre,
               logo: school.logo,
               plan: school.plan,
-              color_primario: school.color_primario
+              color_primario: school.color_primario,
+              limite_alumnos: school.limite_alumnos,
+              limite_personalizado: school.limite_personalizado
             };
           }
         }
@@ -92,7 +94,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
               activo: true,
               plan: 'Premium SaaS',
               mensualidad: 1500,
-              vencimiento: '2026-12-31'
+              vencimiento: '2026-12-31',
+              limite_alumnos: 99999,
+              limite_personalizado: 0
             };
             colegios.push(school);
             saveStoredColegios(colegios);
@@ -184,7 +188,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
               nombre: school.nombre,
               logo: school.logo,
               plan: school.plan,
-              color_primario: school.color_primario
+              color_primario: school.color_primario,
+              limite_alumnos: school.limite_alumnos,
+              limite_personalizado: school.limite_personalizado
             };
           }
         }

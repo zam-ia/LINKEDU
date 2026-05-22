@@ -23,6 +23,17 @@ export default function LoginPage() {
     }
   }, [user]);
 
+  // Detección de Magic Links
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const magicEmail = params.get('magic_email');
+      if (magicEmail) {
+        handleQuickLogin(magicEmail, true);
+      }
+    }
+  }, []);
+
   const handleLogoClick = () => {
     setClickCount((prev) => {
       const next = prev + 1;
@@ -66,8 +77,8 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickLogin = async (demoEmail: string) => {
-    if (demoEmail === 'superadmin@linkedu.com') {
+  const handleQuickLogin = async (demoEmail: string, isMagic: boolean = false) => {
+    if (demoEmail === 'superadmin@linkedu.com' && !isMagic) {
       setEmail('superadmin@linkedu.com');
       setPassword('');
       setError('Por favor, ingresa tu contraseña de Super Administrador (la clave es admin123).');
@@ -75,7 +86,7 @@ export default function LoginPage() {
     }
     setEmail(demoEmail);
     setError('');
-    const success = await login(demoEmail);
+    const success = await login(demoEmail, demoEmail === 'superadmin@linkedu.com' ? 'admin123' : undefined);
     if (success) {
       const activeUser = useAuthStore.getState().user;
       if (activeUser) {
@@ -83,6 +94,8 @@ export default function LoginPage() {
       } else {
         window.location.href = '/';
       }
+    } else {
+      setError('Error al iniciar sesión con Magic Link. Verifica que el correo sea válido.');
     }
   };
 

@@ -41,6 +41,7 @@ import {
   saveStoredColegios, 
   getStoredUsers, 
   saveStoredUsers, 
+  getStoredAlumnos,
   ColegioInfo, 
   UserProfile 
 } from '@/lib/supabase/client';
@@ -54,6 +55,118 @@ const saasGrowthData = [
   { mes: 'May', Ingresos: 18900 },
 ];
 
+const PRESET_1 = {
+  heroTitle: "Todo tu colegio conectado en",
+  heroGradient: "un solo ecosistema digital All-in-One.",
+  heroTitleEnd: "",
+  heroSubtitle: "Moderniza tu institución educativa. Integra pensiones, matrículas, notas, asistencias y comunicación instantánea en una plataforma con app móvil para padres, docentes y alumnos.",
+  heroBullets: [
+    "Control de pensiones y morosidad integrado.",
+    "App móvil para padres y alumnos en tiempo real.",
+    "Registro digital de notas, promedios y asistencia.",
+    "Dashboard unificado para dirección y promotores.",
+    "Demo personalizada para tu institución."
+  ],
+  videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
+  whatsappNumber: "51987088359",
+  whatsappTemplate: 'Hola Linkedu! Me interesa el plan de Ecosistema Premium SaaS para mi colegio. Quisiera agendar una demo en vivo. Mi colegio: "{schoolName}", correo: "{directorEmail}".',
+  subtitles: [
+    "Orquesta tu colegio con el Ecosistema Premium Linkedu All-in-One.",
+    "Centraliza tesorería, notas de alumnos, reportes de asistencia y avisos en un solo lugar.",
+    "Cada portal se adapta dinámicamente con accesos independientes.",
+    "Reduce la burocracia docente y aumenta la retención de las familias.",
+    "Agenda una demo y mira cómo se vería tu colegio funcionando con Linkedu."
+  ],
+  problemTitle: "Tu colegio no necesita más desorden operativo. Necesita control centralizado.",
+  problemSubtitle: "La información separada en cuadernos, WhatsApp y Excel crea silos de datos, fugas en cobranzas y cansancio administrativo.",
+  problemMessage: "Linkedu conecta a toda tu comunidad educativa en un único sistema unificado.",
+  solutionTitle: "La plataforma que conecta a Dirección, Docentes, Padres y Alumnos.",
+  solutionSubtitle: "Una interfaz diseñada para que cada rol acceda exactamente a lo que necesita de forma rápida e intuitiva.",
+  benefitsTitle: "Lo que cambia con el Ecosistema Linkedu:",
+  proofTitle: "Explora la plataforma escolar más avanzada del mercado.",
+  proofSubtitle: "Nuestra arquitectura multi-tenant permite desplegar tu propio campus digital con logo y colores corporativos de tu colegio al instante.",
+  offerTitle: "Solicita hoy tu Demo Personalizada del Ecosistema Escolar.",
+  guaranteeTitle: "Prueba sin compromisos hoy.",
+  guaranteeText: "Agenda una llamada con uno de nuestros asesores expertos para revisar tu caso y diseñar la mejor configuración para tu colegio.",
+  ctaFinalTitle: "Da el salto a la modernización escolar con la plataforma líder.",
+  ctaFinalText: "Únete a las instituciones que ya redujeron su morosidad un 40% y eliminaron el papeleo burocrático con Linkedu."
+};
+
+const PRESET_2 = {
+  heroTitle: "Controla pensiones, notas y asistencia",
+  heroGradient: "reduciendo el caos administrativo de tu colegio.",
+  heroTitleEnd: "",
+  heroSubtitle: "Ayudamos a dueños y promotores de colegios a erradicar la morosidad y unificar la intranet escolar sin contratar más personal administrativo.",
+  heroBullets: [
+    "Diagnóstico estratégico de digitalización gratuito.",
+    "Estrategia probada para reducir morosidad contable.",
+    "App móvil nativa para comunicación pacífica.",
+    "Automatización de alertas de deuda recurrentes.",
+    "Sesión de consultoría privada 1-a-1 de 30 minutos."
+  ],
+  videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
+  whatsappNumber: "51987088359",
+  whatsappTemplate: 'Hola Linkedu! Quisiera solicitar el Diagnóstico de Digitalización Gratuito y Demo 1-a-1 de High-Ticket. Mi colegio: "{schoolName}", correo: "{directorEmail}".',
+  subtitles: [
+    "Bienvenido al Diagnóstico Gratuito de Gestión Escolar Linkedu.",
+    "Descubre los 3 pilares clave para erradicar la morosidad en pensiones en menos de 90 días.",
+    "Ahorra miles de horas de trabajo administrativo automatizando tus circulares y recordatorios.",
+    "Proyecta una imagen de máxima modernidad y prestigio frente a los padres.",
+    "Haz clic abajo y solicita tu diagnóstico privado de 30 minutos sin costo."
+  ],
+  problemTitle: "Administrar un colegio privado no debería ser un dolor de cabeza diario.",
+  problemSubtitle: "Los directores pierden hasta un 30% del tiempo persiguiendo pagos atrasados y atendiendo llamadas repetitivas de padres.",
+  problemMessage: "El desorden financiero y operativo deteriora el prestigio y rentabilidad de tu institución.",
+  solutionTitle: "Un sistema de alta eficiencia para directores exigentes.",
+  solutionSubtitle: "Linkedu actúa como tu asistente de operaciones invisible, cobrando a tiempo, ordenando notas y enviando reportes a los tutores.",
+  benefitsTitle: "Beneficios de nuestra Consultoría de Digitalización:",
+  proofTitle: "Mira el sistema financiero y la app móvil en acción.",
+  proofSubtitle: "Te mostramos cómo automatizar el envío de recibos electrónicos y cómo gestionar incidencias académicas en vivo.",
+  offerTitle: "Reserva una sesión de diagnóstico privado y demo en vivo.",
+  guaranteeTitle: "Garantía de Claridad y Diagnóstico.",
+  guaranteeText: "Si tras los 30 minutos de consultoría sientes que no aportamos valor, te regalamos una guía de optimización contable para Excel de inmediato.",
+  ctaFinalTitle: "Toma el control absoluto del futuro de tu institución hoy.",
+  ctaFinalText: "Agenda tu llamada privada de diagnóstico gratuito con nuestro equipo y asegura las vacantes de tu colegio para el próximo ciclo."
+};
+
+const PRESET_3 = {
+  heroTitle: "Deja de administrar tu colegio entre",
+  heroGradient: "Excel, WhatsApp y papeles.",
+  heroTitleEnd: "",
+  heroSubtitle: "Centraliza pensiones, notas, asistencias, tareas, comunicados y reportes en una sola plataforma con app móvil para dirección, docentes, padres y alumnos.",
+  heroBullets: [
+    "Control de pensiones y morosidad.",
+    "App móvil para padres y alumnos.",
+    "Registro digital de notas y asistencias.",
+    "Dashboard para dirección.",
+    "Demo personalizada para tu colegio."
+  ],
+  videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
+  whatsappNumber: "51987088359",
+  whatsappTemplate: 'Hola! Vengo de la landing page de Linkedu. Me interesa agendar una demo en vivo de VSL Express. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}".',
+  subtitles: [
+    "¿Tu colegio todavía controla pensiones en Excel, notas en hojas sueltas, asistencias en cuadernos y comunicados por WhatsApp?",
+    "Presta atención, porque en esta demo te voy a mostrar cómo Linkedu te ayuda a centralizar la gestión de tu colegio.",
+    "Linkedu es el panel de control que ordena tu colegio y mejora la experiencia de padres, docentes y dirección.",
+    "El problema es que la información del colegio está repartida en demasiados lugares.",
+    "Con Linkedu, consigues tres mejoras importantes: más control financiero, menos carga operativa y más prestigio institucional.",
+    "Linkedu: el control de tu colegio en una sola plataforma."
+  ],
+  problemTitle: "Tu colegio no necesita más papeles. Necesita más control.",
+  problemSubtitle: "Cuando la información está repartida entre Excel, WhatsApp, cuadernos y hojas sueltas, el colegio pierde tiempo, claridad y autoridad frente a los padres.",
+  problemMessage: "Linkedu fue creado justamente para resolver ese desorden.",
+  solutionTitle: "Todo tu colegio conectado en una sola plataforma.",
+  solutionSubtitle: "Dirección controla finanzas, los docentes registran notas, los padres revisan pensiones y los alumnos consultan tareas.",
+  benefitsTitle: "Lo que cambia con Linkedu:",
+  proofTitle: "Mira cómo se vería tu colegio dentro de la plataforma.",
+  proofSubtitle: "En la demo personalizada revisamos cómo funciona el portal de dirección, cómo un docente registra notas y cómo un padre consulta calificaciones.",
+  offerTitle: "Agenda una demo y mira cómo se vería tu colegio dentro de Linkedu.",
+  guaranteeTitle: "No tienes que decidir nada hoy.",
+  guaranteeText: "Primero mira la plataforma, revisamos tu caso y te mostramos cuál sería el mejor plan según el tamaño de tu colegio de forma consultiva.",
+  ctaFinalTitle: "Agenda una demo y mira cómo se vería tu colegio dentro de Linkedu.",
+  ctaFinalText: "Centraliza pensiones, notas, asistencias, tareas, comunicados y reportes en una sola plataforma con app móvil."
+};
+
 export default function SuperAdminDashboard() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -62,6 +175,67 @@ export default function SuperAdminDashboard() {
   const [activeTab, setActiveTab] = useState(tabParam);
   const [colegios, setColegios] = useState<ColegioInfo[]>([]);
   const [usuarios, setUsuarios] = useState<UserProfile[]>([]);
+
+  // Demos & Magic Links States
+  const [leads, setLeads] = useState<any[]>([]);
+  const [magicSchoolId, setMagicSchoolId] = useState('');
+  const [magicRole, setMagicRole] = useState('director');
+  const [magicDomain, setMagicDomain] = useState('');
+
+  useEffect(() => {
+    if (activeTab === 'demos_leads') {
+      const { getStoredLeads } = require('@/lib/supabase/client');
+      setLeads(getStoredLeads());
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (colegios.length > 0) {
+      const firstSchool = colegios[0];
+      setMagicSchoolId(firstSchool.id);
+      
+      const getSchoolDomain = (schoolName: string) => {
+        let clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+        return clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+      };
+      setMagicDomain(getSchoolDomain(firstSchool.nombre));
+    }
+  }, [colegios]);
+
+  const handleSchoolChangeForMagic = (schoolId: string) => {
+    setMagicSchoolId(schoolId);
+    const school = colegios.find(c => c.id === schoolId);
+    if (school) {
+      const getSchoolDomain = (schoolName: string) => {
+        let clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+        return clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+      };
+      setMagicDomain(getSchoolDomain(school.nombre));
+    }
+  };
+
+  const handleToggleLeadAtendido = (id: string) => {
+    const { getStoredLeads, saveStoredLeads } = require('@/lib/supabase/client');
+    const currentLeads = getStoredLeads();
+    const updated = currentLeads.map((l: any) => {
+      if (l.id === id) {
+        const nextState = !l.atendido;
+        triggerAlert(`Lead "${l.email}" marcado como ${nextState ? 'atendido' : 'pendiente'}.`);
+        return { ...l, atendido: nextState };
+      }
+      return l;
+    });
+    setLeads(updated);
+    saveStoredLeads(updated);
+  };
+
+  const handleLoadLeadToMagic = (lead: any) => {
+    let clean = lead.colegio.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+    const subdomain = clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    setMagicDomain(subdomain);
+    setMagicRole('director');
+    triggerAlert(`Lead de "${lead.colegio}" cargado en el Generador de Magic Links.`);
+  };
   
   // Filtros y búsquedas
   const [searchColegio, setSearchColegio] = useState('');
@@ -104,7 +278,11 @@ export default function SuperAdminDashboard() {
     logo: '', 
     plan: 'Premium SaaS', 
     mensualidad: '1200', 
-    vencimiento: '2026-06-21' 
+    vencimiento: '2026-06-21',
+    limite_alumnos: '150',
+    limite_personalizado: '0',
+    soporte_prioritario: 'estándar',
+    observaciones_comerciales: ''
   });
 
   // VSL Custom states for Collapsible Panel, Viewport Toggle, Reloading and Upload Mode
@@ -271,7 +449,11 @@ export default function SuperAdminDashboard() {
       logo: col.logo || '',
       plan: col.plan || 'Premium SaaS',
       mensualidad: String(col.mensualidad || 1200),
-      vencimiento: col.vencimiento || '2026-06-21'
+      vencimiento: col.vencimiento || '2026-06-21',
+      limite_alumnos: String(col.limite_alumnos || (col.plan === 'Básico SaaS' ? 150 : col.plan === 'Estandar SaaS' ? 400 : 99999)),
+      limite_personalizado: String(col.limite_personalizado || 0),
+      soporte_prioritario: col.soporte_prioritario || 'estándar',
+      observaciones_comerciales: col.observaciones_comerciales || ''
     });
     setShowEditColegio(true);
   };
@@ -289,7 +471,11 @@ export default function SuperAdminDashboard() {
           logo: editColegioForm.logo || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80',
           plan: editColegioForm.plan,
           mensualidad: Number(editColegioForm.mensualidad) || 1200,
-          vencimiento: editColegioForm.vencimiento
+          vencimiento: editColegioForm.vencimiento,
+          limite_alumnos: Number(editColegioForm.limite_alumnos) || 150,
+          limite_personalizado: Number(editColegioForm.limite_personalizado) || 0,
+          soporte_prioritario: editColegioForm.soporte_prioritario as any,
+          observaciones_comerciales: editColegioForm.observaciones_comerciales
         };
       }
       return c;
@@ -485,6 +671,16 @@ export default function SuperAdminDashboard() {
           }`}
         >
           Configurar Landing VSL
+        </button>
+        <button
+          onClick={() => handleTabChange('demos_leads')}
+          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
+            activeTab === 'demos_leads'
+              ? 'bg-[#EEF1FE] text-[#01017b]'
+              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
+          }`}
+        >
+          Demos y Magic Links
         </button>
       </div>
 
@@ -904,6 +1100,45 @@ export default function SuperAdminDashboard() {
                 <Tv className="w-5 h-5 text-[#01017b]" />
               </div>
 
+              {/* SELECTOR DE PLANTILLAS / PRESETS */}
+              <div className="bg-[#EEF1FE]/40 border border-[#01017b]/10 rounded-2xl p-4 space-y-2.5">
+                <span className="block text-[10px] font-black text-gray-450 uppercase tracking-widest text-center">
+                  💡 Cargar Plantilla Comercial Preset
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVslForm(PRESET_1);
+                      triggerAlert("Plantilla 1 (SaaS Premium) cargada. ¡Haz clic en Guardar Cambios para publicarla!");
+                    }}
+                    className="py-2 px-1 text-[9px] font-black uppercase text-gray-700 bg-white border hover:bg-gray-50 rounded-xl transition-all cursor-pointer text-center"
+                  >
+                    1. SaaS Premium
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVslForm(PRESET_2);
+                      triggerAlert("Plantilla 2 (High-Ticket Call) cargada. ¡Haz clic en Guardar Cambios para publicarla!");
+                    }}
+                    className="py-2 px-1 text-[9px] font-black uppercase text-gray-700 bg-white border hover:bg-gray-50 rounded-xl transition-all cursor-pointer text-center"
+                  >
+                    2. High-Ticket
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVslForm(PRESET_3);
+                      triggerAlert("Plantilla 3 (VSL Express B2B) cargada. ¡Haz clic en Guardar Cambios para publicarla!");
+                    }}
+                    className="py-2 px-1 text-[9px] font-black uppercase text-gray-700 bg-white border hover:bg-gray-50 rounded-xl transition-all cursor-pointer text-center"
+                  >
+                    3. VSL Express
+                  </button>
+                </div>
+              </div>
+
               {/* Headline configuration */}
               <div className="space-y-3">
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-wider">Titular Hero del VSL (3 partes)</label>
@@ -1299,6 +1534,334 @@ export default function SuperAdminDashboard() {
         </div>
       )}
 
+      {/* ================= PESTAÑA: DEMOS Y MAGIC LINKS ================= */}
+      {activeTab === 'demos_leads' && (
+        <div className="space-y-6">
+          {/* GRID: GENERADOR Y LEADS */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            {/* GENERADOR INTERACTIVO (lg:col-span-5) */}
+            <div className="lg:col-span-5 premium-card p-6 space-y-5 bg-white border">
+              <div className="flex items-center justify-between border-b pb-3.5">
+                <div>
+                  <h3 className="text-base font-extrabold text-gray-900">Generador de Magic Links</h3>
+                  <p className="text-xs text-gray-450 font-semibold mt-0.5">Acceso directo sin contraseñas para demos y prospección comercial.</p>
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b]/10 text-[#01017b]">
+                  <Sliders className="h-5 w-5" />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* Selector de Colegio */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-450 uppercase tracking-wider mb-2">Colegio Pre-instalado</label>
+                  <select
+                    value={magicSchoolId}
+                    onChange={(e) => handleSchoolChangeForMagic(e.target.value)}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-bold"
+                  >
+                    {colegios.map(c => (
+                      <option key={c.id} value={c.id}>{c.nombre}</option>
+                    ))}
+                    <option value="custom">-- Otro Colegio / Subdominio Nuevo --</option>
+                  </select>
+                </div>
+
+                {/* Subdominio de Destino */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-455 uppercase tracking-wider mb-2">Subdominio / Prefijo del Colegio</label>
+                  <input
+                    type="text"
+                    value={magicDomain}
+                    onChange={(e) => {
+                      const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                      setMagicDomain(value);
+                      if (magicSchoolId !== 'custom') {
+                        setMagicSchoolId('custom');
+                      }
+                    }}
+                    placeholder="ej: san-ignacio"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                  />
+                  <p className="text-[10px] text-gray-400 font-semibold mt-1">
+                    {magicSchoolId === 'custom' 
+                      ? '✨ Se auto-aprovisionará y creará este colegio al primer login si no existe.' 
+                      : '🔗 Corresponde a la escuela pre-instalada elegida.'}
+                  </p>
+                </div>
+
+                {/* Selector de Rol */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-450 uppercase tracking-wider mb-2">Rol del Magic Link</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { id: 'director', label: 'Director', emoji: '📊' },
+                      { id: 'docente', label: 'Docente', emoji: '👩‍🏫' },
+                      { id: 'padre', label: 'Padre / Tutor', emoji: '👨‍👩‍👦' },
+                      { id: 'alumno', label: 'Alumno', emoji: '🎒' }
+                    ].map(r => (
+                      <button
+                        key={r.id}
+                        type="button"
+                        onClick={() => setMagicRole(r.id)}
+                        className={`flex items-center gap-2 py-2 px-3 border rounded-xl text-left text-xs font-bold cursor-pointer transition-all ${
+                          magicRole === r.id
+                            ? 'bg-[#EEF1FE] border-[#01017b] text-[#01017b]'
+                            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>{r.emoji}</span>
+                        {r.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Live URL Output Box */}
+                <div className="pt-2">
+                  <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Live Magic URL</span>
+                  <div className="p-3 bg-gray-900 rounded-2xl border border-gray-800 text-left relative group">
+                    <code className="text-[11px] font-mono text-cyan-400 break-all select-all block pr-8">
+                      {typeof window !== 'undefined'
+                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
+                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
+                      }
+                    </code>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = typeof window !== 'undefined'
+                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
+                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`;
+                      navigator.clipboard.writeText(url);
+                      triggerAlert("¡Magic Link copiado al portapapeles con éxito!");
+                    }}
+                    className="flex justify-center items-center gap-2 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-xl transition-all cursor-pointer active:scale-[0.98]"
+                  >
+                    Copiar Link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = typeof window !== 'undefined'
+                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`
+                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com`;
+                      window.open(url, '_blank');
+                    }}
+                    className="flex justify-center items-center gap-2 py-2.5 px-4 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl shadow-md shadow-[#01017b]/10 transition-all cursor-pointer active:scale-[0.98]"
+                  >
+                    Probar Ingreso
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* TABLA DE LEADS B2B (lg:col-span-7) */}
+            <div className="lg:col-span-7 premium-card p-6 bg-white border">
+              <div className="flex items-center justify-between border-b pb-3.5 mb-4">
+                <div>
+                  <h3 className="text-base font-extrabold text-gray-900">Prospectos de la Landing (Leads)</h3>
+                  <p className="text-xs text-gray-400 font-semibold mt-0.5">Capturas automáticas de solicitudes de demo comercial.</p>
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#5BAD8A]/10 text-[#5BAD8A]">
+                  <Users className="h-5 w-5" />
+                </div>
+              </div>
+
+              {leads.length === 0 ? (
+                <div className="text-center py-12">
+                  <span className="text-4xl block mb-2">📥</span>
+                  <p className="text-sm font-bold text-gray-400">No hay leads capturados aún.</p>
+                  <p className="text-xs text-gray-300 mt-1">Registra una demo desde la página de inicio para verla aparecer aquí.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr>
+                        <th className="px-3 py-2 text-left text-[10px] font-black text-gray-450 uppercase tracking-widest">Institución / Lead</th>
+                        <th className="px-3 py-2 text-left text-[10px] font-black text-gray-450 uppercase tracking-widest">Contacto</th>
+                        <th className="px-3 py-2 text-center text-[10px] font-black text-gray-450 uppercase tracking-widest">Estado</th>
+                        <th className="px-3 py-2 text-right text-[10px] font-black text-gray-450 uppercase tracking-widest">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-xs">
+                      {leads.map((l: any) => (
+                        <tr key={l.id} className="hover:bg-gray-50/50 transition-colors">
+                          <td className="px-3 py-3">
+                            <span className="block font-bold text-gray-900">{l.colegio}</span>
+                            <span className="block text-[10px] text-gray-400 font-medium mt-0.5">{l.nombre}</span>
+                          </td>
+                          <td className="px-3 py-3">
+                            <span className="block font-semibold text-gray-600">{l.email}</span>
+                            <span className="block text-[10px] text-gray-400 font-medium mt-0.5">{l.telefono || 'Sin teléfono'}</span>
+                          </td>
+                          <td className="px-3 py-3 text-center">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleLeadAtendido(l.id)}
+                              className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-black uppercase cursor-pointer transition-all ${
+                                l.atendido
+                                  ? 'bg-[#EAF5EF] text-[#5BAD8A]'
+                                  : 'bg-amber-50 border border-amber-100 text-amber-600'
+                              }`}
+                            >
+                              {l.atendido ? 'Atendido' : 'Pendiente'}
+                            </button>
+                          </td>
+                          <td className="px-3 py-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleLoadLeadToMagic(l)}
+                              className="px-2 py-1 bg-[#EEF1FE] text-[#01017b] hover:bg-[#01017b] hover:text-white rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer"
+                            >
+                              Cargar
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* SECCIÓN DE ENTORNOS DEMO ACTIVOS */}
+          <div className="premium-card p-6 bg-white border">
+            <div className="flex items-center justify-between border-b pb-3.5 mb-5">
+              <div>
+                <h3 className="text-base font-extrabold text-gray-900">Entornos Demo Activos (Escuelas en Sandbox)</h3>
+                <p className="text-xs text-gray-400 font-semibold mt-0.5">Colegios creados mediante auto-provisionamiento. Monitorea su capacidad y accede con un click.</p>
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#9B7FD4]/10 text-[#9B7FD4]">
+                <Building2 className="h-5 w-5" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {colegios.map((col) => {
+                // Count students
+                const students = getStoredAlumnos().filter(a => a.colegio_id === col.id);
+                const activeCount = students.length;
+                
+                // Calculate limits
+                const limitAlumnosBase = col.limite_alumnos || (col.plan === 'Básico SaaS' ? 150 : col.plan === 'Estandar SaaS' ? 400 : 99999);
+                const limitFinal = col.limite_personalizado && col.limite_personalizado > 0 ? col.limite_personalizado : limitAlumnosBase;
+                
+                // Calculate ratio
+                const ratio = Math.min(100, Math.round((activeCount / limitFinal) * 100));
+                
+                // Get Domain
+                const getSchoolDomain = (schoolName: string) => {
+                  let clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+                  return clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+                };
+                const domain = getSchoolDomain(col.nombre);
+
+                // Quick login handler
+                const handleQuickOpen = (role: string) => {
+                  const url = typeof window !== 'undefined'
+                    ? `${window.location.origin}/login?magic_email=${role}@${domain}.com`
+                    : `/login?magic_email=${role}@${domain}.com`;
+                  window.open(url, '_blank');
+                };
+
+                return (
+                  <div key={col.id} className="p-5 border border-gray-100 rounded-2xl hover:border-gray-250 hover:shadow-lg hover:shadow-gray-100/50 transition-all flex flex-col justify-between space-y-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={col.logo || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80'}
+                          alt={col.nombre}
+                          className="w-11 h-11 rounded-xl object-cover border border-gray-200 bg-gray-50"
+                        />
+                        <div>
+                          <span className="block text-sm font-black text-gray-900 leading-tight">{col.nombre}</span>
+                          <span className="block text-[10px] text-gray-400 font-bold mt-0.5 uppercase tracking-wider">
+                            RUC {col.ruc} • Plan {col.plan || 'Premium SaaS'}
+                          </span>
+                        </div>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
+                        col.activo 
+                          ? 'bg-[#EAF5EF] text-[#5BAD8A]' 
+                          : 'bg-red-50 text-red-500'
+                      }`}>
+                        {col.activo ? 'Activo' : 'Suspendido'}
+                      </span>
+                    </div>
+
+                    {/* Progress Bar of Capacity */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between items-center text-[10px] font-bold text-gray-500">
+                        <span>Capacidad de Alumnos</span>
+                        <span className={activeCount >= limitFinal ? 'text-red-500 font-extrabold' : 'text-gray-700'}>
+                          {activeCount} / {limitFinal === 99999 ? 'Ilimitado' : limitFinal}
+                        </span>
+                      </div>
+                      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            ratio >= 100 
+                              ? 'bg-red-500' 
+                              : ratio >= 80 
+                                ? 'bg-amber-500' 
+                                : 'bg-[#5BAD8A]'
+                          }`}
+                          style={{ width: `${limitFinal === 99999 ? 10 : ratio}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Quick Login Shortcuts */}
+                    <div className="pt-2 border-t border-gray-50">
+                      <span className="block text-[9px] font-black text-gray-455 uppercase tracking-widest mb-2">Ingreso Rápido en Sandbox</span>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleQuickOpen('director')}
+                          className="py-1.5 px-1 border border-gray-150 rounded-lg text-[9px] font-black text-[#01017b] hover:bg-[#EEF1FE] uppercase tracking-wider text-center transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          Director
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickOpen('docente')}
+                          className="py-1.5 px-1 border border-gray-150 rounded-lg text-[9px] font-black text-[#7EC8C8] hover:bg-[#EAF7F7] uppercase tracking-wider text-center transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          Docente
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickOpen('padre')}
+                          className="py-1.5 px-1 border border-gray-150 rounded-lg text-[9px] font-black text-amber-600 hover:bg-[#FEF6E8] uppercase tracking-wider text-center transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          Padre
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickOpen('alumno')}
+                          className="py-1.5 px-1 border border-gray-150 rounded-lg text-[9px] font-black text-purple-600 hover:bg-[#F3EFFE]/40 uppercase tracking-wider text-center transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          Alumno
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ================= MODAL: EDITAR COLEGIO ================= */}
       {showEditColegio && editingColegio && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -1412,14 +1975,61 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Fecha de Vencimiento</label>
+                  <input
+                    type="date"
+                    value={editColegioForm.vencimiento}
+                    onChange={(e) => setEditColegioForm({ ...editColegioForm, vencimiento: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Soporte</label>
+                  <select
+                    value={editColegioForm.soporte_prioritario}
+                    onChange={(e) => setEditColegioForm({ ...editColegioForm, soporte_prioritario: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                  >
+                    <option value="estándar">Estándar</option>
+                    <option value="preferente">Preferente</option>
+                    <option value="prioritario">Prioritario</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Límite Alumnos Base</label>
+                  <input
+                    type="number"
+                    value={editColegioForm.limite_alumnos}
+                    onChange={(e) => setEditColegioForm({ ...editColegioForm, limite_alumnos: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Límite Personalizado</label>
+                  <input
+                    type="number"
+                    value={editColegioForm.limite_personalizado}
+                    onChange={(e) => setEditColegioForm({ ...editColegioForm, limite_personalizado: e.target.value })}
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    required
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Fecha de Vencimiento</label>
-                <input
-                  type="date"
-                  value={editColegioForm.vencimiento}
-                  onChange={(e) => setEditColegioForm({ ...editColegioForm, vencimiento: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
-                  required
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Observaciones Comerciales</label>
+                <textarea
+                  value={editColegioForm.observaciones_comerciales}
+                  onChange={(e) => setEditColegioForm({ ...editColegioForm, observaciones_comerciales: e.target.value })}
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm min-h-[60px]"
+                  placeholder="Observaciones comerciales de la institución..."
                 />
               </div>
 
