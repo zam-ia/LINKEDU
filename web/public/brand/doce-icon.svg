@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Doce</title>
+  <desc id="desc">Isotipo de Doce: letra d geométrica negra con acento circular rojo.</desc>
+  <path fill="#050505" d="M177 12v139c0 57-36 93-87 93C39 244 8 205 8 155c0-48 34-87 82-87 12 0 24 2 34 7V57c0-25 20-45 45-45h8Z"/>
+  <path fill="#ff2432" d="M109 155a20 20 0 1 1-40 0 20 20 0 0 1 40 0Zm21-103c0-14 11-25 25-25h2v128h-27V52Z"/>
+  <circle cx="89" cy="155" r="53" fill="none" stroke="#ff2432" stroke-width="22"/>
+</svg>

@@ -1,0 +1,32 @@
+"use client";
+
+import { useState } from "react";
+import { BadgeCheck, Copy, Download, FileBadge2, FileText, Mail, Plus, QrCode, Search, Send, Upload } from "lucide-react";
+import { PageHeader, StatCard, StatusBadge, primaryButton, secondaryButton } from "@/components/doce/WorkspacePrimitives";
+
+const emissions = [
+  { holder: "Luciana Pérez Ramos", document: "Certificado de participación", program: "Evaluación por competencias", code: "DOC-2026-00842", date: "22 jun. 2026", status: "Emitido" },
+  { holder: "Marco Antonio Salazar", document: "Constancia de trabajo", program: "Personal docente", code: "DOC-2026-00841", date: "22 jun. 2026", status: "Emitido" },
+  { holder: "Daniela Rojas Peña", document: "Diploma", program: "Gestión educativa digital", code: "DOC-2026-00840", date: "21 jun. 2026", status: "Borrador" },
+];
+
+export default function DocumentsModule() {
+  const [tab, setTab] = useState<"emitidos" | "plantillas">("emitidos");
+  const [query, setQuery] = useState("");
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-8">
+      <PageHeader eyebrow="Acreditación digital" title="Documentos y certificados" description="Crea plantillas, emite documentos individuales o masivos, envía por correo y verifica su autenticidad mediante QR." action={<div className="flex gap-2"><button className={secondaryButton}><Upload className="h-4 w-4" /> Importar lista</button><button className={primaryButton}><Plus className="h-4 w-4" /> Nueva emisión</button></div>} />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><StatCard label="Emitidos este mes" value="286" detail="+18% frente a mayo" icon={<FileBadge2 className="h-5 w-5" />} /><StatCard label="Pendientes" value="34" detail="2 lotes en borrador" icon={<FileText className="h-5 w-5" />} /><StatCard label="Verificaciones" value="1,842" detail="99.8% válidas" icon={<QrCode className="h-5 w-5" />} /><StatCard label="Plantillas activas" value="9" detail="Certificados y constancias" icon={<BadgeCheck className="h-5 w-5" />} /></div>
+
+      <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
+        <section className="overflow-hidden rounded-[24px] border border-black/[.07] bg-white shadow-sm">
+          <div className="flex flex-col gap-4 border-b border-black/[.06] p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex rounded-xl bg-[#f4f4f1] p-1">{(["emitidos", "plantillas"] as const).map((item) => <button key={item} onClick={() => setTab(item)} className={`rounded-lg px-4 py-2 text-[11px] font-black capitalize ${tab === item ? "bg-white shadow-sm" : "text-black/40"}`}>{item}</button>)}</div><div className="relative"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black/25" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar por nombre o código" className="w-full rounded-xl border border-black/10 py-2.5 pl-9 pr-3 text-xs outline-none sm:w-64" /></div></div>
+          {tab === "emitidos" ? <div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-xs"><thead className="bg-[#f8f8f6] text-[9px] font-black uppercase tracking-[.12em] text-black/35"><tr><th className="px-5 py-3">Titular</th><th>Documento</th><th>Código</th><th>Emisión</th><th>Estado</th><th></th></tr></thead><tbody>{emissions.filter((row) => `${row.holder} ${row.code}`.toLowerCase().includes(query.toLowerCase())).map((row) => <tr key={row.code} className="border-t border-black/[.05]"><td className="px-5 py-4"><p className="font-black">{row.holder}</p><p className="mt-1 text-[10px] text-black/35">{row.program}</p></td><td className="font-semibold">{row.document}</td><td className="font-mono text-[10px]">{row.code}</td><td>{row.date}</td><td><StatusBadge tone={row.status === "Emitido" ? "success" : "warning"}>{row.status}</StatusBadge></td><td><button className="font-black">Abrir</button></td></tr>)}</tbody></table></div> : <div className="grid gap-3 p-5 sm:grid-cols-2">{["Certificado académico", "Diploma premium", "Constancia simple", "Reconocimiento docente"].map((name, index) => <article key={name} className="rounded-2xl border border-black/[.07] p-4"><div className={`aspect-[1.414] rounded-xl ${index === 1 ? "bg-black" : "bg-[#f4f4f1]"}`} /><div className="mt-4 flex items-center justify-between"><div><h3 className="text-xs font-black">{name}</h3><p className="mt-1 text-[9px] font-bold text-black/35">A4 horizontal · v{index + 1}</p></div><button title="Duplicar" className="rounded-lg border border-black/10 p-2"><Copy className="h-3.5 w-3.5" /></button></div></article>)}</div>}
+        </section>
+
+        <aside className="rounded-[24px] border border-black/[.07] bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><div><p className="text-[9px] font-black uppercase tracking-[.14em] text-[#ff2432]">Vista previa</p><h2 className="mt-1 text-base font-black">Certificado académico</h2></div><StatusBadge tone="success">Verificable</StatusBadge></div><div className="mt-5 flex aspect-[1.414] flex-col items-center justify-center overflow-hidden rounded-xl border-[7px] border-black bg-[#fffdfa] p-5 text-center shadow-md"><p className="text-[7px] font-black uppercase tracking-[.25em] text-[#ff2432]">Doce · Institución educativa</p><p className="mt-4 font-serif text-[10px] italic text-black/45">Otorga el presente</p><h3 className="mt-1 font-serif text-xl font-bold">Certificado</h3><p className="mt-3 text-[8px] text-black/45">a</p><p className="mt-1 text-sm font-black">Luciana Pérez Ramos</p><p className="mt-3 max-w-[240px] text-[7px] leading-3 text-black/50">por haber completado satisfactoriamente el programa de Evaluación por competencias.</p><div className="mt-4 flex w-full items-end justify-between"><div className="w-20 border-t border-black/30 pt-1 text-[6px]">Dirección académica</div><QrCode className="h-10 w-10" /><div className="w-20 border-t border-black/30 pt-1 text-[6px]">Dirección general</div></div></div><div className="mt-5 grid grid-cols-2 gap-2"><button className={secondaryButton}><Download className="h-4 w-4" /> PDF</button><button className={secondaryButton}><Mail className="h-4 w-4" /> Enviar</button></div><button className={`${primaryButton} mt-2 w-full`}><Send className="h-4 w-4" /> Emitir certificado</button><p className="mt-4 text-[10px] leading-4 text-black/35">El código y QR se generan al emitir. La anulación conserva el historial y cambia inmediatamente el resultado público.</p></aside>
+      </div>
+    </div>
+  );
+}

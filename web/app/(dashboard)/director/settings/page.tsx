@@ -68,7 +68,7 @@ export default function DirectorSettingsPage() {
   const [showAddUser, setShowAddUser] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [activeUserToReset, setActiveUserToReset] = useState<UserProfile | null>(null);
-  const [newPassword, setNewPassword] = useState('Linkedu2026!');
+  const [newPassword, setNewPassword] = useState('Doce2026!');
   
   // Image Crop States
   const [rawImage, setRawImage] = useState<string>('');
@@ -351,7 +351,7 @@ export default function DirectorSettingsPage() {
 
   const handleOpenResetPassword = (usr: UserProfile) => {
     setActiveUserToReset(usr);
-    setNewPassword('Linkedu2026!');
+    setNewPassword('Doce2026!');
     setShowResetPassword(true);
   };
 
@@ -819,7 +819,7 @@ export default function DirectorSettingsPage() {
                 </div>
 
                 <p className="text-[10px] text-gray-400 mt-1.5 font-semibold">
-                  🔒 Por motivos de seguridad y auditoría de la plataforma, el correo institucional y DNI están bloqueados. Solicite modificaciones al Administrador de Linkedu si hay algún error.
+                  🔒 Por motivos de seguridad y auditoría de la plataforma, el correo institucional y DNI están bloqueados. Solicite modificaciones al Administrador de Doce si hay algún error.
                 </p>
 
                 <div className="flex justify-end pt-4 border-t border-gray-150">

@@ -33,7 +33,7 @@ export default function LoginPage() {
         if (expiresAt) {
           const expirationTime = Number(expiresAt);
           if (expirationTime > 0 && Date.now() > expirationTime) {
-            setError('⚠️ El enlace demo ha caducado por límite de tiempo de seguridad. Solicita un nuevo acceso al administrador de Linkedu.');
+            setError('⚠️ El enlace demo ha caducado por límite de tiempo de seguridad. Solicita un nuevo acceso al administrador de Doce.');
             return;
           }
         }
@@ -62,7 +62,7 @@ export default function LoginPage() {
       return;
     }
 
-    const isSuperAdmin = email.toLowerCase().trim() === 'superadmin@linkedu.com';
+    const isSuperAdmin = email.toLowerCase().trim() === 'superadmin@doce.pe';
     if (isSuperAdmin && !password) {
       setError('Por favor, ingresa la contraseña de Super Administrador.');
       return;
@@ -78,7 +78,7 @@ export default function LoginPage() {
       }
     } else {
       if (isSuperAdmin) {
-        setError('Contraseña incorrecta para el Super Administrador (la clave es admin123).');
+        setError('Credenciales inválidas. Verifica el correo y la contraseña configurados en Supabase Auth.');
       } else {
         setError('Credenciales inválidas o contraseña incorrecta. Por favor, verifica tus datos.');
       }
@@ -86,15 +86,15 @@ export default function LoginPage() {
   };
 
   const handleQuickLogin = async (demoEmail: string, isMagic: boolean = false) => {
-    if (demoEmail === 'superadmin@linkedu.com' && !isMagic) {
-      setEmail('superadmin@linkedu.com');
+    if (demoEmail === 'superadmin@doce.pe' && !isMagic) {
+      setEmail('superadmin@doce.pe');
       setPassword('');
-      setError('Por favor, ingresa tu contraseña de Super Administrador (la clave es admin123).');
+      setError('Ingresa la contraseña configurada en Supabase Auth.');
       return;
     }
     setEmail(demoEmail);
     setError('');
-    const success = await login(demoEmail, demoEmail === 'superadmin@linkedu.com' ? 'admin123' : undefined);
+    const success = await login(demoEmail);
     if (success) {
       const activeUser = useAuthStore.getState().user;
       if (activeUser) {
@@ -240,13 +240,13 @@ export default function LoginPage() {
             <div className="p-6 pb-4 border-b border-gray-100 text-center">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-xs font-bold text-[#01017b] mb-3">
                 <Sparkles className="h-3 w-3" />
-                Tour de Linkedu
+                Tour de Doce
               </div>
               <h3 className="text-2xl font-extrabold text-gray-900">
                 Experimenta la Gestión Escolar Inteligente
               </h3>
               <p className="text-sm text-gray-500 max-w-md mx-auto mt-1">
-                Explora las ventajas que ofrece Linkedu para cada miembro de la comunidad educativa.
+                Explora las ventajas que ofrece Doce para cada miembro de la comunidad educativa.
               </p>
             </div>
 
@@ -373,7 +373,7 @@ export default function LoginPage() {
                   </p>
                 </div>
                 <a
-                  href="https://wa.me/51987088359?text=Hola,%20me%20interesa%20adquirir%20la%20plataforma%20Linkedu%20para%20mi%20instituci%C3%B3n.%20Quisiera%20m%C3%A1s%20informaci%C3%B3n."
+                  href="https://wa.me/51987088359?text=Hola,%20me%20interesa%20adquirir%20la%20plataforma%20Doce%20para%20mi%20instituci%C3%B3n.%20Quisiera%20m%C3%A1s%20informaci%C3%B3n."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 rounded-xl bg-[#25D366] hover:bg-[#25D366]/90 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-all active:scale-[0.98] cursor-pointer whitespace-nowrap"
@@ -393,7 +393,7 @@ export default function LoginPage() {
                   {showSuperAdmin && (
                     <button
                       onClick={() => {
-                        handleQuickLogin('superadmin@linkedu.com');
+                        handleQuickLogin('superadmin@doce.pe');
                         setShowDemoModal(false);
                       }}
                       disabled={loading}
@@ -403,7 +403,7 @@ export default function LoginPage() {
                         <span className="text-xl">🌐</span>
                         <div className="text-left">
                           <span className="block text-xs font-extrabold text-gray-800">Super Administrador Global</span>
-                          <span className="block text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">superadmin@linkedu.com</span>
+                          <span className="block text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">superadmin@doce.pe</span>
                         </div>
                       </div>
                       <ArrowRight className="w-4 h-4 text-[#9B7FD4] group-hover:translate-x-0.5 transition-transform" />
@@ -413,47 +413,47 @@ export default function LoginPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => {
-                        handleQuickLogin('director@linkedu.com');
+                        handleQuickLogin('director@doce.pe');
                         setShowDemoModal(false);
                       }}
                       disabled={loading}
                       className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EEF1FE] hover:border-[#01017b]/30 transition-all text-left group cursor-pointer"
                     >
                       <span className="text-xs font-bold text-gray-800">Dirección</span>
-                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#01017b] transition-colors">director@linkedu.com</span>
+                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#01017b] transition-colors">director@doce.pe</span>
                     </button>
                     <button
                       onClick={() => {
-                        handleQuickLogin('docente@linkedu.com');
+                        handleQuickLogin('docente@doce.pe');
                         setShowDemoModal(false);
                       }}
                       disabled={loading}
                       className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#EAF7F7] hover:border-[#7EC8C8]/30 transition-all text-left group cursor-pointer"
                     >
                       <span className="text-xs font-bold text-gray-800">Docente</span>
-                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#7EC8C8] transition-colors">docente@linkedu.com</span>
+                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#7EC8C8] transition-colors">docente@doce.pe</span>
                     </button>
                     <button
                       onClick={() => {
-                        handleQuickLogin('padre@linkedu.com');
+                        handleQuickLogin('padre@doce.pe');
                         setShowDemoModal(false);
                       }}
                       disabled={loading}
                       className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#FEF6E8] hover:border-[#F5A623]/30 transition-all text-left group cursor-pointer"
                     >
                       <span className="text-xs font-bold text-gray-800">Padre / Tutor</span>
-                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#F5A623] transition-colors">padre@linkedu.com</span>
+                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#F5A623] transition-colors">padre@doce.pe</span>
                     </button>
                     <button
                       onClick={() => {
-                        handleQuickLogin('alumno@linkedu.com');
+                        handleQuickLogin('alumno@doce.pe');
                         setShowDemoModal(false);
                       }}
                       disabled={loading}
                       className="flex flex-col items-center justify-center p-3.5 border border-gray-200 rounded-xl hover:bg-[#F3EFFE]/40 hover:border-[#9B7FD4]/20 transition-all text-left group cursor-pointer"
                     >
                       <span className="text-xs font-bold text-gray-800">Alumno</span>
-                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">alumno@linkedu.com</span>
+                      <span className="text-[10px] text-gray-400 mt-0.5 group-hover:text-[#9B7FD4] transition-colors">alumno@doce.pe</span>
                     </button>
                   </div>
                 </div>

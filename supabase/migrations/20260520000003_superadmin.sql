@@ -33,33 +33,9 @@ CREATE POLICY "Superadmin acceso total obligaciones" ON public.obligaciones FOR 
 CREATE POLICY "Superadmin acceso total pagos" ON public.pagos FOR ALL USING ((auth.jwt() ->> 'rol') = 'superadmin');
 CREATE POLICY "Superadmin acceso total egresos" ON public.egresos FOR ALL USING ((auth.jwt() ->> 'rol') = 'superadmin');
 
--- 4. Sembrar Super Admin por defecto
--- En un entorno real de Supabase Auth, se crea primero en auth.users
--- Registramos su entrada en auth.users (si no existe) y en public.usuarios
-
-INSERT INTO auth.users (id, email, raw_user_meta_data, raw_app_meta_data, aud, role)
-VALUES (
-    'f0000000-0000-0000-0000-000000000000',
-    'superadmin@linkedu.com',
-    '{"nombre": "Administrador", "apellido": "Global"}'::jsonb,
-    '{"rol": "superadmin"}'::jsonb,
-    'authenticated',
-    'authenticated'
-)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO public.usuarios (id, colegio_id, rol, nombre, apellido, dni, foto_url, activo)
-VALUES (
-    'f0000000-0000-0000-0000-000000000000',
-    NULL, -- No está amarrado a ningún colegio particular
-    'superadmin',
-    'Administrador',
-    'Global',
-    '00000000',
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80',
-    true
-)
-ON CONFLICT (id) DO NOTHING;
+-- 4. El Super Administrador debe aprovisionarse mediante Supabase Auth Admin
+-- o una Edge Function protegida. Nunca se inserta directamente en auth.users
+-- ni se distribuye una contraseña compartida dentro de una migración.
 
 -- 5. Creación del Storage Bucket para Avatares si no existe
 -- Supabase organiza archivos en buckets públicos/privados de storage.
@@ -85,7 +61,8 @@ WITH CHECK (bucket_id = 'avatar-profiles');
 CREATE POLICY "Usuarios pueden actualizar sus fotos"
 ON storage.objects FOR UPDATE
 TO authenticated
-USING (bucket_id = 'avatar-profiles' AND (auth.uid() = owner OR owner IS NULL));
+USING (bucket_id = 'avatar-profiles' AND auth.uid() = owner)
+WITH CHECK (bucket_id = 'avatar-profiles' AND auth.uid() = owner);
 
 CREATE POLICY "Usuarios pueden eliminar sus fotos"
 ON storage.objects FOR DELETE

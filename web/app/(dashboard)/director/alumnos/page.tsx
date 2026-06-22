@@ -327,7 +327,7 @@ export default function AlumnosPage() {
             </div>
           </div>
           <a 
-            href="https://wa.me/51987088359?text=Hola!%20Deseo%20solicitar%20un%20aumento%20de%20capacidad%20para%20mi%20colegio%20en%20Linkedu."
+            href="https://wa.me/51987088359?text=Hola!%20Deseo%20solicitar%20un%20aumento%20de%20capacidad%20para%20mi%20colegio%20en%20Doce."
             target="_blank"
             className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all shadow-md shadow-amber-500/10 flex items-center gap-1.5 cursor-pointer border border-amber-400"
           >

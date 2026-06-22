@@ -45,7 +45,7 @@ export interface ColegioInfo {
 export const INITIAL_COLEGIOS: ColegioInfo[] = [
   {
     id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
-    nombre: 'Colegio de Excelencia Linkedu',
+    nombre: 'Colegio de Excelencia Doce',
     logo: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80',
     ruc: '20123456789',
     activo: true,
@@ -98,7 +98,7 @@ export const INITIAL_COLEGIOS: ColegioInfo[] = [
 ];
 
 export const MOCK_USERS: Record<string, UserProfile> = {
-  'superadmin@linkedu.com': {
+  'superadmin@doce.pe': {
     id: 'f0000000-0000-0000-0000-000000000000',
     colegio_id: null,
     rol: 'superadmin',
@@ -106,9 +106,9 @@ export const MOCK_USERS: Record<string, UserProfile> = {
     apellido: 'Global',
     dni: '00000000',
     foto_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'superadmin@linkedu.com'
+    email: 'superadmin@doce.pe'
   },
-  'director@linkedu.com': {
+  'director@doce.pe': {
     id: 'd1111111-1111-1111-1111-111111111111',
     colegio_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
     rol: 'director',
@@ -116,9 +116,9 @@ export const MOCK_USERS: Record<string, UserProfile> = {
     apellido: 'Mendoza',
     dni: '44556677',
     foto_url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'director@linkedu.com'
+    email: 'director@doce.pe'
   },
-  'docente@linkedu.com': {
+  'docente@doce.pe': {
     id: 'd2222222-2222-2222-2222-222222222222',
     colegio_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
     rol: 'docente',
@@ -126,9 +126,9 @@ export const MOCK_USERS: Record<string, UserProfile> = {
     apellido: 'Gutiérrez',
     dni: '11223344',
     foto_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'docente@linkedu.com'
+    email: 'docente@doce.pe'
   },
-  'padre@linkedu.com': {
+  'padre@doce.pe': {
     id: 'f2222222-2222-2222-2222-222222222222',
     colegio_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
     rol: 'padre',
@@ -136,9 +136,9 @@ export const MOCK_USERS: Record<string, UserProfile> = {
     apellido: 'Castro',
     dni: '99887766',
     foto_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'padre@linkedu.com'
+    email: 'padre@doce.pe'
   },
-  'alumno@linkedu.com': {
+  'alumno@doce.pe': {
     id: 'a2222222-2222-2222-2222-222222222222',
     colegio_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
     rol: 'alumno',
@@ -146,7 +146,7 @@ export const MOCK_USERS: Record<string, UserProfile> = {
     apellido: 'Castro',
     dni: '66554433',
     foto_url: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'alumno@linkedu.com'
+    email: 'alumno@doce.pe'
   }
 };
 
@@ -187,7 +187,7 @@ export const saveStoredUsers = (users: UserProfile[]) => {
   }
 };
 
-export interface LinkeduLead {
+export interface DoceLead {
   id: string;
   nombre: string;
   email: string;
@@ -197,13 +197,13 @@ export interface LinkeduLead {
   atendido?: boolean;
 }
 
-export const getStoredLeads = (): LinkeduLead[] => {
+export const getStoredLeads = (): DoceLead[] => {
   if (typeof window === 'undefined') return [];
   const saved = localStorage.getItem('linkedu_leads');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  const defaultLeads: LinkeduLead[] = [
+  const defaultLeads: DoceLead[] = [
     {
       id: 'lead-1',
       nombre: 'Juan Carlos Torres',
@@ -236,7 +236,7 @@ export const getStoredLeads = (): LinkeduLead[] => {
   return defaultLeads;
 };
 
-export const saveStoredLeads = (leads: LinkeduLead[]) => {
+export const saveStoredLeads = (leads: DoceLead[]) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem('linkedu_leads', JSON.stringify(leads));
   }
@@ -339,7 +339,7 @@ export const INITIAL_ALUMNOS: AlumnoInfo[] = [
     apellido: 'Castro',
     dni: '66554433',
     foto_url: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'alumno@linkedu.com',
+    email: 'alumno@doce.pe',
     grado: '1ro Primaria',
     seccion: 'A',
     estado: 'activo',
@@ -348,7 +348,7 @@ export const INITIAL_ALUMNOS: AlumnoInfo[] = [
       nombre: 'Sofía Castro',
       relacion: 'Madre',
       telefono: '998877665',
-      email: 'padre@linkedu.com'
+      email: 'padre@doce.pe'
     },
     datos_medicos: {
       sangre: 'O+',
@@ -364,7 +364,7 @@ export const INITIAL_ALUMNOS: AlumnoInfo[] = [
     apellido: 'Castro',
     dni: '88776655',
     foto_url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'lucas@linkedu.com',
+    email: 'lucas@doce.pe',
     grado: '2do Primaria',
     seccion: 'A',
     estado: 'activo',
@@ -373,7 +373,7 @@ export const INITIAL_ALUMNOS: AlumnoInfo[] = [
       nombre: 'Sofía Castro',
       relacion: 'Madre',
       telefono: '998877665',
-      email: 'padre@linkedu.com'
+      email: 'padre@doce.pe'
     },
     datos_medicos: {
       sangre: 'A+',
@@ -392,7 +392,7 @@ export const INITIAL_DOCENTES: DocenteInfo[] = [
     apellido: 'Gutiérrez',
     dni: '11223344',
     foto_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80',
-    email: 'docente@linkedu.com',
+    email: 'docente@doce.pe',
     especialidad: 'Matemática y Ciencias',
     contrato: 'planilla',
     salario: 1500,
@@ -798,8 +798,7 @@ export const seedDataForNewSchool = (newColegioId: string, schoolName: string) =
         dni: '99887766',
         email: `padre@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`,
         foto_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80',
-        activo: true,
-        password: 'admin123'
+        activo: true
       },
       {
         id: mateoId,
@@ -810,12 +809,10 @@ export const seedDataForNewSchool = (newColegioId: string, schoolName: string) =
         dni: '66554433',
         email: `alumno@${schoolName.toLowerCase().replace(/\s+/g, '').replace('colegio', '')}.com`,
         foto_url: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=150&h=150&q=80',
-        activo: true,
-        password: 'admin123'
+        activo: true
       }
     ];
     localStorage.setItem('linkedu_users', JSON.stringify([...users, ...newUsers]));
   }
 };
-
 

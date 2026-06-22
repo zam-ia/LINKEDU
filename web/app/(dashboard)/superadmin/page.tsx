@@ -69,27 +69,27 @@ const PRESET_1 = {
   ],
   videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
   whatsappNumber: "51987088359",
-  whatsappTemplate: 'Hola Linkedu! Me interesa el plan de Ecosistema Premium SaaS para mi colegio. Quisiera agendar una demo en vivo. Mi colegio: "{schoolName}", correo: "{directorEmail}".',
+  whatsappTemplate: 'Hola Doce! Me interesa el plan de Ecosistema Premium SaaS para mi colegio. Quisiera agendar una demo en vivo. Mi colegio: "{schoolName}", correo: "{directorEmail}".',
   subtitles: [
-    "Orquesta tu colegio con el Ecosistema Premium Linkedu All-in-One.",
+    "Orquesta tu colegio con el Ecosistema Premium Doce All-in-One.",
     "Centraliza tesorería, notas de alumnos, reportes de asistencia y avisos en un solo lugar.",
     "Cada portal se adapta dinámicamente con accesos independientes.",
     "Reduce la burocracia docente y aumenta la retención de las familias.",
-    "Agenda una demo y mira cómo se vería tu colegio funcionando con Linkedu."
+    "Agenda una demo y mira cómo se vería tu colegio funcionando con Doce."
   ],
   problemTitle: "Tu colegio no necesita más desorden operativo. Necesita control centralizado.",
   problemSubtitle: "La información separada en cuadernos, WhatsApp y Excel crea silos de datos, fugas en cobranzas y cansancio administrativo.",
-  problemMessage: "Linkedu conecta a toda tu comunidad educativa en un único sistema unificado.",
+  problemMessage: "Doce conecta a toda tu comunidad educativa en un único sistema unificado.",
   solutionTitle: "La plataforma que conecta a Dirección, Docentes, Padres y Alumnos.",
   solutionSubtitle: "Una interfaz diseñada para que cada rol acceda exactamente a lo que necesita de forma rápida e intuitiva.",
-  benefitsTitle: "Lo que cambia con el Ecosistema Linkedu:",
+  benefitsTitle: "Lo que cambia con el Ecosistema Doce:",
   proofTitle: "Explora la plataforma escolar más avanzada del mercado.",
   proofSubtitle: "Nuestra arquitectura multi-tenant permite desplegar tu propio campus digital con logo y colores corporativos de tu colegio al instante.",
   offerTitle: "Solicita hoy tu Demo Personalizada del Ecosistema Escolar.",
   guaranteeTitle: "Prueba sin compromisos hoy.",
   guaranteeText: "Agenda una llamada con uno de nuestros asesores expertos para revisar tu caso y diseñar la mejor configuración para tu colegio.",
   ctaFinalTitle: "Da el salto a la modernización escolar con la plataforma líder.",
-  ctaFinalText: "Únete a las instituciones que ya redujeron su morosidad un 40% y eliminaron el papeleo burocrático con Linkedu."
+  ctaFinalText: "Únete a las instituciones que ya redujeron su morosidad un 40% y eliminaron el papeleo burocrático con Doce."
 };
 
 const PRESET_2 = {
@@ -106,9 +106,9 @@ const PRESET_2 = {
   ],
   videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
   whatsappNumber: "51987088359",
-  whatsappTemplate: 'Hola Linkedu! Quisiera solicitar el Diagnóstico de Digitalización Gratuito y Demo 1-a-1 de High-Ticket. Mi colegio: "{schoolName}", correo: "{directorEmail}".',
+  whatsappTemplate: 'Hola Doce! Quisiera solicitar el Diagnóstico de Digitalización Gratuito y Demo 1-a-1 de High-Ticket. Mi colegio: "{schoolName}", correo: "{directorEmail}".',
   subtitles: [
-    "Bienvenido al Diagnóstico Gratuito de Gestión Escolar Linkedu.",
+    "Bienvenido al Diagnóstico Gratuito de Gestión Escolar Doce.",
     "Descubre los 3 pilares clave para erradicar la morosidad en pensiones en menos de 90 días.",
     "Ahorra miles de horas de trabajo administrativo automatizando tus circulares y recordatorios.",
     "Proyecta una imagen de máxima modernidad y prestigio frente a los padres.",
@@ -118,7 +118,7 @@ const PRESET_2 = {
   problemSubtitle: "Los directores pierden hasta un 30% del tiempo persiguiendo pagos atrasados y atendiendo llamadas repetitivas de padres.",
   problemMessage: "El desorden financiero y operativo deteriora el prestigio y rentabilidad de tu institución.",
   solutionTitle: "Un sistema de alta eficiencia para directores exigentes.",
-  solutionSubtitle: "Linkedu actúa como tu asistente de operaciones invisible, cobrando a tiempo, ordenando notas y enviando reportes a los tutores.",
+  solutionSubtitle: "Doce actúa como tu asistente de operaciones invisible, cobrando a tiempo, ordenando notas y enviando reportes a los tutores.",
   benefitsTitle: "Beneficios de nuestra Consultoría de Digitalización:",
   proofTitle: "Mira el sistema financiero y la app móvil en acción.",
   proofSubtitle: "Te mostramos cómo automatizar el envío de recibos electrónicos y cómo gestionar incidencias académicas en vivo.",
@@ -143,27 +143,27 @@ const PRESET_3 = {
   ],
   videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
   whatsappNumber: "51987088359",
-  whatsappTemplate: 'Hola! Vengo de la landing page de Linkedu. Me interesa agendar una demo en vivo de VSL Express. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}".',
+  whatsappTemplate: 'Hola! Vengo de la landing page de Doce. Me interesa agendar una demo en vivo de VSL Express. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}".',
   subtitles: [
     "¿Tu colegio todavía controla pensiones en Excel, notas en hojas sueltas, asistencias en cuadernos y comunicados por WhatsApp?",
-    "Presta atención, porque en esta demo te voy a mostrar cómo Linkedu te ayuda a centralizar la gestión de tu colegio.",
-    "Linkedu es el panel de control que ordena tu colegio y mejora la experiencia de padres, docentes y dirección.",
+    "Presta atención, porque en esta demo te voy a mostrar cómo Doce te ayuda a centralizar la gestión de tu colegio.",
+    "Doce es el panel de control que ordena tu colegio y mejora la experiencia de padres, docentes y dirección.",
     "El problema es que la información del colegio está repartida en demasiados lugares.",
-    "Con Linkedu, consigues tres mejoras importantes: más control financiero, menos carga operativa y más prestigio institucional.",
-    "Linkedu: el control de tu colegio en una sola plataforma."
+    "Con Doce, consigues tres mejoras importantes: más control financiero, menos carga operativa y más prestigio institucional.",
+    "Doce: el control de tu colegio en una sola plataforma."
   ],
   problemTitle: "Tu colegio no necesita más papeles. Necesita más control.",
   problemSubtitle: "Cuando la información está repartida entre Excel, WhatsApp, cuadernos y hojas sueltas, el colegio pierde tiempo, claridad y autoridad frente a los padres.",
-  problemMessage: "Linkedu fue creado justamente para resolver ese desorden.",
+  problemMessage: "Doce fue creado justamente para resolver ese desorden.",
   solutionTitle: "Todo tu colegio conectado en una sola plataforma.",
   solutionSubtitle: "Dirección controla finanzas, los docentes registran notas, los padres revisan pensiones y los alumnos consultan tareas.",
-  benefitsTitle: "Lo que cambia con Linkedu:",
+  benefitsTitle: "Lo que cambia con Doce:",
   proofTitle: "Mira cómo se vería tu colegio dentro de la plataforma.",
   proofSubtitle: "En la demo personalizada revisamos cómo funciona el portal de dirección, cómo un docente registra notas y cómo un padre consulta calificaciones.",
-  offerTitle: "Agenda una demo y mira cómo se vería tu colegio dentro de Linkedu.",
+  offerTitle: "Agenda una demo y mira cómo se vería tu colegio dentro de Doce.",
   guaranteeTitle: "No tienes que decidir nada hoy.",
   guaranteeText: "Primero mira la plataforma, revisamos tu caso y te mostramos cuál sería el mejor plan según el tamaño de tu colegio de forma consultiva.",
-  ctaFinalTitle: "Agenda una demo y mira cómo se vería tu colegio dentro de Linkedu.",
+  ctaFinalTitle: "Agenda una demo y mira cómo se vería tu colegio dentro de Doce.",
   ctaFinalText: "Centraliza pensiones, notas, asistencias, tareas, comunicados y reportes en una sola plataforma con app móvil."
 };
 
@@ -321,9 +321,9 @@ export default function SuperAdminDashboard() {
     heroSubtitle: "Centraliza pensiones, notas, asistencias, comunicados, tareas y reportes en una sola plataforma con app móvil para dirección, docentes, padres y alumnos.",
     videoUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop",
     whatsappNumber: "51987088359",
-    whatsappTemplate: 'Hola! Vengo de la landing page de Linkedu. Me interesa agendar una demostración gratuita en vivo. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}". ¿Cuándo podríamos programarla?',
+    whatsappTemplate: 'Hola! Vengo de la landing page de Doce. Me interesa agendar una demostración gratuita en vivo. Mi colegio es: "{schoolName}" y mi correo corporativo de contacto es: "{directorEmail}". ¿Cuándo podríamos programarla?',
     subtitles: [
-      "Descubre cómo LINKEDU está eliminando el caos administrativo del Excel...",
+      "Descubre cómo DOCE está eliminando el caos administrativo del Excel...",
       "El 85% de los colegios en América Latina reporta fugas de dinero por morosidad no detectada.",
       "Orquesta matrículas, pensiones, asistencias y libretas en un solo ecosistema integrado.",
       "Ahorra hasta 15 horas semanales a tus profesores y pacifica la comunicación con los padres.",
@@ -741,7 +741,7 @@ export default function SuperAdminDashboard() {
               </div>
               <div className="mt-4">
                 <span className="text-2xl font-black text-gray-900">{usuarios.length}</span>
-                <p className="text-xs text-gray-500 font-bold mt-1">Ecosistema Linkedu</p>
+                <p className="text-xs text-gray-500 font-bold mt-1">Ecosistema Doce</p>
               </div>
             </div>
 
@@ -973,7 +973,7 @@ export default function SuperAdminDashboard() {
                           />
                           <div className="flex flex-col min-w-0">
                             <span className="font-extrabold text-gray-950 truncate leading-snug">{usr.nombre} {usr.apellido}</span>
-                            <span className="text-[10px] text-gray-400 truncate mt-0.5">{usr.email || 'sin-correo@linkedu.com'}</span>
+                            <span className="text-[10px] text-gray-400 truncate mt-0.5">{usr.email || 'sin-correo@doce.pe'}</span>
                           </div>
                         </td>
                         <td className="p-3 font-semibold text-xs text-gray-500">{usr.dni}</td>

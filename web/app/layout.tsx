@@ -5,14 +5,14 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
-  title: "Linkedu - Plataforma Educativa Integral (Intranet SaaS)",
-  description: "Centraliza la gestión académica, administrativa y financiera de tu colegio en un solo ecosistema moderno. Reemplaza WhatsApp, papeles y hojas de cálculo.",
-  keywords: ["intranet escolar", "colegio privado", "plataforma educativa", "SaaS colegios", "gestión académica"],
-  authors: [{ name: "Linkedu Dev Team" }],
+  title: "Doce — Sistema operativo educativo",
+  description: "Aula virtual, gestión institucional, carnets y certificados verificables para colegios, institutos y centros de capacitación.",
+  keywords: ["aula virtual", "gestión educativa", "certificados con QR", "carnets escolares", "software educativo"],
+  authors: [{ name: "Doce" }],
 };
 
 export const viewport: Viewport = {
@@ -20,20 +20,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es" className={`${inter.variable} h-full antialiased`}>
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
-      <body className="min-h-full flex flex-col bg-[#F4F5F7] text-[#111827]">
-        {children}
-      </body>
+      <body className="flex min-h-full flex-col bg-[#f7f7f5] text-black">{children}</body>
     </html>
   );
 }
-

@@ -4,7 +4,6 @@ import { useEffect, useState, Suspense, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { 
-  GraduationCap, 
   LayoutDashboard, 
   Users, 
   Calendar, 
@@ -19,8 +18,12 @@ import {
   ClipboardList,
   Settings,
   Trash2,
-  Plus
+  Plus,
+  WalletCards,
+  FileBadge2,
+  ShieldCheck
 } from 'lucide-react';
+import { BrandMark } from '@/components/doce/BrandMark';
 
 // Componente de navegación de escritorio que usa useSearchParams de forma segura
 function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed: boolean }) {
@@ -55,18 +58,18 @@ function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed:
               isCollapsed ? 'justify-center' : 'px-4'
             } ${
               isActive 
-                ? 'bg-[#EEF1FE] text-[#01017b]' 
+                ? 'bg-black text-white'
                 : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
             }`}
           >
             <item.icon className={`h-5 w-5 transition-colors shrink-0 ${
               isCollapsed ? '' : 'mr-3'
             } ${
-              isActive ? 'text-[#01017b]' : 'text-gray-400 group-hover:text-gray-600'
+              isActive ? 'text-[#ff2432]' : 'text-gray-400 group-hover:text-gray-600'
             }`} />
             {!isCollapsed && <span className="truncate">{item.name}</span>}
             {!isCollapsed && isActive && (
-              <div className="ml-auto w-1 h-5 rounded-full bg-[#01017b]" />
+              <div className="ml-auto w-1 h-5 rounded-full bg-[#ff2432]" />
             )}
           </a>
         );
@@ -106,11 +109,11 @@ function MobileSidebarNav({ menuItems, onClose }: { menuItems: any[]; onClose: (
             }}
             className={`flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all ${
               isActive 
-                ? 'bg-[#EEF1FE] text-[#01017b]' 
+                ? 'bg-black text-white'
                 : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
             }`}
           >
-            <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[#01017b]' : 'text-gray-400'}`} />
+            <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[#ff2432]' : 'text-gray-400'}`} />
             {item.name}
           </a>
         );
@@ -164,7 +167,7 @@ export default function DashboardLayout({
   const DEFAULT_COMUNICADOS: Comunicado[] = [
     {
       id: 'com-1',
-      titulo: 'Gran Kermesse Familiar Linkedu 2026',
+      titulo: 'Gran Kermesse Familiar Doce 2026',
       categoria: 'Evento',
       mensaje: 'Los invitamos a participar de nuestra Kermesse este sábado desde las 9:00 AM. Habrá juegos, comida típica y presentaciones artísticas de todos los grados.',
       remitente: 'Director Roberto Mendoza',
@@ -520,14 +523,18 @@ export default function DashboardLayout({
           { name: 'Dashboard Global', icon: LayoutDashboard, path: '/superadmin' },
           { name: 'Gestión Colegios', icon: BookOpen, path: '/superadmin?tab=colegios' },
           { name: 'Control de Usuarios', icon: Users, path: '/superadmin?tab=usuarios' },
+          { name: 'Roles y Permisos', icon: ShieldCheck, path: '/superadmin/roles' },
           { name: 'Configuración', icon: Settings, path: '/superadmin/settings' },
         ];
       case 'director':
         return [
           { name: 'Dashboard', icon: LayoutDashboard, path: '/director' },
+          { name: 'Aula Virtual', icon: BookOpen, path: '/director/aula-virtual' },
           { name: 'Caja y Finanzas', icon: CreditCard, path: '/director/finanzas' },
           { name: 'Alumnado y Matrícula', icon: Users, path: '/director/alumnos' },
           { name: 'Personal Docente', icon: UserCheck, path: '/director/docentes' },
+          { name: 'Credenciales', icon: WalletCards, path: '/director/credenciales' },
+          { name: 'Documentos', icon: FileBadge2, path: '/director/documentos' },
           { name: 'Reportes Tempranos', icon: FileSpreadsheet, path: '/director/reportes' },
           { name: 'Configuración', icon: Settings, path: '/director/settings' },
         ];
@@ -553,6 +560,7 @@ export default function DashboardLayout({
           { name: 'Mi Horario', icon: Calendar, path: '/alumno/horario' },
           { name: 'Entregas', icon: ClipboardList, path: '/alumno/tareas' },
           { name: 'Mis Cursos', icon: BookOpen, path: '/alumno/cursos' },
+          { name: 'Certificados', icon: FileBadge2, path: '/alumno/certificados' },
           { name: 'Configuración', icon: Settings, path: '/alumno/settings' },
         ];
       default:
@@ -581,13 +589,11 @@ export default function DashboardLayout({
           }`}>
             {!isSidebarCollapsed ? (
               <>
-                <div className="flex items-center gap-2 overflow-hidden">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b] text-white shrink-0">
-                    <GraduationCap className="h-5.5 w-5.5" />
-                  </div>
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <BrandMark compact className="shrink-0" />
                   <div className="flex flex-col min-w-0">
-                    <span className="text-sm font-extrabold tracking-tight text-gray-900 truncate">Linkedu</span>
-                    <span className="text-[10px] text-gray-400 font-bold -mt-0.5 uppercase tracking-wide truncate">Intranet</span>
+                    <span className="text-sm font-extrabold tracking-tight text-gray-900 truncate">Doce</span>
+                    <span className="text-[9px] text-gray-400 font-bold -mt-0.5 uppercase tracking-[.12em] truncate">Sistema educativo</span>
                   </div>
                 </div>
                 <button
@@ -727,10 +733,8 @@ export default function DashboardLayout({
           <div className="relative flex flex-col w-full max-w-xs bg-white h-full shadow-2xl animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between h-16 px-6 border-b border-gray-150">
               <div className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b] text-white">
-                  <GraduationCap className="h-5.5 w-5.5" />
-                </div>
-                <span className="text-sm font-extrabold tracking-tight text-gray-900">Linkedu</span>
+                <BrandMark compact />
+                <span className="text-sm font-extrabold tracking-tight text-gray-900">Doce</span>
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)}
