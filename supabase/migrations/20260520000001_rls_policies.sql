@@ -1,5 +1,5 @@
 -- =====================================================================
--- LINKEDU - Políticas de Row Level Security (RLS)
+-- DOCE - Políticas de Row Level Security (RLS)
 -- Migración: 20260520000001_rls_policies.sql
 -- =====================================================================
 

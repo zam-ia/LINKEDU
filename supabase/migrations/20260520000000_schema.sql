@@ -1,5 +1,5 @@
 -- =====================================================================
--- LINKEDU - Esquema de Base de Datos PostgreSQL (Multi-tenant)
+-- DOCE - Esquema de Base de Datos PostgreSQL (Multi-tenant)
 -- Migración Inicial: 20260520000000_schema.sql
 -- =====================================================================
 

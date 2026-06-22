@@ -24,6 +24,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { BrandMark } from '@/components/doce/BrandMark';
+import { getStoredDocentes } from '@/lib/supabase/client';
 
 // Componente de navegación de escritorio que usa useSearchParams de forma segura
 function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed: boolean }) {
@@ -136,7 +137,7 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('linkedu_sidebar_collapsed');
+      const saved = localStorage.getItem('doce_sidebar_collapsed');
       if (saved) {
         setIsSidebarCollapsed(saved === 'true');
       }
@@ -147,7 +148,7 @@ export default function DashboardLayout({
     const nextState = !isSidebarCollapsed;
     setIsSidebarCollapsed(nextState);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('linkedu_sidebar_collapsed', String(nextState));
+      localStorage.setItem('doce_sidebar_collapsed', String(nextState));
     }
   };
 
@@ -262,7 +263,7 @@ export default function DashboardLayout({
       const examNotifications = comunicados.filter(c => c.categoria === 'Examen');
       if (examNotifications.length > 0) {
         const latest = examNotifications[0];
-        const dismissed = localStorage.getItem(`linkedu_dismissed_announcement_${user.id}_${latest.id}`);
+        const dismissed = localStorage.getItem(`doce_dismissed_announcement_${user.id}_${latest.id}`);
         if (dismissed !== 'true') {
           setActiveHighPriorityNotif(latest);
         }
@@ -283,7 +284,7 @@ export default function DashboardLayout({
   // Load and seed announcements
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('linkedu_comunicados');
+      const saved = localStorage.getItem('doce_comunicados');
       if (saved) {
         try {
           setComunicados(JSON.parse(saved));
@@ -291,7 +292,7 @@ export default function DashboardLayout({
           setComunicados(DEFAULT_COMUNICADOS);
         }
       } else {
-        localStorage.setItem('linkedu_comunicados', JSON.stringify(DEFAULT_COMUNICADOS));
+        localStorage.setItem('doce_comunicados', JSON.stringify(DEFAULT_COMUNICADOS));
         setComunicados(DEFAULT_COMUNICADOS);
       }
     }
@@ -300,7 +301,6 @@ export default function DashboardLayout({
   // Fetch teacher's courses if docente is logged in
   useEffect(() => {
     if (user && user.rol === 'docente') {
-      const { getStoredDocentes } = require('@/lib/supabase/client');
       const allDocentes = getStoredDocentes();
       const activeDocente = allDocentes.find((d: any) => d.email === user.email);
       if (activeDocente && activeDocente.cursos_asignados.length > 0) {
@@ -335,7 +335,7 @@ export default function DashboardLayout({
     };
 
     const updated = [created, ...comunicados];
-    localStorage.setItem('linkedu_comunicados', JSON.stringify(updated));
+    localStorage.setItem('doce_comunicados', JSON.stringify(updated));
     setComunicados(updated);
     
     // Reset Form
@@ -351,7 +351,7 @@ export default function DashboardLayout({
 
   const handleDeleteNotif = (id: string) => {
     const updated = comunicados.filter(c => c.id !== id);
-    localStorage.setItem('linkedu_comunicados', JSON.stringify(updated));
+    localStorage.setItem('doce_comunicados', JSON.stringify(updated));
     setComunicados(updated);
   };
 
@@ -365,15 +365,16 @@ export default function DashboardLayout({
         if (cleanHex.length === 3) {
           cleanHex = cleanHex[0] + cleanHex[0] + cleanHex[1] + cleanHex[1] + cleanHex[2] + cleanHex[2];
         }
-        let r = parseInt(cleanHex.substring(0, 2), 16) / 255;
-        let g = parseInt(cleanHex.substring(2, 4), 16) / 255;
-        let b = parseInt(cleanHex.substring(4, 6), 16) / 255;
+        const r = parseInt(cleanHex.substring(0, 2), 16) / 255;
+        const g = parseInt(cleanHex.substring(2, 4), 16) / 255;
+        const b = parseInt(cleanHex.substring(4, 6), 16) / 255;
 
-        let max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h = 0, s = 0, l = (max + min) / 2;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h = 0, s = 0;
+        const l = (max + min) / 2;
 
         if (max !== min) {
-          let d = max - min;
+          const d = max - min;
           s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
           switch (max) {
             case r: h = (g - b) / d + (g < b ? 6 : 0); break;
@@ -392,9 +393,9 @@ export default function DashboardLayout({
       const hslToHex = (h: number, s: number, l: number) => {
         s /= 100;
         l /= 100;
-        let c = (1 - Math.abs(2 * l - 1)) * s;
-        let x = c * (1 - Math.abs((h / 60) % 2 - 1));
-        let m = l - c / 2;
+        const c = (1 - Math.abs(2 * l - 1)) * s;
+        const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        const m = l - c / 2;
         let r = 0, g = 0, b = 0;
 
         if (0 <= h && h < 60) { r = c; g = x; b = 0; }
@@ -404,9 +405,9 @@ export default function DashboardLayout({
         else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
         else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
 
-        let rHex = Math.round((r + m) * 255).toString(16).padStart(2, '0');
-        let gHex = Math.round((g + m) * 255).toString(16).padStart(2, '0');
-        let bHex = Math.round((b + m) * 255).toString(16).padStart(2, '0');
+        const rHex = Math.round((r + m) * 255).toString(16).padStart(2, '0');
+        const gHex = Math.round((g + m) * 255).toString(16).padStart(2, '0');
+        const bHex = Math.round((b + m) * 255).toString(16).padStart(2, '0');
 
         return `#${rHex}${gHex}${bHex}`;
       };
@@ -430,68 +431,68 @@ export default function DashboardLayout({
           --primary-light-custom: ${harmonizedLight};
         }
         
-        .bg-\\[\\#01017b\\] {
+        .bg-\\[\\#1D1D1F\\] {
           background-color: var(--primary-custom) !important;
         }
-        .text-\\[\\#01017b\\] {
+        .text-\\[\\#1D1D1F\\] {
           color: var(--primary-custom) !important;
         }
-        .border-\\[\\#01017b\\] {
+        .border-\\[\\#1D1D1F\\] {
           border-color: var(--primary-custom) !important;
         }
-        .hover\\:bg-\\[\\#01017b\\]\\/90:hover {
+        .hover\\:bg-\\[\\#1D1D1F\\]\\/90:hover {
           background-color: var(--primary-custom) !important;
           opacity: 0.95 !important;
         }
-        .hover\\:bg-\\[\\#01017b\\]\\/80:hover {
+        .hover\\:bg-\\[\\#1D1D1F\\]\\/80:hover {
           background-color: var(--primary-custom) !important;
           opacity: 0.85 !important;
         }
-        .focus-visible\\:outline-\\[\\#01017b\\]:focus-visible {
+        .focus-visible\\:outline-\\[\\#1D1D1F\\]:focus-visible {
           outline-color: var(--primary-custom) !important;
         }
         
-        .bg-\\[\\#EEF1FE\\] {
+        .bg-\\[\\#FFF0F1\\] {
           background-color: var(--primary-light-custom) !important;
         }
-        .text-\\[\\#EEF1FE\\] {
+        .text-\\[\\#FFF0F1\\] {
           color: var(--primary-custom) !important;
         }
-        .border-\\[\\#EEF1FE\\] {
+        .border-\\[\\#FFF0F1\\] {
           border-color: var(--primary-light-custom) !important;
         }
-        .hover\\:bg-\\[\\#EEF1FE\\]:hover {
+        .hover\\:bg-\\[\\#FFF0F1\\]:hover {
           background-color: var(--primary-light-custom) !important;
           opacity: 0.9 !important;
         }
         
         /* Highlight icon / sidebar elements */
-        .group:hover .group-hover\\:text-\\[\\#01017b\\] {
+        .group:hover .group-hover\\:text-\\[\\#1D1D1F\\] {
           color: var(--primary-custom) !important;
         }
-        .group:hover .group-hover\\:border-\\[\\#01017b\\] {
+        .group:hover .group-hover\\:border-\\[\\#1D1D1F\\] {
           border-color: var(--primary-custom) !important;
         }
-        .group-hover\\:text-\\[\\#01017b\\] {
+        .group-hover\\:text-\\[\\#1D1D1F\\] {
           color: var(--primary-custom) !important;
         }
         
         /* Soft shadows */
-        .shadow-\\[\\#01017b\\]\\/10 {
-          box-shadow: 0 4px 6px -1px rgba(1, 1, 123, 0.04), 0 2px 4px -1px rgba(1, 1, 123, 0.02) !important;
+        .shadow-\\[\\#1D1D1F\\]\\/10 {
+          box-shadow: 0 4px 6px -1px rgba(255, 36, 50, 0.04), 0 2px 4px -1px rgba(255, 36, 50, 0.02) !important;
         }
-        .shadow-\\[\\#01017b\\]\\/20 {
-          box-shadow: 0 10px 15px -3px rgba(1, 1, 123, 0.06), 0 4px 6px -2px rgba(1, 1, 123, 0.03) !important;
+        .shadow-\\[\\#1D1D1F\\]\\/20 {
+          box-shadow: 0 10px 15px -3px rgba(255, 36, 50, 0.06), 0 4px 6px -2px rgba(255, 36, 50, 0.03) !important;
         }
-        .shadow-\\[\\#01017b\\]\\/30 {
-          box-shadow: 0 20px 25px -5px rgba(1, 1, 123, 0.08), 0 10px 10px -5px rgba(1, 1, 123, 0.04) !important;
+        .shadow-\\[\\#1D1D1F\\]\\/30 {
+          box-shadow: 0 20px 25px -5px rgba(255, 36, 50, 0.08), 0 10px 10px -5px rgba(255, 36, 50, 0.04) !important;
         }
         
         /* Ring focuses */
-        .focus\\:ring-\\[\\#01017b\\]\\/15:focus {
-          --tw-ring-color: rgba(1, 1, 123, 0.15) !important;
+        .focus\\:ring-\\[\\#1D1D1F\\]\\/15:focus {
+          --tw-ring-color: rgba(255, 36, 50, 0.15) !important;
         }
-        .focus\\:border-\\[\\#01017b\\]:focus {
+        .focus\\:border-\\[\\#1D1D1F\\]:focus {
           border-color: var(--primary-custom) !important;
         }
       `;
@@ -510,7 +511,7 @@ export default function DashboardLayout({
   if (loading || !user) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#F4F5F7]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#01017b] border-t-transparent"></div>
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#1D1D1F] border-t-transparent"></div>
       </div>
     );
   }
@@ -598,7 +599,7 @@ export default function DashboardLayout({
                 </div>
                 <button
                   onClick={toggleSidebar}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-[#01017b] hover:bg-[#EEF1FE] transition-all cursor-pointer shrink-0"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-[#1D1D1F] hover:bg-[#FFF0F1] transition-all cursor-pointer shrink-0"
                   title="Contraer menú"
                 >
                   <Menu className="w-4 h-4" />
@@ -607,7 +608,7 @@ export default function DashboardLayout({
             ) : (
               <button
                 onClick={toggleSidebar}
-                className="p-2 rounded-lg text-gray-400 hover:text-[#01017b] hover:bg-[#EEF1FE] transition-all cursor-pointer flex items-center justify-center shrink-0"
+                className="p-2 rounded-lg text-gray-400 hover:text-[#1D1D1F] hover:bg-[#FFF0F1] transition-all cursor-pointer flex items-center justify-center shrink-0"
                 title="Expandir menú"
               >
                 <Menu className="w-5 h-5" />
@@ -633,14 +634,14 @@ export default function DashboardLayout({
                 <img 
                   src={user.foto_url} 
                   alt={`${user.nombre} ${user.apellido}`}
-                  className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100 group-hover:border-[#01017b] transition-colors" 
+                  className="w-10 h-10 rounded-full object-cover border border-gray-250 bg-gray-100 group-hover:border-[#1D1D1F] transition-colors"
                 />
                 {!isSidebarCollapsed && (
                   <div className="flex flex-col flex-1 min-w-0">
-                    <span className="text-xs font-bold text-gray-900 truncate leading-tight group-hover:text-[#01017b] transition-colors">
+                    <span className="text-xs font-bold text-gray-900 truncate leading-tight group-hover:text-[#1D1D1F] transition-colors">
                       {user.nombre} {user.apellido}
                     </span>
-                    <span className="text-[10px] font-bold text-[#01017b] uppercase tracking-wide mt-0.5">
+                    <span className="text-[10px] font-bold text-[#1D1D1F] uppercase tracking-wide mt-0.5">
                       {user.rol}
                     </span>
                   </div>
@@ -764,7 +765,7 @@ export default function DashboardLayout({
                   />
                   <div className="flex flex-col flex-1 min-w-0">
                     <span className="text-xs font-bold text-gray-900 truncate">{user.nombre} {user.apellido}</span>
-                    <span className="text-[10px] font-bold text-[#01017b] uppercase mt-0.5">{user.rol}</span>
+                    <span className="text-[10px] font-bold text-[#1D1D1F] uppercase mt-0.5">{user.rol}</span>
                   </div>
                 </button>
                 <button 
@@ -793,7 +794,7 @@ export default function DashboardLayout({
             {/* Drawer Header */}
             <div className="flex items-center justify-between p-5 border-b border-gray-150 bg-gray-50/50">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-[#01017b]" />
+                <Bell className="w-5 h-5 text-[#1D1D1F]" />
                 <div>
                   <h3 className="text-sm font-black text-gray-955">Tablón de Comunicados</h3>
                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Avisos y Eventos VIP</p>
@@ -815,7 +816,7 @@ export default function DashboardLayout({
                   onClick={() => setNotifFiltro(tab)}
                   className={`px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                     notifFiltro === tab
-                      ? 'bg-[#01017b] text-white font-bold'
+                      ? 'bg-[#1D1D1F] text-white font-bold'
                       : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                   }`}
                 >
@@ -826,10 +827,10 @@ export default function DashboardLayout({
 
             {/* Create Announcement Button (Only Director or Docente) */}
             {(user.rol === 'director' || user.rol === 'docente') && (
-              <div className="p-4 border-b border-gray-100 bg-[#EEF1FE]/30">
+              <div className="p-4 border-b border-gray-100 bg-[#FFF0F1]/30">
                 <button
                   onClick={() => setShowCreateNotifModal(true)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-sm shadow-[#01017b]/10 active:scale-98"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-sm shadow-[#1D1D1F]/10 active:scale-98"
                 >
                   <Plus className="w-4 h-4" />
                   Publicar Comunicado {user.rol === 'docente' ? 'de Asignatura' : 'General'}
@@ -856,7 +857,7 @@ export default function DashboardLayout({
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-xs ${
                           c.categoria === 'Evento' ? 'bg-[#5BAD8A]/10 text-[#5BAD8A]' :
                           c.categoria === 'Examen' ? 'bg-[#9B7FD4]/10 text-[#9B7FD4]' :
-                          'bg-[#01017b]/10 text-[#01017b]'
+                          'bg-[#1D1D1F]/10 text-[#1D1D1F]'
                         }`}>
                           {c.categoria === 'Evento' ? '🎉' : c.categoria === 'Examen' ? '📝' : '📢'}
                         </div>
@@ -864,7 +865,7 @@ export default function DashboardLayout({
                           <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${
                             c.categoria === 'Evento' ? 'bg-[#EAF5EF] text-[#5BAD8A]' :
                             c.categoria === 'Examen' ? 'bg-[#F3EFFE] text-[#9B7FD4]' :
-                            'bg-[#EEF1FE] text-[#01017b]'
+                            'bg-[#FFF0F1] text-[#1D1D1F]'
                           }`}>
                             {c.categoria} {c.curso ? `• ${c.curso}` : ''}
                           </span>
@@ -926,7 +927,7 @@ export default function DashboardLayout({
                 <select
                   value={newNotif.categoria}
                   onChange={(e) => setNewNotif({ ...newNotif, categoria: e.target.value as any })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                 >
                   <option value="General">📢 Aviso General</option>
                   <option value="Evento">🎉 Evento Escolar</option>
@@ -940,7 +941,7 @@ export default function DashboardLayout({
                   <select
                     value={newNotif.curso}
                     onChange={(e) => setNewNotif({ ...newNotif, curso: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                   >
                     {teacherCourses.map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -960,7 +961,7 @@ export default function DashboardLayout({
                   placeholder="Ej. Cambio de horario o Material necesario"
                   value={newNotif.titulo}
                   onChange={(e) => setNewNotif({ ...newNotif, titulo: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                 />
               </div>
 
@@ -972,7 +973,7 @@ export default function DashboardLayout({
                   placeholder="Escribe el contenido detallado de la comunicación para los alumnos y padres..."
                   value={newNotif.mensaje}
                   onChange={(e) => setNewNotif({ ...newNotif, mensaje: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                 />
               </div>
 
@@ -986,7 +987,7 @@ export default function DashboardLayout({
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Publicar Ahora
                 </button>
@@ -1002,7 +1003,7 @@ export default function DashboardLayout({
           <div className="relative w-full max-w-lg bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl rounded-3xl p-6 md:p-8 text-left animate-in zoom-in-95 duration-200">
             {/* Ambient decorative glow */}
             <div className="absolute -top-12 -left-12 w-32 h-32 bg-red-500/10 rounded-full blur-2xl pointer-events-none"></div>
-            <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-[#01017b]/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-[#1D1D1F]/10 rounded-full blur-2xl pointer-events-none"></div>
 
             {/* Header / Accent Badge */}
             <div className="flex items-center justify-between mb-5">
@@ -1013,7 +1014,7 @@ export default function DashboardLayout({
               <button
                 onClick={() => {
                   if (user) {
-                    localStorage.setItem(`linkedu_dismissed_announcement_${user.id}_${activeHighPriorityNotif.id}`, 'true');
+                    localStorage.setItem(`doce_dismissed_announcement_${user.id}_${activeHighPriorityNotif.id}`, 'true');
                   }
                   setActiveHighPriorityNotif(null);
                   playNotificationSound();
@@ -1055,7 +1056,7 @@ export default function DashboardLayout({
               <button
                 onClick={() => {
                   if (user) {
-                    localStorage.setItem(`linkedu_dismissed_announcement_${user.id}_${activeHighPriorityNotif.id}`, 'true');
+                    localStorage.setItem(`doce_dismissed_announcement_${user.id}_${activeHighPriorityNotif.id}`, 'true');
                   }
                   setActiveHighPriorityNotif(null);
                   playNotificationSound();

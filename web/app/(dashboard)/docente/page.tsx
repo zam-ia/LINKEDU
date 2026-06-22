@@ -282,7 +282,7 @@ export default function DocenteDashboard() {
                           max="20"
                           value={notas[al.id]?.[ev.id] ?? ''}
                           onChange={(e) => handleNotaChange(al.id, ev.id, e.target.value)}
-                          className="w-16 rounded-lg border border-gray-200 py-1 px-2 text-center text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#01017b]/20 focus:border-[#01017b] text-gray-900 bg-white"
+                          className="w-16 rounded-lg border border-gray-200 py-1 px-2 text-center text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/20 focus:border-[#1D1D1F] text-gray-900 bg-white"
                         />
                       </td>
                     ))}
@@ -321,7 +321,7 @@ export default function DocenteDashboard() {
                   placeholder="Ej: Participación en clase"
                   value={newEvalName}
                   onChange={(e) => setNewEvalName(e.target.value)}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                   required
                 />
               </div>
@@ -332,7 +332,7 @@ export default function DocenteDashboard() {
                   <select
                     value={newEvalTipo}
                     onChange={(e) => setNewEvalTipo(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                   >
                     <option value="examen">Examen</option>
                     <option value="tarea">Tarea</option>
@@ -347,7 +347,7 @@ export default function DocenteDashboard() {
                     placeholder="20"
                     value={newEvalPeso}
                     onChange={(e) => setNewEvalPeso(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                     required
                   />
                 </div>
@@ -363,7 +363,7 @@ export default function DocenteDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Agregar Evaluación
                 </button>

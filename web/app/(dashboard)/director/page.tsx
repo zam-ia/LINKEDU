@@ -111,7 +111,7 @@ export default function DirectorDashboard() {
           </button>
           <button 
             onClick={() => setShowAddEgreso(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/20 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#1D1D1F]/20 cursor-pointer"
           >
             <Plus className="w-4.5 h-4.5" />
             Registrar Egreso
@@ -182,7 +182,7 @@ export default function DirectorDashboard() {
         <div className="premium-card p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Saldo en Caja</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b]/10 text-[#01017b]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1D1D1F]/10 text-[#1D1D1F]">
               <Wallet className="h-5 w-5" />
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function DirectorDashboard() {
                   contentStyle={{ background: '#FFF', borderRadius: '12px', border: '1px solid #EAECF0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }} 
                   cursor={{ fill: 'rgba(79, 106, 240, 0.03)' }}
                 />
-                <Bar dataKey="Ingresos" fill="#01017b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Ingresos" fill="#1D1D1F" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="Egresos" fill="#E07B6A" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -306,7 +306,7 @@ export default function DirectorDashboard() {
                     <td className="py-3.5 text-right">
                       <button
                         onClick={() => handleSendReminder(deudor.id, deudor.nombre)}
-                        className="p-2 bg-gray-100 hover:bg-[#EEF1FE] hover:text-[#01017b] rounded-xl text-gray-500 transition-all cursor-pointer"
+                        className="p-2 bg-gray-100 hover:bg-[#FFF0F1] hover:text-[#1D1D1F] rounded-xl text-gray-500 transition-all cursor-pointer"
                         title="Enviar recordatorio"
                       >
                         <Send className="w-4 h-4" />
@@ -368,7 +368,7 @@ export default function DirectorDashboard() {
                 <select
                   value={newEgreso.categoria}
                   onChange={(e) => setNewEgreso({ ...newEgreso, categoria: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                 >
                   <option value="Planilla">Planilla Docente</option>
                   <option value="Servicios">Servicios Básicos</option>
@@ -385,7 +385,7 @@ export default function DirectorDashboard() {
                   placeholder="Ej: Pago de planilla de docentes Mayo"
                   value={newEgreso.descripcion}
                   onChange={(e) => setNewEgreso({ ...newEgreso, descripcion: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                 />
               </div>
 
@@ -396,7 +396,7 @@ export default function DirectorDashboard() {
                   placeholder="500.00"
                   value={newEgreso.monto}
                   onChange={(e) => setNewEgreso({ ...newEgreso, monto: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                 />
               </div>
 
@@ -410,7 +410,7 @@ export default function DirectorDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Guardar Egreso
                 </button>

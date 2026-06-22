@@ -10,7 +10,7 @@ import {
   ActivityIndicator, 
   Alert 
 } from 'react-native';
-import { Provider as PaperProvider, Portal, Modal, Button } from 'react-native-paper';
+import { Provider as PaperProvider, Portal, Modal } from 'react-native-paper';
 import { useAuthStore } from '../../lib/store/useAuthStore';
 
 // Datos de semilla para mobile (sincronizados con seed.sql)
@@ -21,16 +21,16 @@ const DEUDORES_MOBILE = [
 
 const TAREAS_MOBILE = [
   { id: '1', titulo: 'Ejercicios de Fracciones', curso: 'Matemática', vencimiento: 'Hoy, 23:59', prioridad: 'alta', color: '#E07B6A' },
-  { id: '2', titulo: 'Ensayo sobre Don Quijote', curso: 'Comunicación', vencimiento: 'Viernes', prioridad: 'media', color: '#00a7eb' }, // Celeste interactivo
+  { id: '2', titulo: 'Ensayo sobre Don Quijote', curso: 'Comunicación', vencimiento: 'Viernes', prioridad: 'media', color: '#FF2432' }, // Celeste interactivo
 ];
 
 export default function HomeScreen() {
   const { user, login, logout, loading, colegio, setUser } = useAuthStore();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('••••••••');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [logoClickCount, setLogoClickCount] = useState(0);
-  const [showSuperAdmin, setShowSuperAdmin] = useState(false);
+  const [, setLogoClickCount] = useState(0);
+  const [, setShowSuperAdmin] = useState(false);
 
   const handleLogoPress = () => {
     setLogoClickCount(prev => {
@@ -82,7 +82,7 @@ export default function HomeScreen() {
   };
 
   // Estados del Director
-  const [deudores, setDeudores] = useState(DEUDORES_MOBILE);
+  const [deudores] = useState(DEUDORES_MOBILE);
 
   // Estados del Docente
   const [alumnosAsistencia, setAlumnosAsistencia] = useState([
@@ -104,16 +104,14 @@ export default function HomeScreen() {
       return;
     }
     setError('');
-    const success = await login(email);
-    if (!success) {
-      setError('Credenciales demo inválidas.');
+    if (!password) {
+      setError('Ingresa tu contraseña.');
+      return;
     }
-  };
-
-  const handleQuickLogin = async (demoEmail: string) => {
-    setEmail(demoEmail);
-    setError('');
-    await login(demoEmail);
+    const success = await login(email, password);
+    if (!success) {
+      setError('Credenciales inválidas o cuenta inactiva.');
+    }
   };
 
   // Docente: Toggle Asistencia Cíclico
@@ -176,11 +174,9 @@ export default function HomeScreen() {
             onPress={handleLogoPress}
             style={styles.logoContainer}
           >
-            <View style={styles.logoBadge}>
-              <Text style={styles.logoBadgeText}>🎓</Text>
-            </View>
-            <Text style={styles.logoTitle}>Link<Text style={{ color: '#00a7eb' }}>edu</Text></Text>
-            <Text style={styles.logoSubtitle}>Plataforma Educativa Integral</Text>
+            <Image source={require('../../assets/images/doce-icon-transparent.png')} style={styles.brandIcon} resizeMode="contain" />
+            <Text style={styles.logoTitle}>Doce</Text>
+            <Text style={styles.logoSubtitle}>Sistema operativo educativo</Text>
           </TouchableOpacity>
 
           <View style={styles.loginCard}>
@@ -218,7 +214,7 @@ export default function HomeScreen() {
               {loading ? (
                 <ActivityIndicator color="#FFF" size="small" />
               ) : (
-                <Text style={styles.loginButtonText}>Ingresar a la Intranet</Text>
+                <Text style={styles.loginButtonText}>Ingresar a Doce</Text>
               )}
             </TouchableOpacity>
 
@@ -242,7 +238,7 @@ export default function HomeScreen() {
               style={styles.colegioLogo}
             />
             <View>
-              <Text style={styles.colegioName}>{colegio?.nombre || 'Linkedu Global Admin'}</Text>
+              <Text style={styles.colegioName}>{colegio?.nombre || 'Doce Global Admin'}</Text>
               <Text style={styles.academicYear}>Año Académico 2026</Text>
             </View>
           </View>
@@ -282,7 +278,7 @@ export default function HomeScreen() {
             <View style={styles.kpiRow}>
               <View style={styles.kpiCard}>
                 <Text style={styles.kpiLabel}>Colegios Totales</Text>
-                <Text style={[styles.kpiValue, { color: '#00a7eb' }]}>2</Text>
+                <Text style={[styles.kpiValue, { color: '#FF2432' }]}>2</Text>
               </View>
               <View style={styles.kpiCard}>
                 <Text style={styles.kpiLabel}>Ingresos SaaS</Text>
@@ -298,12 +294,12 @@ export default function HomeScreen() {
               {/* Colegio 1 */}
               <View style={styles.schoolRow}>
                 <View style={styles.schoolInfo}>
-                  <Text style={styles.schoolNameText}>Colegio de Excelencia Linkedu</Text>
+                  <Text style={styles.schoolNameText}>Colegio de Excelencia Doce</Text>
                   <Text style={styles.schoolRucText}>RUC: 20123456789 • Activo</Text>
                 </View>
                 <TouchableOpacity 
                   style={[styles.schoolToggleBtn, { backgroundColor: '#EAF5EF', borderColor: '#5BAD8A' }]}
-                  onPress={() => Alert.alert('Colegio Actualizado', 'El Colegio de Excelencia Linkedu sigue habilitado.')}
+                  onPress={() => Alert.alert('Colegio Actualizado', 'El Colegio de Excelencia Doce sigue habilitado.')}
                 >
                   <Text style={{ color: '#5BAD8A', fontSize: 11, fontWeight: '800' }}>ACTIVO</Text>
                 </TouchableOpacity>
@@ -350,7 +346,7 @@ export default function HomeScreen() {
               <Text style={styles.cardTitle}>Flujo de Caja Mensual</Text>
               <View style={styles.barChartContainer}>
                 <View style={styles.chartBarCol}>
-                  <View style={[styles.chartBar, { height: 100, backgroundColor: '#00a7eb' }]} />
+                  <View style={[styles.chartBar, { height: 100, backgroundColor: '#FF2432' }]} />
                   <Text style={styles.chartBarLabel}>Ingresos</Text>
                 </View>
                 <View style={styles.chartBarCol}>
@@ -461,7 +457,7 @@ export default function HomeScreen() {
                   <Text style={[styles.alertTitle, { color: '#664D03' }]}>Pensión Vencida - Mayo</Text>
                   <Text style={styles.alertDetail}>Monto: S/. 380.00. Regularice su estado.</Text>
                 </View>
-                <TouchableOpacity style={[styles.alertPayButton, { backgroundColor: '#01017b' }]} onPress={handlePayPension} disabled={pagando}>
+                <TouchableOpacity style={[styles.alertPayButton, { backgroundColor: '#1D1D1F' }]} onPress={handlePayPension} disabled={pagando}>
                   {pagando ? (
                     <ActivityIndicator color="#FFF" size="small" />
                   ) : (
@@ -609,7 +605,7 @@ export default function HomeScreen() {
               <Text style={{ color: '#4B5563', fontWeight: '700' }}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              style={[styles.mobileModalBtn, { backgroundColor: '#01017b' }]} 
+              style={[styles.mobileModalBtn, { backgroundColor: '#1D1D1F' }]}
               onPress={handleSaveMobileProfile}
             >
               <Text style={{ color: '#FFF', fontWeight: '700' }}>Guardar</Text>
@@ -633,32 +629,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
-  logoBadge: {
-    width: 60,
-    height: 60,
-    borderRadius: 16,
-    backgroundColor: '#01017b',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#01017b',
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  logoBadgeText: {
-    fontSize: 32,
+  brandIcon: {
+    width: 88,
+    height: 88,
+    marginBottom: 10,
   },
   logoTitle: {
     fontSize: 28,
-    fontWeight: '900',
-    color: '#111827',
-    marginTop: 16,
+    fontWeight: '500',
+    color: '#1D1D1F',
+    marginTop: 4,
   },
   logoSubtitle: {
     fontSize: 12,
-    color: '#6B7280',
-    fontWeight: '700',
+    color: '#6E6E73',
+    fontWeight: '500',
     marginTop: 4,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
@@ -668,9 +653,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 24,
     borderWidth: 1,
-    borderColor: 'rgba(1, 1, 123, 0.06)',
+    borderColor: 'rgba(255, 36, 50, 0.06)',
     elevation: 4,
-    shadowColor: '#01017b',
+    shadowColor: '#1D1D1F',
     shadowOpacity: 0.05,
     shadowRadius: 15,
     shadowOffset: { width: 0, height: 6 },
@@ -714,7 +699,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   loginButton: {
-    backgroundColor: '#01017b',
+    backgroundColor: '#1D1D1F',
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
@@ -750,7 +735,7 @@ const styles = StyleSheet.create({
     width: '48%',
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: 'rgba(1, 1, 123, 0.06)',
+    borderColor: 'rgba(255, 36, 50, 0.06)',
     borderLeftWidth: 4,
     padding: 10,
     borderRadius: 10,
@@ -814,12 +799,12 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: 'rgba(1, 1, 123, 0.06)',
+    borderColor: 'rgba(255, 36, 50, 0.06)',
     borderRadius: 16,
     padding: 16,
     marginBottom: 20,
     elevation: 3,
-    shadowColor: '#01017b',
+    shadowColor: '#1D1D1F',
     shadowOpacity: 0.04,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },
@@ -837,7 +822,7 @@ const styles = StyleSheet.create({
   profileRol: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#01017b',
+    color: '#1D1D1F',
     letterSpacing: 0.5,
     marginTop: 2,
   },
@@ -858,11 +843,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: 'rgba(1, 1, 123, 0.06)',
+    borderColor: 'rgba(255, 36, 50, 0.06)',
     padding: 16,
     borderRadius: 14,
     elevation: 2,
-    shadowColor: '#01017b',
+    shadowColor: '#1D1D1F',
     shadowOpacity: 0.03,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
@@ -881,11 +866,11 @@ const styles = StyleSheet.create({
   mobileCard: {
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: 'rgba(1, 1, 123, 0.06)',
+    borderColor: 'rgba(255, 36, 50, 0.06)',
     borderRadius: 16,
     padding: 16,
     elevation: 2,
-    shadowColor: '#01017b',
+    shadowColor: '#1D1D1F',
     shadowOpacity: 0.03,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
@@ -960,7 +945,7 @@ const styles = StyleSheet.create({
   classHour: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#01017b',
+    color: '#1D1D1F',
     marginTop: 2,
   },
   instructionText: {
@@ -998,7 +983,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   saveAsistenciaButton: {
-    backgroundColor: '#01017b',
+    backgroundColor: '#1D1D1F',
     borderRadius: 12,
     paddingVertical: 12,
     alignItems: 'center',
@@ -1012,7 +997,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: 'rgba(1, 1, 123, 0.06)',
+    borderColor: 'rgba(255, 36, 50, 0.06)',
     padding: 4,
     borderRadius: 12,
     marginBottom: 8,
@@ -1032,7 +1017,7 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   hijoTabActiveText: {
-    color: '#01017b',
+    color: '#1D1D1F',
   },
   alertCard: {
     flexDirection: 'row',
@@ -1145,7 +1130,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   taskDeliverBtn: {
-    backgroundColor: '#01017b',
+    backgroundColor: '#1D1D1F',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -1163,7 +1148,7 @@ const styles = StyleSheet.create({
   },
   editProfileMobileBtnText: {
     fontSize: 11,
-    color: '#01017b',
+    color: '#1D1D1F',
     fontWeight: '800',
   },
   mobileModalContent: {
@@ -1172,9 +1157,9 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(1, 1, 123, 0.06)',
+    borderColor: 'rgba(255, 36, 50, 0.06)',
     elevation: 8,
-    shadowColor: '#01017b',
+    shadowColor: '#1D1D1F',
     shadowOpacity: 0.08,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 8 },
@@ -1211,7 +1196,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   mobileAvatarOptionActive: {
-    borderColor: '#01017b',
+    borderColor: '#1D1D1F',
   },
   mobileModalActions: {
     flexDirection: 'row',

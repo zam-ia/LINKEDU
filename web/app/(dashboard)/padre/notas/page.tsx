@@ -101,7 +101,7 @@ export default function BoletaNotasPadre() {
                 onClick={() => setSelectedHijoId(h.id)}
                 className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                   selectedHijoId === h.id 
-                    ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b] shadow-xs' 
+                    ? 'border-[#1D1D1F] bg-[#1D1D1F]/5 text-[#1D1D1F] shadow-xs'
                     : 'border-gray-250 text-gray-500 hover:bg-gray-50'
                 }`}
               >

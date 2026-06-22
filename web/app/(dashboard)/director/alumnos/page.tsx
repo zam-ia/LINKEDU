@@ -305,7 +305,7 @@ export default function AlumnosPage() {
         <div>
           <button 
             onClick={() => setShowWizard(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/20 cursor-pointer transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#1D1D1F]/20 cursor-pointer transition-all"
           >
             <Plus className="w-4.5 h-4.5" />
             Nueva Matrícula
@@ -348,7 +348,7 @@ export default function AlumnosPage() {
             placeholder="Buscar por nombre o DNI..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+            className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
           />
         </div>
 
@@ -356,7 +356,7 @@ export default function AlumnosPage() {
           <select
             value={filterGrado}
             onChange={(e) => setFilterGrado(e.target.value)}
-            className="rounded-xl border border-gray-350 py-2 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+            className="rounded-xl border border-gray-350 py-2 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
           >
             <option value="todos">Todos los Grados</option>
             {uniqueGrados.map(g => (
@@ -367,7 +367,7 @@ export default function AlumnosPage() {
           <select
             value={filterSeccion}
             onChange={(e) => setFilterSeccion(e.target.value)}
-            className="rounded-xl border border-gray-350 py-2 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+            className="rounded-xl border border-gray-350 py-2 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
           >
             <option value="todos">Sección: Todas</option>
             {uniqueSecciones.map(s => (
@@ -378,7 +378,7 @@ export default function AlumnosPage() {
           <select
             value={filterFinanciero}
             onChange={(e) => setFilterFinanciero(e.target.value)}
-            className="rounded-xl border border-gray-350 py-2 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+            className="rounded-xl border border-gray-350 py-2 px-3 bg-white text-xs font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
           >
             <option value="todos">Estado de Pago: Todos</option>
             <option value="al_dia">Al Día</option>
@@ -414,7 +414,7 @@ export default function AlumnosPage() {
                     <td className="p-3 flex items-center gap-3">
                       <img src={alumno.foto_url} alt="" className="w-9 h-9 rounded-full object-cover shadow-xs border border-gray-100" />
                       <div className="flex flex-col">
-                        <span className="font-extrabold text-gray-950 group-hover:text-[#01017b] transition-colors leading-snug">{alumno.nombre} {alumno.apellido}</span>
+                        <span className="font-extrabold text-gray-950 group-hover:text-[#1D1D1F] transition-colors leading-snug">{alumno.nombre} {alumno.apellido}</span>
                         <span className="text-[10px] text-gray-400 font-bold">{alumno.email}</span>
                       </div>
                     </td>
@@ -438,7 +438,7 @@ export default function AlumnosPage() {
                           setSelectedAlumno(alumno);
                           setExpedienteTab('academico');
                         }}
-                        className="px-3 py-1.5 bg-gray-50 group-hover:bg-[#EEF1FE] group-hover:text-[#01017b] text-gray-500 font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-all"
+                        className="px-3 py-1.5 bg-gray-50 group-hover:bg-[#FFF0F1] group-hover:text-[#1D1D1F] text-gray-500 font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-all"
                       >
                         Ver Expediente
                       </button>
@@ -479,7 +479,7 @@ export default function AlumnosPage() {
                     setEditingAlumno(selectedAlumno);
                     setShowEditModal(true);
                   }}
-                  className="px-3.5 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/10 cursor-pointer flex items-center gap-1.5 transition-all"
+                  className="px-3.5 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#1D1D1F]/10 cursor-pointer flex items-center gap-1.5 transition-all"
                 >
                   <span>✏️</span>
                   Editar
@@ -498,7 +498,7 @@ export default function AlumnosPage() {
               <button
                 onClick={() => setExpedienteTab('academico')}
                 className={`pb-2.5 pt-1 px-4 text-xs font-bold transition-all border-b-2 cursor-pointer ${
-                  expedienteTab === 'academico' ? 'border-[#01017b] text-[#01017b]' : 'border-transparent text-gray-500 hover:text-gray-800'
+                  expedienteTab === 'academico' ? 'border-[#1D1D1F] text-[#1D1D1F]' : 'border-transparent text-gray-500 hover:text-gray-800'
                 }`}
               >
                 Boleta Académica
@@ -506,7 +506,7 @@ export default function AlumnosPage() {
               <button
                 onClick={() => setExpedienteTab('pagos')}
                 className={`pb-2.5 pt-1 px-4 text-xs font-bold transition-all border-b-2 cursor-pointer ${
-                  expedienteTab === 'pagos' ? 'border-[#01017b] text-[#01017b]' : 'border-transparent text-gray-500 hover:text-gray-800'
+                  expedienteTab === 'pagos' ? 'border-[#1D1D1F] text-[#1D1D1F]' : 'border-transparent text-gray-500 hover:text-gray-800'
                 }`}
               >
                 Historial de Pagos
@@ -514,7 +514,7 @@ export default function AlumnosPage() {
               <button
                 onClick={() => setExpedienteTab('asistencia')}
                 className={`pb-2.5 pt-1 px-4 text-xs font-bold transition-all border-b-2 cursor-pointer ${
-                  expedienteTab === 'asistencia' ? 'border-[#01017b] text-[#01017b]' : 'border-transparent text-gray-500 hover:text-gray-800'
+                  expedienteTab === 'asistencia' ? 'border-[#1D1D1F] text-[#1D1D1F]' : 'border-transparent text-gray-500 hover:text-gray-800'
                 }`}
               >
                 Asistencia
@@ -522,7 +522,7 @@ export default function AlumnosPage() {
               <button
                 onClick={() => setExpedienteTab('medico')}
                 className={`pb-2.5 pt-1 px-4 text-xs font-bold transition-all border-b-2 cursor-pointer ${
-                  expedienteTab === 'medico' ? 'border-[#01017b] text-[#01017b]' : 'border-transparent text-gray-500 hover:text-gray-800'
+                  expedienteTab === 'medico' ? 'border-[#1D1D1F] text-[#1D1D1F]' : 'border-transparent text-gray-500 hover:text-gray-800'
                 }`}
               >
                 Médico & Tutor
@@ -694,7 +694,7 @@ export default function AlumnosPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="p-4 border border-gray-150 rounded-xl space-y-3.5">
                     <div className="flex items-center gap-2 text-xs font-bold text-gray-900 border-b border-gray-100 pb-2">
-                      <User className="w-4 h-4 text-[#01017b]" />
+                      <User className="w-4 h-4 text-[#1D1D1F]" />
                       Apoderado / Tutor
                     </div>
                     <div className="space-y-2 text-xs font-semibold text-gray-600">
@@ -751,7 +751,7 @@ export default function AlumnosPage() {
             <div className="flex items-center justify-between px-8 mb-6">
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${
-                  wizardStep >= 1 ? 'bg-[#01017b] text-white' : 'bg-gray-100 text-gray-400'
+                  wizardStep >= 1 ? 'bg-[#1D1D1F] text-white' : 'bg-gray-100 text-gray-400'
                 }`}>
                   1
                 </div>
@@ -760,7 +760,7 @@ export default function AlumnosPage() {
               <div className="flex-1 h-0.5 bg-gray-150 mx-2"></div>
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${
-                  wizardStep >= 2 ? 'bg-[#01017b] text-white' : 'bg-gray-100 text-gray-400'
+                  wizardStep >= 2 ? 'bg-[#1D1D1F] text-white' : 'bg-gray-100 text-gray-400'
                 }`}>
                   2
                 </div>
@@ -769,7 +769,7 @@ export default function AlumnosPage() {
               <div className="flex-1 h-0.5 bg-gray-150 mx-2"></div>
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${
-                  wizardStep >= 3 ? 'bg-[#01017b] text-white' : 'bg-gray-100 text-gray-400'
+                  wizardStep >= 3 ? 'bg-[#1D1D1F] text-white' : 'bg-gray-100 text-gray-400'
                 }`}>
                   3
                 </div>
@@ -791,7 +791,7 @@ export default function AlumnosPage() {
                         placeholder="Ej. Mateo"
                         value={newAlumno.nombre}
                         onChange={(e) => setNewAlumno({ ...newAlumno, nombre: e.target.value })}
-                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold"
                       />
                     </div>
                     <div>
@@ -801,7 +801,7 @@ export default function AlumnosPage() {
                         placeholder="Ej. Castro"
                         value={newAlumno.apellido}
                         onChange={(e) => setNewAlumno({ ...newAlumno, apellido: e.target.value })}
-                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold"
                       />
                     </div>
                   </div>
@@ -822,15 +822,15 @@ export default function AlumnosPage() {
                                 .replace(/[\u0300-\u036f]/g, "")
                                 .replace(/\s+/g, '')
                                 .replace(/^colegiodede|^colegiod|^colegio/, '')
-                            : 'linkedu';
-                          const generatedEmail = cleanDni ? `${cleanDni}@${schoolNameBase || 'linkedu'}.com` : '';
+                            : 'doce';
+                          const generatedEmail = cleanDni ? `${cleanDni}@${schoolNameBase || 'doce'}.com` : '';
                           setNewAlumno({ 
                             ...newAlumno, 
                             dni: cleanDni,
                             email: generatedEmail
                           });
                         }}
-                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold font-mono"
+                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold font-mono"
                       />
                     </div>
                     <div>
@@ -840,7 +840,7 @@ export default function AlumnosPage() {
                         placeholder="alumno@colegio.edu.pe"
                         value={newAlumno.email}
                         onChange={(e) => setNewAlumno({ ...newAlumno, email: e.target.value })}
-                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold"
                       />
                     </div>
                   </div>
@@ -902,7 +902,7 @@ export default function AlumnosPage() {
                           placeholder="Ej. Sofía Castro"
                           value={newAlumno.tutorNombre}
                           onChange={(e) => setNewAlumno({ ...newAlumno, tutorNombre: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         />
                       </div>
                       <div>
@@ -910,7 +910,7 @@ export default function AlumnosPage() {
                         <select
                           value={newAlumno.tutorRelacion}
                           onChange={(e) => setNewAlumno({ ...newAlumno, tutorRelacion: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         >
                           <option value="Madre">Madre</option>
                           <option value="Padre">Padre</option>
@@ -928,7 +928,7 @@ export default function AlumnosPage() {
                           placeholder="987654321"
                           value={newAlumno.tutorTelefono}
                           onChange={(e) => setNewAlumno({ ...newAlumno, tutorTelefono: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         />
                       </div>
                       <div>
@@ -938,7 +938,7 @@ export default function AlumnosPage() {
                           placeholder="tutor@colegio.edu.pe"
                           value={newAlumno.tutorEmail}
                           onChange={(e) => setNewAlumno({ ...newAlumno, tutorEmail: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         />
                       </div>
                     </div>
@@ -956,7 +956,7 @@ export default function AlumnosPage() {
                         <select
                           value={newAlumno.sangre}
                           onChange={(e) => setNewAlumno({ ...newAlumno, sangre: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         >
                           <option value="O+">O+</option>
                           <option value="O-">O-</option>
@@ -972,7 +972,7 @@ export default function AlumnosPage() {
                           placeholder="SIS, EsSalud, Rímac, etc."
                           value={newAlumno.seguro}
                           onChange={(e) => setNewAlumno({ ...newAlumno, seguro: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         />
                       </div>
                     </div>
@@ -985,7 +985,7 @@ export default function AlumnosPage() {
                           placeholder="Ej. Penicilina, Nueces"
                           value={newAlumno.alergias}
                           onChange={(e) => setNewAlumno({ ...newAlumno, alergias: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         />
                       </div>
                       <div>
@@ -995,7 +995,7 @@ export default function AlumnosPage() {
                           placeholder="Ej. Asma, Diabetes leve o Ninguna"
                           value={newAlumno.condiciones}
                           onChange={(e) => setNewAlumno({ ...newAlumno, condiciones: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                         />
                       </div>
                     </div>
@@ -1012,7 +1012,7 @@ export default function AlumnosPage() {
                       <select
                         value={newAlumno.grado}
                         onChange={(e) => setNewAlumno({ ...newAlumno, grado: e.target.value })}
-                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       >
                         <option value="1ro Primaria">1ro Primaria</option>
                         <option value="2do Primaria">2do Primaria</option>
@@ -1029,7 +1029,7 @@ export default function AlumnosPage() {
                       <select
                         value={newAlumno.seccion}
                         onChange={(e) => setNewAlumno({ ...newAlumno, seccion: e.target.value })}
-                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       >
                         <option value="A">Sección A</option>
                         <option value="B">Sección B</option>
@@ -1052,7 +1052,7 @@ export default function AlumnosPage() {
                           placeholder="350.00"
                           value={newAlumno.montoMatricula}
                           onChange={(e) => setNewAlumno({ ...newAlumno, montoMatricula: e.target.value })}
-                          className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-bold font-mono"
+                          className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-bold font-mono"
                         />
                       </div>
                       <div className="text-xs text-gray-500 font-semibold flex flex-col justify-end pb-1 leading-normal">
@@ -1081,7 +1081,7 @@ export default function AlumnosPage() {
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition-all ml-auto"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition-all ml-auto"
                 >
                   Siguiente
                   <ArrowRight className="w-4 h-4" />
@@ -1124,7 +1124,7 @@ export default function AlumnosPage() {
               
               {/* TAB 1: DATOS PERSONALES */}
               <div className="space-y-4">
-                <span className="text-[10px] font-black text-[#01017b] uppercase tracking-wider block border-b border-gray-100 pb-1">
+                <span className="text-[10px] font-black text-[#1D1D1F] uppercase tracking-wider block border-b border-gray-100 pb-1">
                   1. Datos Personales
                 </span>
 
@@ -1135,7 +1135,7 @@ export default function AlumnosPage() {
                       type="text"
                       value={editingAlumno.nombre}
                       onChange={(e) => setEditingAlumno({ ...editingAlumno, nombre: e.target.value })}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold"
                     />
                   </div>
                   <div>
@@ -1144,7 +1144,7 @@ export default function AlumnosPage() {
                       type="text"
                       value={editingAlumno.apellido}
                       onChange={(e) => setEditingAlumno({ ...editingAlumno, apellido: e.target.value })}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold"
                     />
                   </div>
                 </div>
@@ -1164,15 +1164,15 @@ export default function AlumnosPage() {
                               .replace(/[\u0300-\u036f]/g, "")
                               .replace(/\s+/g, '')
                               .replace(/^colegiodede|^colegiod|^colegio/, '')
-                          : 'linkedu';
-                        const generatedEmail = cleanDni ? `${cleanDni}@${schoolNameBase || 'linkedu'}.com` : '';
+                          : 'doce';
+                        const generatedEmail = cleanDni ? `${cleanDni}@${schoolNameBase || 'doce'}.com` : '';
                         setEditingAlumno({ 
                           ...editingAlumno, 
                           dni: cleanDni,
                           email: generatedEmail
                         });
                       }}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold font-mono"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold font-mono"
                     />
                   </div>
                   <div>
@@ -1181,7 +1181,7 @@ export default function AlumnosPage() {
                       type="email"
                       value={editingAlumno.email}
                       onChange={(e) => setEditingAlumno({ ...editingAlumno, email: e.target.value })}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs font-semibold"
                     />
                   </div>
                 </div>
@@ -1234,7 +1234,7 @@ export default function AlumnosPage() {
                     <select
                       value={editingAlumno.grado}
                       onChange={(e) => setEditingAlumno({ ...editingAlumno, grado: e.target.value })}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                     >
                       <option value="Inicial (3 años)">Inicial (3 años)</option>
                       <option value="Inicial (4 años)">Inicial (4 años)</option>
@@ -1254,7 +1254,7 @@ export default function AlumnosPage() {
                     <select
                       value={editingAlumno.seccion}
                       onChange={(e) => setEditingAlumno({ ...editingAlumno, seccion: e.target.value })}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                     >
                       <option value="A">Sección A</option>
                       <option value="B">Sección B</option>
@@ -1266,7 +1266,7 @@ export default function AlumnosPage() {
 
               {/* TAB 2: TUTOR Y MEDICO */}
               <div className="space-y-4 pt-2">
-                <span className="text-[10px] font-black text-[#01017b] uppercase tracking-wider block border-b border-gray-100 pb-1">
+                <span className="text-[10px] font-black text-[#1D1D1F] uppercase tracking-wider block border-b border-gray-100 pb-1">
                   2. Tutor & Ficha Médica
                 </span>
 
@@ -1283,7 +1283,7 @@ export default function AlumnosPage() {
                           ...editingAlumno,
                           contacto_tutor: { ...editingAlumno.contacto_tutor, nombre: e.target.value }
                         })}
-                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       />
                     </div>
                     <div>
@@ -1294,7 +1294,7 @@ export default function AlumnosPage() {
                           ...editingAlumno,
                           contacto_tutor: { ...editingAlumno.contacto_tutor, relacion: e.target.value }
                         })}
-                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       >
                         <option value="Madre">Madre</option>
                         <option value="Padre">Padre</option>
@@ -1314,7 +1314,7 @@ export default function AlumnosPage() {
                           ...editingAlumno,
                           contacto_tutor: { ...editingAlumno.contacto_tutor, telefono: e.target.value }
                         })}
-                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       />
                     </div>
                     <div>
@@ -1326,7 +1326,7 @@ export default function AlumnosPage() {
                           ...editingAlumno,
                           contacto_tutor: { ...editingAlumno.contacto_tutor, email: e.target.value }
                         })}
-                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       />
                     </div>
                   </div>
@@ -1344,7 +1344,7 @@ export default function AlumnosPage() {
                           ...editingAlumno,
                           datos_medicos: { ...editingAlumno.datos_medicos, sangre: e.target.value }
                         })}
-                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       >
                         <option value="O+">O Positivo (O+)</option>
                         <option value="O-">O Negativo (O-)</option>
@@ -1365,7 +1365,7 @@ export default function AlumnosPage() {
                           ...editingAlumno,
                           datos_medicos: { ...editingAlumno.datos_medicos, seguro: e.target.value }
                         })}
-                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                        className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       />
                     </div>
                   </div>
@@ -1382,7 +1382,7 @@ export default function AlumnosPage() {
                           datos_medicos: { ...editingAlumno.datos_medicos, alergias: arr }
                         });
                       }}
-                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                       placeholder="Ej. Penicilina, Lactosa, Maní"
                     />
                   </div>
@@ -1396,7 +1396,7 @@ export default function AlumnosPage() {
                         ...editingAlumno,
                         datos_medicos: { ...editingAlumno.datos_medicos, condiciones: e.target.value }
                       })}
-                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold resize-none"
+                      className="block w-full rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold resize-none"
                       placeholder="Ej. Asma estacional leve, requiere inhalador en caso de crisis."
                     />
                   </div>
@@ -1417,7 +1417,7 @@ export default function AlumnosPage() {
               <button
                 type="button"
                 onClick={handleSaveEditAlumno}
-                className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition-all shadow-md shadow-[#01017b]/10"
+                className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition-all shadow-md shadow-[#1D1D1F]/10"
               >
                 Guardar Cambios
                 <CheckCircle className="w-4 h-4" />

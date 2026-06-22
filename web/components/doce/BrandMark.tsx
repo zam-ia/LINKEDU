@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { defaultBrandAssetUrls, type BrandAssetKind } from "@/lib/brand-assets";
 
 type BrandMarkProps = {
   compact?: boolean;
@@ -6,11 +10,27 @@ type BrandMarkProps = {
   priority?: boolean;
 };
 
+export function useBrandAsset(kind: BrandAssetKind) {
+  const [source, setSource] = useState(defaultBrandAssetUrls[kind]);
+  useEffect(() => {
+    let active = true;
+    fetch("/api/brand-assets")
+      .then((response) => response.json())
+      .then((payload) => { if (active && payload.assets?.[kind]?.url) setSource(payload.assets[kind].url); })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, [kind]);
+  return source;
+}
+
 export function BrandMark({ compact = false, className = "", priority = false }: BrandMarkProps) {
+  const kind: BrandAssetKind = compact ? "icon" : "wordmark";
+  const source = useBrandAsset(kind);
+
   if (compact) {
     return (
       <Image
-        src="/brand/doce-icon.svg"
+        src={source}
         width={40}
         height={40}
         alt="Doce"
@@ -22,7 +42,7 @@ export function BrandMark({ compact = false, className = "", priority = false }:
 
   return (
     <Image
-      src="/brand/doce-wordmark.png"
+      src={source}
       width={355}
       height={140}
       alt="Doce"

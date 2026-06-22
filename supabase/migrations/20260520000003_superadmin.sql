@@ -1,5 +1,5 @@
 -- =====================================================================
--- LINKEDU - Migración para Super Admin y Activación de Colegios
+-- DOCE - Migración para Super Admin y Activación de Colegios
 -- Migración: 20260520000003_superadmin.sql
 -- =====================================================================
 

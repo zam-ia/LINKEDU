@@ -265,7 +265,7 @@ export default function CalificacionesPage() {
                     <span className="block text-[8px] text-gray-400 font-bold tracking-widest">{ev.peso}% (PESO)</span>
                   </th>
                 ))}
-                <th className="p-3 text-center border-l border-gray-150 bg-[#EEF1FE] text-[#01017b] font-black">
+                <th className="p-3 text-center border-l border-gray-150 bg-[#FFF0F1] text-[#1D1D1F] font-black">
                   PROMEDIO
                 </th>
               </tr>
@@ -301,12 +301,12 @@ export default function CalificacionesPage() {
                           value={scoresMap[alumno.id]?.[ev.id] || ''}
                           onChange={(e) => handleScoreChange(alumno.id, ev.id, e.target.value)}
                           placeholder="—"
-                          className="w-12 py-1.5 border border-gray-200 rounded-lg text-center font-black focus:outline-none focus:ring-2 focus:ring-[#01017b]/10 focus:border-[#01017b] bg-white font-mono text-xs text-gray-950"
+                          className="w-12 py-1.5 border border-gray-200 rounded-lg text-center font-black focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/10 focus:border-[#1D1D1F] bg-white font-mono text-xs text-gray-950"
                         />
                       </td>
                     ))}
 
-                    <td className={`p-3 text-center border-l border-gray-150 bg-[#EEF1FE]/30 font-black font-mono text-sm ${
+                    <td className={`p-3 text-center border-l border-gray-150 bg-[#FFF0F1]/30 font-black font-mono text-sm ${
                       promedio !== null 
                         ? promedio >= 11 ? 'text-[#5BAD8A]' : 'text-[#E07B6A]' 
                         : 'text-gray-300'
@@ -373,7 +373,7 @@ export default function CalificacionesPage() {
                     placeholder="Ej. Tarea Académica"
                     value={newEvalName}
                     onChange={(e) => setNewEvalName(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/10"
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/10"
                   />
                 </div>
                 <div>
@@ -386,7 +386,7 @@ export default function CalificacionesPage() {
                     placeholder="30"
                     value={newEvalWeight}
                     onChange={(e) => setNewEvalWeight(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-2 focus:ring-[#01017b]/10"
+                    className="block w-full rounded-xl border border-gray-300 py-2 px-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/10"
                   />
                 </div>
               </div>
@@ -407,7 +407,7 @@ export default function CalificacionesPage() {
 
               <button
                 type="submit"
-                className="w-full py-2 bg-[#01017b] hover:bg-[#01017b]/95 text-white font-bold text-xs rounded-xl cursor-pointer shadow-xs transition-all"
+                className="w-full py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/95 text-white font-bold text-xs rounded-xl cursor-pointer shadow-xs transition-all"
               >
                 Añadir Evaluación
               </button>

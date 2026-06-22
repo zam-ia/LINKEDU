@@ -1,0 +1,20 @@
+{
+  "name": "doce-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm run setup:web && npm run setup:mobile",
+    "setup:web": "npm --prefix web install",
+    "setup:mobile": "npm --prefix mobile install",
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web run build",
+    "start": "npm --prefix web run start",
+    "lint": "npm --prefix web run lint",
+    "check": "npm run lint && npm run build",
+    "mobile": "npm --prefix mobile run start",
+    "mobile:web": "npm --prefix mobile run web",
+    "mobile:lint": "npm --prefix mobile run lint",
+    "verify:supabase": "node scripts/verify-supabase.mjs",
+    "provision:superadmin": "node scripts/provision-superadmin.mjs"
+  }
+}

@@ -1,5 +1,5 @@
 -- =====================================================================
--- LINKEDU - Datos de Semilla para Demo e Interactividad
+-- DOCE - Datos de Semilla para Demo e Interactividad
 -- Migración: 20260520000002_seed.sql
 -- =====================================================================
 
@@ -7,7 +7,7 @@
 INSERT INTO public.colegios (id, nombre, logo_url, ruc, direccion, config_json)
 VALUES (
     'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
-    'Colegio de Excelencia Linkedu',
+    'Colegio de Excelencia Doce',
     'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=100&h=100&q=80',
     '20123456789',
     'Av. Larco 123, Miraflores, Lima, Perú',

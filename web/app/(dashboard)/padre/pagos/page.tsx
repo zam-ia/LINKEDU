@@ -144,7 +144,7 @@ export default function PagosPadre() {
                 onClick={() => setSelectedHijoId(h.id)}
                 className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                   selectedHijoId === h.id 
-                    ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b] shadow-xs' 
+                    ? 'border-[#1D1D1F] bg-[#1D1D1F]/5 text-[#1D1D1F] shadow-xs'
                     : 'border-gray-250 text-gray-500 hover:bg-gray-50'
                 }`}
               >
@@ -219,7 +219,7 @@ export default function PagosPadre() {
                           {pago.estado !== 'pagado' ? (
                             <button
                               onClick={() => handleOpenCheckout(pago)}
-                              className="px-3 py-1.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-[10px] font-bold rounded-lg cursor-pointer transition-all shadow-xs"
+                              className="px-3 py-1.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-[10px] font-bold rounded-lg cursor-pointer transition-all shadow-xs"
                             >
                               Pagar en Línea
                             </button>
@@ -269,7 +269,7 @@ export default function PagosPadre() {
             </div>
 
             {/* Card Simulator Graphic */}
-            <div className="relative w-full h-36 bg-gradient-to-tr from-[#3D405B] to-[#01017b] rounded-xl p-4 shadow-lg mb-4 flex flex-col justify-between overflow-hidden border border-white/10">
+            <div className="relative w-full h-36 bg-gradient-to-tr from-[#3D405B] to-[#1D1D1F] rounded-xl p-4 shadow-lg mb-4 flex flex-col justify-between overflow-hidden border border-white/10">
               <div className="absolute -right-10 -bottom-10 h-28 w-28 bg-white/5 rounded-full blur-xl" />
               <div className="flex items-center justify-between">
                 <span className="text-xs font-black tracking-widest italic text-white/90">CREDIT CARD</span>
@@ -296,7 +296,7 @@ export default function PagosPadre() {
                   type="text"
                   value={cardDetails.holder}
                   onChange={(e) => setCardDetails({ ...cardDetails, holder: e.target.value.toUpperCase() })}
-                  className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#01017b] text-xs font-bold font-mono"
+                  className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono"
                 />
               </div>
 
@@ -307,7 +307,7 @@ export default function PagosPadre() {
                     type="text"
                     value={cardDetails.number}
                     onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
-                    className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#01017b] text-xs font-bold font-mono"
+                    className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono"
                   />
                 </div>
                 <div>
@@ -317,7 +317,7 @@ export default function PagosPadre() {
                     maxLength={3}
                     value={cardDetails.cvv}
                     onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
-                    className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#01017b] text-xs font-bold font-mono text-center"
+                    className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono text-center"
                   />
                 </div>
               </div>

@@ -5,13 +5,13 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#01017b'; // Azul Profundo
-const tintColorDark = '#00a7eb'; // Celeste interactivo
+const tintColorLight = '#1D1D1F';
+const tintColorDark = '#FF2432';
 
 export const Colors = {
   light: {
     text: '#111827',
-    background: '#F4F5F7', // Gris Perla
+    background: '#F5F5F7',
     tint: tintColorLight,
     icon: '#6B7280',
     tabIconDefault: '#9CA3AF',
@@ -19,7 +19,7 @@ export const Colors = {
   },
   dark: {
     text: '#ECEDEE',
-    background: '#0B0B1E', // Fondo oscuro a juego con Azul Profundo
+    background: '#000000',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',

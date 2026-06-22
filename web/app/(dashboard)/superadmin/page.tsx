@@ -42,6 +42,8 @@ import {
   getStoredUsers, 
   saveStoredUsers, 
   getStoredAlumnos,
+  getStoredLeads,
+  saveStoredLeads,
   ColegioInfo, 
   UserProfile 
 } from '@/lib/supabase/client';
@@ -182,10 +184,10 @@ export default function SuperAdminDashboard() {
   const [magicRole, setMagicRole] = useState('director');
   const [magicDomain, setMagicDomain] = useState('');
   const [magicExpiresIn, setMagicExpiresIn] = useState(15);
+  const [magicBaseTime] = useState(() => Date.now());
 
   useEffect(() => {
     if (activeTab === 'demos_leads') {
-      const { getStoredLeads } = require('@/lib/supabase/client');
       setLeads(getStoredLeads());
     }
   }, [activeTab]);
@@ -196,7 +198,7 @@ export default function SuperAdminDashboard() {
       setMagicSchoolId(firstSchool.id);
       
       const getSchoolDomain = (schoolName: string) => {
-        let clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+        const clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
         return clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
       };
       setMagicDomain(getSchoolDomain(firstSchool.nombre));
@@ -208,7 +210,7 @@ export default function SuperAdminDashboard() {
     const school = colegios.find(c => c.id === schoolId);
     if (school) {
       const getSchoolDomain = (schoolName: string) => {
-        let clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+        const clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
         return clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
       };
       setMagicDomain(getSchoolDomain(school.nombre));
@@ -216,7 +218,6 @@ export default function SuperAdminDashboard() {
   };
 
   const handleToggleLeadAtendido = (id: string) => {
-    const { getStoredLeads, saveStoredLeads } = require('@/lib/supabase/client');
     const currentLeads = getStoredLeads();
     const updated = currentLeads.map((l: any) => {
       if (l.id === id) {
@@ -231,7 +232,7 @@ export default function SuperAdminDashboard() {
   };
 
   const handleLoadLeadToMagic = (lead: any) => {
-    let clean = lead.colegio.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+    const clean = lead.colegio.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
     const subdomain = clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
     setMagicDomain(subdomain);
     setMagicRole('director');
@@ -334,7 +335,7 @@ export default function SuperAdminDashboard() {
   // Load VSL config from localStorage on start
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('linkedu_vsl_config');
+      const stored = localStorage.getItem('doce_vsl_config');
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
@@ -351,7 +352,7 @@ export default function SuperAdminDashboard() {
 
   const handleSaveVslConfig = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('linkedu_vsl_config', JSON.stringify(vslForm));
+    localStorage.setItem('doce_vsl_config', JSON.stringify(vslForm));
     triggerAlert("¡Configuración del VSL de la Landing Page guardada con éxito!");
     // Recargar el iframe de vista previa
     setPreviewKey(prev => prev + 1);
@@ -516,7 +517,7 @@ export default function SuperAdminDashboard() {
       dni: newUser.dni,
       email: newUser.email.toLowerCase().trim(),
       password: newUser.password, // Contraseña de acceso real
-      foto_url: `https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random() * 900000)}?auto=format&fit=crop&w=150&h=150&q=80`,
+      foto_url: '/brand/doce-icon.svg',
       activo: true
     };
 
@@ -613,7 +614,7 @@ export default function SuperAdminDashboard() {
           {activeTab === 'colegios' && (
             <button 
               onClick={() => setShowAddColegio(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/20 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#1D1D1F]/20 cursor-pointer"
             >
               <Plus className="w-4.5 h-4.5" />
               Nuevo Colegio
@@ -637,7 +638,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('dashboard')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'dashboard'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -647,7 +648,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('colegios')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'colegios'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -657,7 +658,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('usuarios')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'usuarios'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -667,7 +668,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('landing_vsl')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'landing_vsl'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -677,7 +678,7 @@ export default function SuperAdminDashboard() {
           onClick={() => handleTabChange('demos_leads')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'demos_leads'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
           }`}
         >
@@ -694,7 +695,7 @@ export default function SuperAdminDashboard() {
             <div className="premium-card p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Colegios Totales</span>
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b]/10 text-[#01017b]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1D1D1F]/10 text-[#1D1D1F]">
                   <Building2 className="h-5 w-5" />
                 </div>
               </div>
@@ -767,8 +768,8 @@ export default function SuperAdminDashboard() {
                 <AreaChart data={saasGrowthData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorSaaS" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#01017b" stopOpacity={0.15}/>
-                      <stop offset="95%" stopColor="#01017b" stopOpacity={0.01}/>
+                      <stop offset="5%" stopColor="#1D1D1F" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#1D1D1F" stopOpacity={0.01}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EAECF0" />
@@ -777,7 +778,7 @@ export default function SuperAdminDashboard() {
                   <Tooltip 
                     contentStyle={{ background: '#FFF', borderRadius: '12px', border: '1px solid #EAECF0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }} 
                   />
-                  <Area type="monotone" dataKey="Ingresos" stroke="#01017b" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSaaS)" />
+                  <Area type="monotone" dataKey="Ingresos" stroke="#1D1D1F" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSaaS)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -821,7 +822,7 @@ export default function SuperAdminDashboard() {
                       </div>
                       <button
                         onClick={() => handleOpenEditColegio(col)}
-                        className="p-2 bg-gray-50 hover:bg-[#EEF1FE] hover:text-[#01017b] rounded-xl text-gray-400 transition-all cursor-pointer shrink-0"
+                        className="p-2 bg-gray-50 hover:bg-[#FFF0F1] hover:text-[#1D1D1F] rounded-xl text-gray-400 transition-all cursor-pointer shrink-0"
                         title="Editar Colegio"
                       >
                         <Edit className="w-4 h-4" />
@@ -901,7 +902,7 @@ export default function SuperAdminDashboard() {
                 <select
                   value={selectedColegioId}
                   onChange={(e) => setSelectedColegioId(e.target.value)}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm font-semibold"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm font-semibold"
                 >
                   {colegios.map(c => (
                     <option key={c.id} value={c.id}>{c.nombre}</option>
@@ -918,7 +919,7 @@ export default function SuperAdminDashboard() {
                       onClick={() => setSelectedRol(rol)}
                       className={`block w-full text-left px-3 py-2 rounded-lg text-xs font-bold capitalize transition-colors cursor-pointer ${
                         selectedRol === rol
-                          ? 'bg-[#EEF1FE] text-[#01017b]'
+                          ? 'bg-[#FFF0F1] text-[#1D1D1F]'
                           : 'text-gray-500 hover:bg-gray-50'
                       }`}
                     >
@@ -945,7 +946,7 @@ export default function SuperAdminDashboard() {
                     placeholder="Buscar por DNI, correo..."
                     value={searchUsuario}
                     onChange={(e) => setSearchUsuario(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                    className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                   />
                 </div>
               </div>
@@ -979,7 +980,7 @@ export default function SuperAdminDashboard() {
                         <td className="p-3 font-semibold text-xs text-gray-500">{usr.dni}</td>
                         <td className="p-3">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                            usr.rol === 'director' ? 'bg-[#EEF1FE] text-[#01017b]' :
+                            usr.rol === 'director' ? 'bg-[#FFF0F1] text-[#1D1D1F]' :
                             usr.rol === 'docente' ? 'bg-[#EAF7F7] text-[#7EC8C8]' :
                             usr.rol === 'padre' ? 'bg-[#FEF6E8] text-[#F5A623]' :
                             'bg-[#F3EFFE] text-[#9B7FD4]'
@@ -1054,7 +1055,7 @@ export default function SuperAdminDashboard() {
             <div className="premium-card p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Visualizaciones VSL</span>
-                <span className="text-[10px] text-[#01017b] font-extrabold bg-[#EEF1FE] px-2 py-0.5 rounded uppercase">84% play</span>
+                <span className="text-[10px] text-[#1D1D1F] font-extrabold bg-[#FFF0F1] px-2 py-0.5 rounded uppercase">84% play</span>
               </div>
               <div className="mt-4">
                 <span className="text-2xl font-black text-gray-900">2,898</span>
@@ -1098,11 +1099,11 @@ export default function SuperAdminDashboard() {
                   <h3 className="text-base font-extrabold text-gray-900">Editor del VSL & Landing Page</h3>
                   <p className="text-xs text-gray-400 font-semibold mt-0.5">Configura al vuelo textos, vídeos, contactos y subtítulos de tu estrategia comercial.</p>
                 </div>
-                <Tv className="w-5 h-5 text-[#01017b]" />
+                <Tv className="w-5 h-5 text-[#1D1D1F]" />
               </div>
 
               {/* SELECTOR DE PLANTILLAS / PRESETS */}
-              <div className="bg-[#EEF1FE]/40 border border-[#01017b]/10 rounded-2xl p-4 space-y-2.5">
+              <div className="bg-[#FFF0F1]/40 border border-[#1D1D1F]/10 rounded-2xl p-4 space-y-2.5">
                 <span className="block text-[10px] font-black text-gray-450 uppercase tracking-widest text-center">
                   💡 Cargar Plantilla Comercial Preset
                 </span>
@@ -1197,7 +1198,7 @@ export default function SuperAdminDashboard() {
                       type="button"
                       onClick={() => setBgMode('url')}
                       className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
-                        bgMode === 'url' ? 'bg-white text-[#01017b] shadow-xs' : 'text-gray-500 hover:text-gray-900'
+                        bgMode === 'url' ? 'bg-white text-[#1D1D1F] shadow-xs' : 'text-gray-500 hover:text-gray-900'
                       }`}
                     >
                       🌐 Pegar URL
@@ -1206,7 +1207,7 @@ export default function SuperAdminDashboard() {
                       type="button"
                       onClick={() => setBgMode('upload')}
                       className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
-                        bgMode === 'upload' ? 'bg-white text-[#01017b] shadow-xs' : 'text-gray-500 hover:text-gray-900'
+                        bgMode === 'upload' ? 'bg-white text-[#1D1D1F] shadow-xs' : 'text-gray-500 hover:text-gray-900'
                       }`}
                     >
                       📤 Subir Archivo
@@ -1299,7 +1300,7 @@ export default function SuperAdminDashboard() {
               <div className="flex justify-end pt-4 border-t">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-[#01017b]/15 cursor-pointer active:scale-98"
+                  className="px-6 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-[#1D1D1F]/15 cursor-pointer active:scale-98"
                 >
                   Guardar y Publicar
                 </button>
@@ -1315,7 +1316,7 @@ export default function SuperAdminDashboard() {
                   <button
                     type="button"
                     onClick={() => setIsSettingsCollapsed(!isSettingsCollapsed)}
-                    className="p-2 text-gray-500 hover:text-[#01017b] hover:bg-gray-100 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 font-bold text-xs"
+                    className="p-2 text-gray-500 hover:text-[#1D1D1F] hover:bg-gray-100 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 font-bold text-xs"
                     title={isSettingsCollapsed ? "Mostrar panel de edición" : "Ocultar panel de edición"}
                   >
                     <Menu className="w-5 h-5 text-gray-650" />
@@ -1329,7 +1330,7 @@ export default function SuperAdminDashboard() {
                     onClick={() => setPreviewViewport('web')}
                     className={`px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
                       previewViewport === 'web'
-                        ? 'bg-white text-[#01017b] shadow-xs'
+                        ? 'bg-white text-[#1D1D1F] shadow-xs'
                         : 'text-gray-500 hover:text-gray-900'
                     }`}
                   >
@@ -1340,7 +1341,7 @@ export default function SuperAdminDashboard() {
                     onClick={() => setPreviewViewport('mobile')}
                     className={`px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
                       previewViewport === 'mobile'
-                        ? 'bg-white text-[#01017b] shadow-xs'
+                        ? 'bg-white text-[#1D1D1F] shadow-xs'
                         : 'text-gray-500 hover:text-gray-900'
                     }`}
                   >
@@ -1397,7 +1398,7 @@ export default function SuperAdminDashboard() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setShowAddColegio(false)}></div>
           <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-base font-extrabold text-gray-950 mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-[#01017b]" />
+              <Building2 className="w-5 h-5 text-[#1D1D1F]" />
               Registrar Colegio
             </h3>
             <form onSubmit={handleAddColegio} className="space-y-4">
@@ -1408,7 +1409,7 @@ export default function SuperAdminDashboard() {
                   placeholder="Ej: Colegio San Agustín"
                   value={newColegio.nombre}
                   onChange={(e) => setNewColegio({ ...newColegio, nombre: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                   required
                 />
               </div>
@@ -1421,7 +1422,7 @@ export default function SuperAdminDashboard() {
                   maxLength={11}
                   value={newColegio.ruc}
                   onChange={(e) => setNewColegio({ ...newColegio, ruc: e.target.value.replace(/\D/g,'') })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                   required
                 />
               </div>
@@ -1471,7 +1472,7 @@ export default function SuperAdminDashboard() {
                         placeholder="Pega un URL de imagen"
                         value={newColegio.logo.startsWith('data:') ? '' : newColegio.logo}
                         onChange={(e) => setNewColegio({ ...newColegio, logo: e.target.value })}
-                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs"
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs"
                       />
                     </div>
                   </div>
@@ -1484,7 +1485,7 @@ export default function SuperAdminDashboard() {
                   <select
                     value={newColegio.plan}
                     onChange={(e) => setNewColegio({ ...newColegio, plan: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                   >
                     <option value="Premium SaaS">Premium SaaS</option>
                     <option value="Estandar SaaS">Estandar SaaS</option>
@@ -1498,7 +1499,7 @@ export default function SuperAdminDashboard() {
                     placeholder="1200"
                     value={newColegio.mensualidad}
                     onChange={(e) => setNewColegio({ ...newColegio, mensualidad: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                     required
                   />
                 </div>
@@ -1510,7 +1511,7 @@ export default function SuperAdminDashboard() {
                   type="date"
                   value={newColegio.vencimiento}
                   onChange={(e) => setNewColegio({ ...newColegio, vencimiento: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                   required
                 />
               </div>
@@ -1525,7 +1526,7 @@ export default function SuperAdminDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Dar de Alta
                 </button>
@@ -1548,7 +1549,7 @@ export default function SuperAdminDashboard() {
                   <h3 className="text-base font-extrabold text-gray-900">Generador de Magic Links</h3>
                   <p className="text-xs text-gray-450 font-semibold mt-0.5">Acceso directo sin contraseñas para demos y prospección comercial.</p>
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#01017b]/10 text-[#01017b]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1D1D1F]/10 text-[#1D1D1F]">
                   <Sliders className="h-5 w-5" />
                 </div>
               </div>
@@ -1560,7 +1561,7 @@ export default function SuperAdminDashboard() {
                   <select
                     value={magicSchoolId}
                     onChange={(e) => handleSchoolChangeForMagic(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-bold"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-bold"
                   >
                     {colegios.map(c => (
                       <option key={c.id} value={c.id}>{c.nombre}</option>
@@ -1583,7 +1584,7 @@ export default function SuperAdminDashboard() {
                       }
                     }}
                     placeholder="ej: san-ignacio"
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs font-semibold"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs font-semibold"
                   />
                   <p className="text-[10px] text-gray-400 font-semibold mt-1">
                     {magicSchoolId === 'custom' 
@@ -1608,7 +1609,7 @@ export default function SuperAdminDashboard() {
                         onClick={() => setMagicRole(r.id)}
                         className={`flex items-center gap-2 py-2 px-3 border rounded-xl text-left text-xs font-bold cursor-pointer transition-all ${
                           magicRole === r.id
-                            ? 'bg-[#EEF1FE] border-[#01017b] text-[#01017b]'
+                            ? 'bg-[#FFF0F1] border-[#1D1D1F] text-[#1D1D1F]'
                             : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                         }`}
                       >
@@ -1637,7 +1638,7 @@ export default function SuperAdminDashboard() {
                         onClick={() => setMagicExpiresIn(opt.value)}
                         className={`flex-1 py-2 px-1 border rounded-xl text-center text-[10px] font-black uppercase transition-all cursor-pointer ${
                           magicExpiresIn === opt.value
-                            ? 'bg-[#EEF1FE] border-[#01017b] text-[#01017b]'
+                            ? 'bg-[#FFF0F1] border-[#1D1D1F] text-[#1D1D1F]'
                             : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
                         }`}
                       >
@@ -1653,8 +1654,8 @@ export default function SuperAdminDashboard() {
                   <div className="p-3 bg-gray-900 rounded-2xl border border-gray-800 text-left relative group">
                     <code className="text-[11px] font-mono text-cyan-400 break-all select-all block pr-8">
                       {typeof window !== 'undefined'
-                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`
-                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`
+                        ? `${window.location.origin}/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${magicBaseTime + magicExpiresIn * 60 * 1000}` : ''}`
+                        : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${magicBaseTime + magicExpiresIn * 60 * 1000}` : ''}`
                       }
                     </code>
                   </div>
@@ -1683,7 +1684,7 @@ export default function SuperAdminDashboard() {
                         : `/login?magic_email=${magicRole}@${magicDomain || 'demo'}.com${magicExpiresIn > 0 ? `&expires_at=${Date.now() + magicExpiresIn * 60 * 1000}` : ''}`;
                       window.open(url, '_blank');
                     }}
-                    className="flex justify-center items-center gap-2 py-2.5 px-4 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl shadow-md shadow-[#01017b]/10 transition-all cursor-pointer active:scale-[0.98]"
+                    className="flex justify-center items-center gap-2 py-2.5 px-4 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl shadow-md shadow-[#1D1D1F]/10 transition-all cursor-pointer active:scale-[0.98]"
                   >
                     Probar Ingreso
                   </button>
@@ -1748,7 +1749,7 @@ export default function SuperAdminDashboard() {
                             <button
                               type="button"
                               onClick={() => handleLoadLeadToMagic(l)}
-                              className="px-2 py-1 bg-[#EEF1FE] text-[#01017b] hover:bg-[#01017b] hover:text-white rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer"
+                              className="px-2 py-1 bg-[#FFF0F1] text-[#1D1D1F] hover:bg-[#1D1D1F] hover:text-white rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer"
                             >
                               Cargar
                             </button>
@@ -1789,7 +1790,7 @@ export default function SuperAdminDashboard() {
                 
                 // Get Domain
                 const getSchoolDomain = (schoolName: string) => {
-                  let clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
+                  const clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
                   return clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
                 };
                 const domain = getSchoolDomain(col.nombre);
@@ -1856,7 +1857,7 @@ export default function SuperAdminDashboard() {
                         <button
                           type="button"
                           onClick={() => handleQuickOpen('director')}
-                          className="py-1.5 px-1 border border-gray-150 rounded-lg text-[9px] font-black text-[#01017b] hover:bg-[#EEF1FE] uppercase tracking-wider text-center transition-all cursor-pointer whitespace-nowrap"
+                          className="py-1.5 px-1 border border-gray-150 rounded-lg text-[9px] font-black text-[#1D1D1F] hover:bg-[#FFF0F1] uppercase tracking-wider text-center transition-all cursor-pointer whitespace-nowrap"
                         >
                           Director
                         </button>
@@ -1897,7 +1898,7 @@ export default function SuperAdminDashboard() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setShowEditColegio(false)}></div>
           <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-base font-extrabold text-gray-950 mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-[#01017b]" />
+              <Building2 className="w-5 h-5 text-[#1D1D1F]" />
               Editar Colegio
             </h3>
             <form onSubmit={handleEditColegio} className="space-y-4">
@@ -1908,7 +1909,7 @@ export default function SuperAdminDashboard() {
                   placeholder="Ej: Colegio San Agustín"
                   value={editColegioForm.nombre}
                   onChange={(e) => setEditColegioForm({ ...editColegioForm, nombre: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                   required
                 />
               </div>
@@ -1921,7 +1922,7 @@ export default function SuperAdminDashboard() {
                   maxLength={11}
                   value={editColegioForm.ruc}
                   onChange={(e) => setEditColegioForm({ ...editColegioForm, ruc: e.target.value.replace(/\D/g,'') })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm"
                   required
                 />
               </div>
@@ -1971,7 +1972,7 @@ export default function SuperAdminDashboard() {
                         placeholder="Pega un URL de imagen"
                         value={editColegioForm.logo.startsWith('data:') ? '' : editColegioForm.logo}
                         onChange={(e) => setEditColegioForm({ ...editColegioForm, logo: e.target.value })}
-                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-xs"
+                        className="flex-1 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-xs"
                       />
                     </div>
                   </div>
@@ -1984,7 +1985,7 @@ export default function SuperAdminDashboard() {
                   <select
                     value={editColegioForm.plan}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, plan: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                   >
                     <option value="Premium SaaS">Premium SaaS</option>
                     <option value="Estandar SaaS">Estandar SaaS</option>
@@ -1998,7 +1999,7 @@ export default function SuperAdminDashboard() {
                     placeholder="1200"
                     value={editColegioForm.mensualidad}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, mensualidad: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                     required
                   />
                 </div>
@@ -2011,7 +2012,7 @@ export default function SuperAdminDashboard() {
                     type="date"
                     value={editColegioForm.vencimiento}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, vencimiento: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                     required
                   />
                 </div>
@@ -2020,7 +2021,7 @@ export default function SuperAdminDashboard() {
                   <select
                     value={editColegioForm.soporte_prioritario}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, soporte_prioritario: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                   >
                     <option value="estándar">Estándar</option>
                     <option value="preferente">Preferente</option>
@@ -2036,7 +2037,7 @@ export default function SuperAdminDashboard() {
                     type="number"
                     value={editColegioForm.limite_alumnos}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, limite_alumnos: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                     required
                   />
                 </div>
@@ -2046,7 +2047,7 @@ export default function SuperAdminDashboard() {
                     type="number"
                     value={editColegioForm.limite_personalizado}
                     onChange={(e) => setEditColegioForm({ ...editColegioForm, limite_personalizado: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm"
                     required
                   />
                 </div>
@@ -2057,7 +2058,7 @@ export default function SuperAdminDashboard() {
                 <textarea
                   value={editColegioForm.observaciones_comerciales}
                   onChange={(e) => setEditColegioForm({ ...editColegioForm, observaciones_comerciales: e.target.value })}
-                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 text-sm min-h-[60px]"
+                  className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 text-sm min-h-[60px]"
                   placeholder="Observaciones comerciales de la institución..."
                 />
               </div>
@@ -2072,7 +2073,7 @@ export default function SuperAdminDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Guardar Cambios
                 </button>

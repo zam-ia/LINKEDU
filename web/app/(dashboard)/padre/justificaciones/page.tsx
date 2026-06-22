@@ -65,7 +65,7 @@ export default function JustificacionesPadre() {
     }
 
     // Load justification logs from localStorage
-    const saved = localStorage.getItem('linkedu_justificaciones');
+    const saved = localStorage.getItem('doce_justificaciones');
     if (saved) {
       try {
         setJustificaciones(JSON.parse(saved));
@@ -73,7 +73,7 @@ export default function JustificacionesPadre() {
         setJustificaciones(INITIAL_JUSTIFICACIONES);
       }
     } else {
-      localStorage.setItem('linkedu_justificaciones', JSON.stringify(INITIAL_JUSTIFICACIONES));
+      localStorage.setItem('doce_justificaciones', JSON.stringify(INITIAL_JUSTIFICACIONES));
       setJustificaciones(INITIAL_JUSTIFICACIONES);
     }
   }, [user]);
@@ -108,7 +108,7 @@ export default function JustificacionesPadre() {
     };
 
     const updated = [added, ...justificaciones];
-    localStorage.setItem('linkedu_justificaciones', JSON.stringify(updated));
+    localStorage.setItem('doce_justificaciones', JSON.stringify(updated));
     setJustificaciones(updated);
 
     // Reset Form
@@ -173,7 +173,7 @@ export default function JustificacionesPadre() {
                 placeholder="Ej. Fiebre y malestar general. Adjunto descanso..."
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}
-                className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#01017b]/10"
+                className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/10"
               />
             </div>
 
@@ -196,7 +196,7 @@ export default function JustificacionesPadre() {
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-[#01017b] hover:bg-[#01017b]/95 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/95 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
               <Send className="w-4 h-4" />
               Enviar Justificación

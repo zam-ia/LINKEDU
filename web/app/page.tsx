@@ -21,7 +21,7 @@ import {
   WalletCards,
   X,
 } from "lucide-react";
-import { BrandMark } from "@/components/doce/BrandMark";
+import { BrandMark, useBrandAsset } from "@/components/doce/BrandMark";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const modules = [
@@ -38,10 +38,11 @@ const plans = [
   { name: "Enterprise", price: "A medida", description: "Para operaciones complejas.", features: ["Marca blanca", "Múltiples sedes", "API e integraciones", "Migración y soporte prioritario"] },
 ];
 
-function ProductPreview() {
+function ProductPreview({ heroAsset }: { heroAsset?: string }) {
   return (
     <div className="relative mx-auto w-full max-w-[650px]">
       <div className="absolute -inset-12 -z-10 rounded-full bg-[#ff2432]/10 blur-3xl" />
+      {heroAsset && <div aria-hidden className="absolute -inset-5 -z-10 rounded-[36px] bg-cover bg-center opacity-20 blur-[2px]" style={{ backgroundImage: `url(${JSON.stringify(heroAsset).slice(1, -1)})` }} />}
       <div className="overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-[0_35px_100px_-45px_rgba(0,0,0,.45)]">
         <div className="flex h-11 items-center gap-2 border-b border-black/5 px-5">
           <span className="h-2.5 w-2.5 rounded-full bg-[#ff2432]" /><span className="h-2.5 w-2.5 rounded-full bg-black/15" /><span className="h-2.5 w-2.5 rounded-full bg-black/15" />
@@ -86,6 +87,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [school, setSchool] = useState("");
   const [email, setEmail] = useState("");
+  const heroAsset = useBrandAsset("hero");
 
   useEffect(() => {
     if (user && !loading && window.self === window.top) router.replace(`/${user.rol}`);
@@ -120,7 +122,7 @@ export default function Home() {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row"><a href="#demo" className="inline-flex items-center justify-center gap-2 rounded-full bg-black px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#ff2432]">Ver Doce en acción <ArrowRight className="h-4 w-4" /></a><a href="#plataforma" className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-bold">Explorar plataforma <ChevronRight className="h-4 w-4" /></a></div>
             <div className="mt-9 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-black/45">{["Multi-tenant real", "Permisos por usuario", "QR verificable"].map((item) => <span key={item} className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[#ff2432]" />{item}</span>)}</div>
           </div>
-          <ProductPreview />
+          <ProductPreview heroAsset={heroAsset} />
         </div>
       </section>
 

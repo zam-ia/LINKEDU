@@ -35,3 +35,5 @@ yarn-error.log*
 .pnpm-debug.log*
 
 scratch/
+supabase/.temp/
+upabase docs

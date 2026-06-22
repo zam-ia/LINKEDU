@@ -99,7 +99,7 @@ export default function RepositorioDocente() {
     }
 
     // Load from localStorage or initialize
-    const saved = localStorage.getItem('linkedu_materiales');
+    const saved = localStorage.getItem('doce_materiales');
     if (saved) {
       try {
         setMateriales(JSON.parse(saved));
@@ -107,7 +107,7 @@ export default function RepositorioDocente() {
         setMateriales(INITIAL_MATERIALES);
       }
     } else {
-      localStorage.setItem('linkedu_materiales', JSON.stringify(INITIAL_MATERIALES));
+      localStorage.setItem('doce_materiales', JSON.stringify(INITIAL_MATERIALES));
       setMateriales(INITIAL_MATERIALES);
     }
   }, [user]);
@@ -132,7 +132,7 @@ export default function RepositorioDocente() {
     };
 
     const updated = [added, ...materiales];
-    localStorage.setItem('linkedu_materiales', JSON.stringify(updated));
+    localStorage.setItem('doce_materiales', JSON.stringify(updated));
     setMateriales(updated);
 
     setShowAddModal(false);
@@ -143,7 +143,7 @@ export default function RepositorioDocente() {
 
   const handleRemoveMaterial = (id: string) => {
     const updated = materiales.filter(m => m.id !== id);
-    localStorage.setItem('linkedu_materiales', JSON.stringify(updated));
+    localStorage.setItem('doce_materiales', JSON.stringify(updated));
     setMateriales(updated);
     triggerAlert('Material eliminado.');
   };
@@ -169,7 +169,7 @@ export default function RepositorioDocente() {
         <div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer transition-all"
           >
             <Plus className="w-4.5 h-4.5" />
             Subir Material
@@ -188,7 +188,7 @@ export default function RepositorioDocente() {
                 onClick={() => setSelectedCurso(c)}
                 className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center gap-3 ${
                   selectedCurso === c 
-                    ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b] font-bold shadow-xs' 
+                    ? 'border-[#1D1D1F] bg-[#1D1D1F]/5 text-[#1D1D1F] font-bold shadow-xs'
                     : 'border-gray-150 hover:bg-gray-50 text-gray-500'
                 }`}
               >
@@ -211,7 +211,7 @@ export default function RepositorioDocente() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {currentMateriales.map((mat) => (
-              <div key={mat.id} className="p-4 border border-gray-150 bg-gray-50/50 rounded-2xl flex items-center justify-between group hover:border-[#01017b]/20 transition-all">
+              <div key={mat.id} className="p-4 border border-gray-150 bg-gray-50/50 rounded-2xl flex items-center justify-between group hover:border-[#1D1D1F]/20 transition-all">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-xl shadow-xs">
                     {mat.tipo === 'archivo' ? '📄' : '🔗'}
@@ -228,7 +228,7 @@ export default function RepositorioDocente() {
                   {mat.tipo === 'archivo' ? (
                     <button 
                       onClick={() => triggerAlert('Descargando archivo...')}
-                      className="p-2 hover:bg-[#EEF1FE] text-gray-400 hover:text-[#01017b] rounded-xl cursor-pointer"
+                      className="p-2 hover:bg-[#FFF0F1] text-gray-400 hover:text-[#1D1D1F] rounded-xl cursor-pointer"
                       title="Descargar"
                     >
                       <Download className="w-4 h-4" />
@@ -238,7 +238,7 @@ export default function RepositorioDocente() {
                       href={mat.url} 
                       target="_blank" 
                       rel="noreferrer" 
-                      className="p-2 hover:bg-[#EEF1FE] text-gray-400 hover:text-[#01017b] rounded-xl cursor-pointer"
+                      className="p-2 hover:bg-[#FFF0F1] text-gray-400 hover:text-[#1D1D1F] rounded-xl cursor-pointer"
                       title="Abrir Enlace"
                     >
                       <Link className="w-4 h-4" />
@@ -277,7 +277,7 @@ export default function RepositorioDocente() {
                     type="button"
                     onClick={() => setNewMaterial({ ...newMaterial, tipo: 'archivo' })}
                     className={`py-2 text-xs font-bold rounded-xl border cursor-pointer ${
-                      newMaterial.tipo === 'archivo' ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b]' : 'border-gray-250 text-gray-600'
+                      newMaterial.tipo === 'archivo' ? 'border-[#1D1D1F] bg-[#1D1D1F]/5 text-[#1D1D1F]' : 'border-gray-250 text-gray-600'
                     }`}
                   >
                     Subir Archivo (.pdf, .zip)
@@ -286,7 +286,7 @@ export default function RepositorioDocente() {
                     type="button"
                     onClick={() => setNewMaterial({ ...newMaterial, tipo: 'link' })}
                     className={`py-2 text-xs font-bold rounded-xl border cursor-pointer ${
-                      newMaterial.tipo === 'link' ? 'border-[#01017b] bg-[#01017b]/5 text-[#01017b]' : 'border-gray-250 text-gray-600'
+                      newMaterial.tipo === 'link' ? 'border-[#1D1D1F] bg-[#1D1D1F]/5 text-[#1D1D1F]' : 'border-gray-250 text-gray-600'
                     }`}
                   >
                     Enlace Web / URL
@@ -304,8 +304,8 @@ export default function RepositorioDocente() {
                       file:mr-4 file:py-1.5 file:px-3.5
                       file:rounded-xl file:border-0
                       file:text-xs file:font-bold
-                      file:bg-[#EEF1FE] file:text-[#01017b]
-                      hover:file:bg-[#EEF1FE]/80
+                      file:bg-[#FFF0F1] file:text-[#1D1D1F]
+                      hover:file:bg-[#FFF0F1]/80
                       border border-gray-300 rounded-xl p-2 cursor-pointer focus:outline-none w-full"
                   />
                   {selectedFileDetail && (
@@ -352,7 +352,7 @@ export default function RepositorioDocente() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Compartir Material
                 </button>

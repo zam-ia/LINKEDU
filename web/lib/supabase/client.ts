@@ -156,34 +156,34 @@ export const MOCK_USERS: Record<string, UserProfile> = {
 
 export const getStoredColegios = (): ColegioInfo[] => {
   if (typeof window === 'undefined') return INITIAL_COLEGIOS;
-  const saved = localStorage.getItem('linkedu_colegios');
+  const saved = localStorage.getItem('doce_colegios');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  localStorage.setItem('linkedu_colegios', JSON.stringify(INITIAL_COLEGIOS));
+  localStorage.setItem('doce_colegios', JSON.stringify(INITIAL_COLEGIOS));
   return INITIAL_COLEGIOS;
 };
 
 export const saveStoredColegios = (colegios: ColegioInfo[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_colegios', JSON.stringify(colegios));
+    localStorage.setItem('doce_colegios', JSON.stringify(colegios));
   }
 };
 
 export const getStoredUsers = (): UserProfile[] => {
   if (typeof window === 'undefined') return Object.values(MOCK_USERS);
-  const saved = localStorage.getItem('linkedu_users');
+  const saved = localStorage.getItem('doce_users');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
   const defaultUsers = Object.values(MOCK_USERS);
-  localStorage.setItem('linkedu_users', JSON.stringify(defaultUsers));
+  localStorage.setItem('doce_users', JSON.stringify(defaultUsers));
   return defaultUsers;
 };
 
 export const saveStoredUsers = (users: UserProfile[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_users', JSON.stringify(users));
+    localStorage.setItem('doce_users', JSON.stringify(users));
   }
 };
 
@@ -199,7 +199,7 @@ export interface DoceLead {
 
 export const getStoredLeads = (): DoceLead[] => {
   if (typeof window === 'undefined') return [];
-  const saved = localStorage.getItem('linkedu_leads');
+  const saved = localStorage.getItem('doce_leads');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
@@ -232,13 +232,13 @@ export const getStoredLeads = (): DoceLead[] => {
       atendido: false
     }
   ];
-  localStorage.setItem('linkedu_leads', JSON.stringify(defaultLeads));
+  localStorage.setItem('doce_leads', JSON.stringify(defaultLeads));
   return defaultLeads;
 };
 
 export const saveStoredLeads = (leads: DoceLead[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_leads', JSON.stringify(leads));
+    localStorage.setItem('doce_leads', JSON.stringify(leads));
   }
 };
 
@@ -526,97 +526,97 @@ export const INITIAL_NOTAS: NotaInfo[] = [
 
 export const getStoredAlumnos = (): AlumnoInfo[] => {
   if (typeof window === 'undefined') return INITIAL_ALUMNOS;
-  const saved = localStorage.getItem('linkedu_alumnos');
+  const saved = localStorage.getItem('doce_alumnos');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  localStorage.setItem('linkedu_alumnos', JSON.stringify(INITIAL_ALUMNOS));
+  localStorage.setItem('doce_alumnos', JSON.stringify(INITIAL_ALUMNOS));
   return INITIAL_ALUMNOS;
 };
 
 export const saveStoredAlumnos = (alumnos: AlumnoInfo[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_alumnos', JSON.stringify(alumnos));
+    localStorage.setItem('doce_alumnos', JSON.stringify(alumnos));
   }
 };
 
 export const getStoredDocentes = (): DocenteInfo[] => {
   if (typeof window === 'undefined') return INITIAL_DOCENTES;
-  const saved = localStorage.getItem('linkedu_docentes');
+  const saved = localStorage.getItem('doce_docentes');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  localStorage.setItem('linkedu_docentes', JSON.stringify(INITIAL_DOCENTES));
+  localStorage.setItem('doce_docentes', JSON.stringify(INITIAL_DOCENTES));
   return INITIAL_DOCENTES;
 };
 
 export const saveStoredDocentes = (docentes: DocenteInfo[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_docentes', JSON.stringify(docentes));
+    localStorage.setItem('doce_docentes', JSON.stringify(docentes));
   }
 };
 
 export const getStoredPagos = (): PagoInfo[] => {
   if (typeof window === 'undefined') return INITIAL_PAGOS;
-  const saved = localStorage.getItem('linkedu_pagos');
+  const saved = localStorage.getItem('doce_pagos');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  localStorage.setItem('linkedu_pagos', JSON.stringify(INITIAL_PAGOS));
+  localStorage.setItem('doce_pagos', JSON.stringify(INITIAL_PAGOS));
   return INITIAL_PAGOS;
 };
 
 export const saveStoredPagos = (pagos: PagoInfo[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_pagos', JSON.stringify(pagos));
+    localStorage.setItem('doce_pagos', JSON.stringify(pagos));
   }
 };
 
 export const getStoredAsistencias = (): AsistenciaInfo[] => {
   if (typeof window === 'undefined') return INITIAL_ASISTENCIAS;
-  const saved = localStorage.getItem('linkedu_asistencias');
+  const saved = localStorage.getItem('doce_asistencias');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  localStorage.setItem('linkedu_asistencias', JSON.stringify(INITIAL_ASISTENCIAS));
+  localStorage.setItem('doce_asistencias', JSON.stringify(INITIAL_ASISTENCIAS));
   return INITIAL_ASISTENCIAS;
 };
 
 export const saveStoredAsistencias = (asistencias: AsistenciaInfo[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_asistencias', JSON.stringify(asistencias));
+    localStorage.setItem('doce_asistencias', JSON.stringify(asistencias));
   }
 };
 
 export const getStoredEvaluaciones = (): EvaluacionInfo[] => {
   if (typeof window === 'undefined') return INITIAL_EVALUACIONES;
-  const saved = localStorage.getItem('linkedu_evaluaciones');
+  const saved = localStorage.getItem('doce_evaluaciones');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  localStorage.setItem('linkedu_evaluaciones', JSON.stringify(INITIAL_EVALUACIONES));
+  localStorage.setItem('doce_evaluaciones', JSON.stringify(INITIAL_EVALUACIONES));
   return INITIAL_EVALUACIONES;
 };
 
 export const saveStoredEvaluaciones = (evaluaciones: EvaluacionInfo[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_evaluaciones', JSON.stringify(evaluaciones));
+    localStorage.setItem('doce_evaluaciones', JSON.stringify(evaluaciones));
   }
 };
 
 export const getStoredNotas = (): NotaInfo[] => {
   if (typeof window === 'undefined') return INITIAL_NOTAS;
-  const saved = localStorage.getItem('linkedu_notas');
+  const saved = localStorage.getItem('doce_notas');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error(e); }
   }
-  localStorage.setItem('linkedu_notas', JSON.stringify(INITIAL_NOTAS));
+  localStorage.setItem('doce_notas', JSON.stringify(INITIAL_NOTAS));
   return INITIAL_NOTAS;
 };
 
 export const saveStoredNotas = (notas: NotaInfo[]) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('linkedu_notas', JSON.stringify(notas));
+    localStorage.setItem('doce_notas', JSON.stringify(notas));
   }
 };
 
@@ -812,7 +812,7 @@ export const seedDataForNewSchool = (newColegioId: string, schoolName: string) =
         activo: true
       }
     ];
-    localStorage.setItem('linkedu_users', JSON.stringify([...users, ...newUsers]));
+    localStorage.setItem('doce_users', JSON.stringify([...users, ...newUsers]));
   }
 };
 

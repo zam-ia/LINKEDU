@@ -52,7 +52,7 @@ export default function DirectorSettingsPage() {
   const [colegioNombre, setColegioNombre] = useState('');
   const [colegioLogo, setColegioLogo] = useState('');
   const [colegioRuc, setColegioRuc] = useState('');
-  const [colegioColor, setColegioColor] = useState('#01017b');
+  const [colegioColor, setColegioColor] = useState('#1D1D1F');
   const [colegioAddress, setColegioAddress] = useState('Av. Larco 456, Miraflores, Lima');
   const [colegioPhone, setColegioPhone] = useState('(01) 445-8930');
 
@@ -100,7 +100,7 @@ export default function DirectorSettingsPage() {
         setColegioNombre(match.nombre);
         setColegioLogo(match.logo);
         setColegioRuc(match.ruc);
-        setColegioColor(match.color_primario || '#01017b');
+        setColegioColor(match.color_primario || '#1D1D1F');
       }
     }
   }, [colegio]);
@@ -119,7 +119,7 @@ export default function DirectorSettingsPage() {
   if (!user || !colegio) {
     return (
       <div className="flex h-[60vh] items-center justify-center bg-[#F4F5F7]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#01017b] border-t-transparent"></div>
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#1D1D1F] border-t-transparent"></div>
       </div>
     );
   }
@@ -402,7 +402,7 @@ export default function DirectorSettingsPage() {
           {activeTab === 'personal' && (
             <button
               onClick={() => setShowAddUser(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#01017b]/10 transition-all cursor-pointer hover:scale-[1.01] active:scale-99"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#1D1D1F]/10 transition-all cursor-pointer hover:scale-[1.01] active:scale-99"
             >
               <UserPlus className="w-4.5 h-4.5" />
               Nuevo Personal
@@ -417,7 +417,7 @@ export default function DirectorSettingsPage() {
           onClick={() => setActiveTab('colegio')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'colegio'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-50'
           }`}
         >
@@ -427,7 +427,7 @@ export default function DirectorSettingsPage() {
           onClick={() => setActiveTab('personal')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'personal'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-50'
           }`}
         >
@@ -437,7 +437,7 @@ export default function DirectorSettingsPage() {
           onClick={() => setActiveTab('perfil')}
           className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
             activeTab === 'perfil'
-              ? 'bg-[#EEF1FE] text-[#01017b]'
+              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
               : 'text-gray-400 hover:text-gray-800 hover:bg-gray-50'
           }`}
         >
@@ -455,7 +455,7 @@ export default function DirectorSettingsPage() {
               
               <div 
                 onClick={handleLogoClick}
-                className="relative w-36 h-36 rounded-2xl cursor-pointer overflow-hidden border border-gray-200 bg-gray-50 shadow-md group transition-all duration-300 hover:border-[#01017b]"
+                className="relative w-36 h-36 rounded-2xl cursor-pointer overflow-hidden border border-gray-200 bg-gray-50 shadow-md group transition-all duration-300 hover:border-[#1D1D1F]"
               >
                 <img 
                   src={colegioLogo} 
@@ -494,7 +494,7 @@ export default function DirectorSettingsPage() {
           <div className="md:col-span-2">
             <div className="premium-card p-6 space-y-6">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                <Building2 className="w-4.5 h-4.5 text-[#01017b]" />
+                <Building2 className="w-4.5 h-4.5 text-[#1D1D1F]" />
                 Ficha del Colegio
               </h3>
 
@@ -506,7 +506,7 @@ export default function DirectorSettingsPage() {
                       type="text"
                       value={colegioNombre}
                       onChange={(e) => setColegioNombre(e.target.value)}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900 font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm text-gray-900 font-semibold"
                       required
                     />
                   </div>
@@ -517,7 +517,7 @@ export default function DirectorSettingsPage() {
                       value={colegioRuc}
                       maxLength={11}
                       onChange={(e) => setColegioRuc(e.target.value.replace(/\D/g,''))}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900 font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm text-gray-900 font-semibold"
                       required
                     />
                   </div>
@@ -530,7 +530,7 @@ export default function DirectorSettingsPage() {
                       type="text"
                       value={colegioAddress}
                       onChange={(e) => setColegioAddress(e.target.value)}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm text-gray-900"
                     />
                   </div>
                   <div>
@@ -539,15 +539,15 @@ export default function DirectorSettingsPage() {
                       type="text"
                       value={colegioPhone}
                       onChange={(e) => setColegioPhone(e.target.value)}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm text-gray-900"
                     />
                   </div>
                 </div>
 
                 {colegio?.plan === 'Premium SaaS' && (
-                  <div className="p-4 bg-gradient-to-r from-[#EEF1FE]/30 to-white border border-gray-200 rounded-2xl space-y-3">
+                  <div className="p-4 bg-gradient-to-r from-[#FFF0F1]/30 to-white border border-gray-200 rounded-2xl space-y-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-extrabold bg-[#01017b] text-white px-2 py-0.5 rounded uppercase tracking-wider">Opción VIP</span>
+                      <span className="text-[10px] font-extrabold bg-[#1D1D1F] text-white px-2 py-0.5 rounded uppercase tracking-wider">Opción VIP</span>
                       <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">Color Temático Institucional</h4>
                     </div>
                     <p className="text-xs text-gray-500 font-semibold leading-relaxed">
@@ -568,11 +568,11 @@ export default function DirectorSettingsPage() {
                           value={colegioColor}
                           onChange={(e) => setColegioColor(e.target.value)}
                           placeholder="#01017B"
-                          className="block w-32 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-xs text-gray-900 font-semibold"
+                          className="block w-32 rounded-xl border border-gray-300 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-xs text-gray-900 font-semibold"
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        {['#01017b', '#6366F1', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'].map((c) => (
+                        {['#1D1D1F', '#6366F1', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'].map((c) => (
                           <button
                             key={c}
                             type="button"
@@ -590,7 +590,7 @@ export default function DirectorSettingsPage() {
                 <div className="flex justify-end pt-4 border-t border-gray-150">
                   <button
                     type="submit"
-                    className="px-5 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#01017b]/10"
+                    className="px-5 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#1D1D1F]/10"
                   >
                     Guardar Ficha
                   </button>
@@ -612,7 +612,7 @@ export default function DirectorSettingsPage() {
                   onClick={() => setSelectedRoleFilter(r as any)}
                   className={`block w-full text-left px-3 py-2 rounded-lg text-xs font-bold capitalize transition-colors cursor-pointer ${
                     selectedRoleFilter === r
-                      ? 'bg-[#EEF1FE] text-[#01017b]'
+                      ? 'bg-[#FFF0F1] text-[#1D1D1F]'
                       : 'text-gray-500 hover:bg-gray-50'
                   }`}
                 >
@@ -636,7 +636,7 @@ export default function DirectorSettingsPage() {
                   placeholder="Buscar por DNI, Nombre..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                  className="block w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                 />
               </div>
             </div>
@@ -731,7 +731,7 @@ export default function DirectorSettingsPage() {
               
               <div 
                 onClick={handlePersonalAvatarClick}
-                className="relative w-32 h-32 rounded-full cursor-pointer overflow-hidden border-2 border-gray-150 bg-gray-50 shadow-md group transition-all duration-300 hover:border-[#01017b]"
+                className="relative w-32 h-32 rounded-full cursor-pointer overflow-hidden border-2 border-gray-150 bg-gray-50 shadow-md group transition-all duration-300 hover:border-[#1D1D1F]"
               >
                 <img 
                   src={fotoUrl} 
@@ -746,7 +746,7 @@ export default function DirectorSettingsPage() {
 
               <div className="space-y-1">
                 <h4 className="font-extrabold text-sm text-gray-900">{nombre} {apellido}</h4>
-                <span className="text-xs font-semibold text-[#01017b] uppercase tracking-wider">Director General</span>
+                <span className="text-xs font-semibold text-[#1D1D1F] uppercase tracking-wider">Director General</span>
               </div>
 
               <button
@@ -763,7 +763,7 @@ export default function DirectorSettingsPage() {
             {/* Information Form */}
             <div className="premium-card p-6 space-y-6">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                <User className="w-4.5 h-4.5 text-[#01017b]" />
+                <User className="w-4.5 h-4.5 text-[#1D1D1F]" />
                 Datos Personales del Director
               </h3>
 
@@ -775,7 +775,7 @@ export default function DirectorSettingsPage() {
                       type="text"
                       value={nombre}
                       onChange={(e) => setNombre(e.target.value)}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900 font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm text-gray-900 font-semibold"
                       required
                     />
                   </div>
@@ -785,7 +785,7 @@ export default function DirectorSettingsPage() {
                       type="text"
                       value={apellido}
                       onChange={(e) => setApellido(e.target.value)}
-                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-sm text-gray-900 font-semibold"
+                      className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-sm text-gray-900 font-semibold"
                       required
                     />
                   </div>
@@ -825,7 +825,7 @@ export default function DirectorSettingsPage() {
                 <div className="flex justify-end pt-4 border-t border-gray-150">
                   <button
                     type="submit"
-                    className="px-5 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#01017b]/10 active:scale-98"
+                    className="px-5 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#1D1D1F]/10 active:scale-98"
                   >
                     Guardar Cambios
                   </button>
@@ -883,7 +883,7 @@ export default function DirectorSettingsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
           <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in zoom-in-95 duration-150">
             <h3 className="text-base font-extrabold text-gray-950 mb-4 flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-[#01017b]" />
+              <UserPlus className="w-5 h-5 text-[#1D1D1F]" />
               Crear Nuevo Usuario
             </h3>
             <form onSubmit={handleAddUser} className="space-y-4">
@@ -895,7 +895,7 @@ export default function DirectorSettingsPage() {
                     placeholder="Ej: Sofía"
                     value={newUser.nombre}
                     onChange={(e) => setNewUser({ ...newUser, nombre: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                     required
                   />
                 </div>
@@ -906,7 +906,7 @@ export default function DirectorSettingsPage() {
                     placeholder="Ej: Rojas"
                     value={newUser.apellido}
                     onChange={(e) => setNewUser({ ...newUser, apellido: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                     required
                   />
                 </div>
@@ -921,7 +921,7 @@ export default function DirectorSettingsPage() {
                     maxLength={8}
                     value={newUser.dni}
                     onChange={(e) => setNewUser({ ...newUser, dni: e.target.value.replace(/\D/g,'') })}
-                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#01017b]/15"
+                    className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1D1D1F]/15"
                     required
                   />
                 </div>
@@ -961,7 +961,7 @@ export default function DirectorSettingsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-bold rounded-xl cursor-pointer"
                 >
                   Crear Cuenta
                 </button>

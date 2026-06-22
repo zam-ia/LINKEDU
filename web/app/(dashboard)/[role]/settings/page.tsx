@@ -68,7 +68,7 @@ export default function RoleSettingsPage() {
   if (!user) {
     return (
       <div className="flex h-[60vh] items-center justify-center bg-[#F4F5F7]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#01017b] border-t-transparent"></div>
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#1D1D1F] border-t-transparent"></div>
       </div>
     );
   }
@@ -213,7 +213,7 @@ export default function RoleSettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Ajustes Personales</h1>
-        <p className="text-sm text-gray-500 mt-1 uppercase font-bold tracking-wider text-[#01017b]">
+        <p className="text-sm text-gray-500 mt-1 uppercase font-bold tracking-wider text-[#1D1D1F]">
           Perfil de {user.rol}
         </p>
       </div>
@@ -228,7 +228,7 @@ export default function RoleSettingsPage() {
             {/* Clickable circular avatar with camera hover overlay */}
             <div 
               onClick={handleAvatarClick}
-              className="relative w-32 h-32 rounded-full cursor-pointer overflow-hidden border-2 border-gray-150 bg-gray-50 shadow-md group transition-all duration-300 hover:border-[#01017b]"
+              className="relative w-32 h-32 rounded-full cursor-pointer overflow-hidden border-2 border-gray-150 bg-gray-50 shadow-md group transition-all duration-300 hover:border-[#1D1D1F]"
             >
               <img 
                 src={fotoUrl} 
@@ -278,7 +278,7 @@ export default function RoleSettingsPage() {
                   key={index}
                   onClick={() => handleSelectPreset(preset)}
                   className={`w-11 h-11 rounded-full overflow-hidden border-2 transition-all active:scale-90 cursor-pointer ${
-                    fotoUrl === preset ? 'border-[#01017b] ring-2 ring-[#01017b]/15' : 'border-transparent hover:border-gray-300'
+                    fotoUrl === preset ? 'border-[#1D1D1F] ring-2 ring-[#1D1D1F]/15' : 'border-transparent hover:border-gray-300'
                   }`}
                 >
                   <img src={preset} alt={`Preset ${index}`} className="w-full h-full object-cover" />
@@ -293,7 +293,7 @@ export default function RoleSettingsPage() {
           {/* Layer 1: Personal Information */}
           <div className="premium-card p-6 space-y-6">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-              <User className="w-4.5 h-4.5 text-[#01017b]" />
+              <User className="w-4.5 h-4.5 text-[#1D1D1F]" />
               Información del Usuario
             </h3>
 
@@ -312,7 +312,7 @@ export default function RoleSettingsPage() {
                     className={`block w-full rounded-xl border py-2.5 px-3 focus:outline-none text-sm ${
                       user.rol === 'alumno'
                         ? 'border-gray-200 bg-gray-50 text-gray-450 cursor-not-allowed select-none'
-                        : 'border-gray-300 focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-gray-900'
+                        : 'border-gray-300 focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-gray-900'
                     }`}
                     required
                   />
@@ -330,7 +330,7 @@ export default function RoleSettingsPage() {
                     className={`block w-full rounded-xl border py-2.5 px-3 focus:outline-none text-sm ${
                       user.rol === 'alumno'
                         ? 'border-gray-200 bg-gray-50 text-gray-450 cursor-not-allowed select-none'
-                        : 'border-gray-300 focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-gray-900'
+                        : 'border-gray-300 focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-gray-900'
                     }`}
                     required
                   />
@@ -351,7 +351,7 @@ export default function RoleSettingsPage() {
                     className={`block w-full rounded-xl border py-2.5 px-3 focus:outline-none text-sm ${
                       user.rol !== 'superadmin'
                         ? 'border-gray-200 bg-gray-50 text-gray-450 cursor-not-allowed select-none'
-                        : 'border-gray-300 focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-gray-900'
+                        : 'border-gray-300 focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-gray-900'
                     }`}
                   />
                 </div>
@@ -368,7 +368,7 @@ export default function RoleSettingsPage() {
                     className={`block w-full rounded-xl border py-2.5 px-3 focus:outline-none text-sm ${
                       user.rol !== 'superadmin'
                         ? 'border-gray-200 bg-gray-50 text-gray-450 cursor-not-allowed select-none'
-                        : 'border-gray-300 focus:ring-2 focus:ring-[#01017b]/15 focus:border-[#01017b] text-gray-900'
+                        : 'border-gray-300 focus:ring-2 focus:ring-[#1D1D1F]/15 focus:border-[#1D1D1F] text-gray-900'
                     }`}
                     required
                   />
@@ -387,7 +387,7 @@ export default function RoleSettingsPage() {
               <div className="flex justify-end pt-4 border-t border-gray-150">
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#01017b] hover:bg-[#01017b]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#01017b]/10 active:scale-98"
+                  className="px-5 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-[#1D1D1F]/10 active:scale-98"
                 >
                   Guardar Cambios
                 </button>

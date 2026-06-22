@@ -165,16 +165,16 @@ export default function ReportesPage() {
       {/* PLAN INDICATOR BAR */}
       <div className="flex items-center justify-between p-3.5 bg-white border border-gray-150 rounded-2xl shadow-xs">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-2.5 w-2.5 rounded-full bg-[#01017b] animate-pulse" />
+          <span className="flex h-2.5 w-2.5 rounded-full bg-[#1D1D1F] animate-pulse" />
           <span className="text-xs font-semibold text-gray-500">Plan de Reportes Activo:</span>
-          <span className="text-xs font-black uppercase tracking-wider text-[#01017b]">{schoolPlan}</span>
+          <span className="text-xs font-black uppercase tracking-wider text-[#1D1D1F]">{schoolPlan}</span>
         </div>
       </div>
 
       {/* CONDITIONAL RENDER FOR BASICO TIER (LOCKED) */}
       {isBasico ? (
         <div className="relative premium-card p-12 overflow-hidden bg-white/60 backdrop-blur-md border border-gray-100 flex flex-col items-center justify-center text-center space-y-6">
-          <div className="h-16 w-16 bg-[#EEF1FE] rounded-2xl flex items-center justify-center text-3xl shadow-md">
+          <div className="h-16 w-16 bg-[#FFF0F1] rounded-2xl flex items-center justify-center text-3xl shadow-md">
             🔒
           </div>
           <div className="max-w-md space-y-2">
@@ -185,7 +185,7 @@ export default function ReportesPage() {
           </div>
           <button 
             onClick={() => alert('¡Solicitud de Upgrade enviada! Estaremos en contacto en breve para habilitar tu Plan Premium.')}
-            className="px-6 py-3 bg-[#01017b] text-white hover:bg-[#01017b]/90 font-bold text-xs rounded-xl shadow-lg shadow-[#01017b]/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center gap-2"
+            className="px-6 py-3 bg-[#1D1D1F] text-white hover:bg-[#1D1D1F]/90 font-bold text-xs rounded-xl shadow-lg shadow-[#1D1D1F]/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center gap-2"
           >
             <Sparkles className="w-4.5 h-4.5 text-[#F5A623]" />
             Solicitar Upgrade a Plan Premium
@@ -199,7 +199,7 @@ export default function ReportesPage() {
               onClick={() => setActiveSubTab('mora')}
               className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
                 activeSubTab === 'mora'
-                  ? 'border-[#01017b] text-[#01017b]'
+                  ? 'border-[#1D1D1F] text-[#1D1D1F]'
                   : 'border-transparent text-gray-500 hover:text-gray-900'
               }`}
             >
@@ -209,7 +209,7 @@ export default function ReportesPage() {
               onClick={() => setActiveSubTab('desercion')}
               className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
                 activeSubTab === 'desercion'
-                  ? 'border-[#01017b] text-[#01017b]'
+                  ? 'border-[#1D1D1F] text-[#1D1D1F]'
                   : 'border-transparent text-gray-500 hover:text-gray-900'
               }`}
             >
@@ -219,7 +219,7 @@ export default function ReportesPage() {
               onClick={() => setActiveSubTab('rendimiento')}
               className={`pb-3 px-6 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
                 activeSubTab === 'rendimiento'
-                  ? 'border-[#01017b] text-[#01017b]'
+                  ? 'border-[#1D1D1F] text-[#1D1D1F]'
                   : 'border-transparent text-gray-500 hover:text-gray-900'
               }`}
             >
