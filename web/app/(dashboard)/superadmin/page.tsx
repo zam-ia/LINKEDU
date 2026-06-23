@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { 
   Building2, 
   Users, 
@@ -171,7 +171,6 @@ const PRESET_3 = {
 
 export default function SuperAdminDashboard() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const tabParam = searchParams.get('tab') || 'dashboard';
 
   const [activeTab, setActiveTab] = useState(tabParam);
@@ -384,12 +383,6 @@ export default function SuperAdminDashboard() {
     setActiveTab(tabParam);
   }, [tabParam]);
 
-  // Cambiar de pestaña y actualizar la URL
-  const handleTabChange = (tabName: string) => {
-    setActiveTab(tabName);
-    router.push(`/superadmin?tab=${tabName}`);
-  };
-
   const triggerAlert = (message: string) => {
     setAlertMessage(message);
     setTimeout(() => setAlertMessage(''), 3000);
@@ -594,6 +587,19 @@ export default function SuperAdminDashboard() {
     .filter(c => c.activo)
     .reduce((sum, c) => sum + (c.mensualidad || 0), 0);
 
+  const sectionCopy: Record<string, { eyebrow: string; title: string; description: string }> = {
+    dashboard: { eyebrow: 'Operación de plataforma', title: 'Resumen ejecutivo', description: 'Salud comercial, adopción y operación global de todas las instituciones.' },
+    colegios: { eyebrow: 'Operación multiinstitución', title: 'Instituciones', description: 'Administra cada colegio y revisa su experiencia exacta por tipo de usuario.' },
+    usuarios: { eyebrow: 'Identidad y acceso', title: 'Usuarios', description: 'Gestiona las cuentas, estados y asignaciones de cada institución.' },
+    landing_vsl: { eyebrow: 'Crecimiento', title: 'Landing y captación', description: 'Configura el discurso comercial, la demostración y los puntos de conversión.' },
+    demos_leads: { eyebrow: 'Control de experiencia', title: 'Vistas por rol', description: 'Inspecciona portales por institución y da seguimiento a oportunidades comerciales.' },
+  };
+  const currentSection = sectionCopy[activeTab] ?? sectionCopy.dashboard;
+  const openRolePreview = (schoolId: string, role: 'director' | 'docente' | 'padre' | 'alumno') => {
+    const params = new URLSearchParams({ preview_role: role, preview_school: schoolId });
+    window.open(`/${role}?${params.toString()}`, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div className="space-y-6">
       {/* ALERTA DE ÉXITO PREMIUM */}
@@ -604,11 +610,12 @@ export default function SuperAdminDashboard() {
         </div>
       )}
 
-      {/* 1. HEADER DE BIENVENIDA */}
+      {/* Cabecera contextual; la navegación vive únicamente en el sidebar. */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Control Global</h1>
-          <p className="text-sm text-gray-500 mt-1">SaaS de Administración, Control Multi-tenant y Finanzas de Colegios.</p>
+          <p className="text-[10px] font-black uppercase tracking-[.15em] text-[#ff2432]">{currentSection.eyebrow}</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-[-.035em] text-[#1d1d1f]">{currentSection.title}</h1>
+          <p className="mt-2 max-w-2xl text-sm font-normal leading-6 text-[#6e6e73]">{currentSection.description}</p>
         </div>
         <div className="flex gap-2">
           {activeTab === 'colegios' && (
@@ -632,61 +639,7 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
 
-      {/* 2. PESTAÑAS DE NAVEGACIÓN MODULARES */}
-      <div className="flex border-b border-gray-200 gap-1 overflow-x-auto shrink-0 pb-1">
-        <button
-          onClick={() => handleTabChange('dashboard')}
-          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
-            activeTab === 'dashboard'
-              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
-              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
-          }`}
-        >
-          Métricas Globales
-        </button>
-        <button
-          onClick={() => handleTabChange('colegios')}
-          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
-            activeTab === 'colegios'
-              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
-              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
-          }`}
-        >
-          Gestionar Colegios ({colegios.length})
-        </button>
-        <button
-          onClick={() => handleTabChange('usuarios')}
-          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
-            activeTab === 'usuarios'
-              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
-              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
-          }`}
-        >
-          Control de Usuarios
-        </button>
-        <button
-          onClick={() => handleTabChange('landing_vsl')}
-          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
-            activeTab === 'landing_vsl'
-              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
-              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
-          }`}
-        >
-          Configurar Landing VSL
-        </button>
-        <button
-          onClick={() => handleTabChange('demos_leads')}
-          className={`px-5 py-3 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
-            activeTab === 'demos_leads'
-              ? 'bg-[#FFF0F1] text-[#1D1D1F]'
-              : 'text-gray-400 hover:text-gray-800 hover:bg-gray-100'
-          }`}
-        >
-          Demos y Magic Links
-        </button>
-      </div>
-
-      {/* 3. CONTENIDO DE LAS PESTAÑAS */}
+      {/* Contenido del módulo seleccionado en el sidebar. */}
       
       {/* ================= PESTAÑA: METRICAS GLOBALES ================= */}
       {activeTab === 'dashboard' && (
@@ -804,9 +757,8 @@ export default function SuperAdminDashboard() {
           {/* Grid de Colegios */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredColegios.map((col) => {
-              const userCount = usuarios.filter(u => u.colegio_id === col.id).length;
               return (
-                <div key={col.id} className="premium-card p-6 flex flex-col justify-between min-h-[190px]">
+                <div key={col.id} className="premium-card p-6 flex flex-col justify-between min-h-[320px]">
                   <div>
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
@@ -859,6 +811,33 @@ export default function SuperAdminDashboard() {
                             {col.activo ? 'Activo' : 'Suspendido'}
                           </span>
                         </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 rounded-2xl bg-[#f5f5f7] p-3.5">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div>
+                          <span className="block text-[9px] font-black uppercase tracking-[.14em] text-black/35">Auditar experiencia</span>
+                          <span className="mt-1 block text-[11px] font-semibold text-[#1d1d1f]">Ver la plataforma como</span>
+                        </div>
+                        <Eye className="h-4 w-4 text-[#ff2432]" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {([
+                          ['director', 'Director'],
+                          ['docente', 'Docente'],
+                          ['padre', 'Padre'],
+                          ['alumno', 'Alumno'],
+                        ] as const).map(([role, label]) => (
+                          <button
+                            key={role}
+                            type="button"
+                            onClick={() => openRolePreview(col.id, role)}
+                            className="flex items-center justify-between rounded-xl border border-black/[.07] bg-white px-3 py-2 text-[10px] font-bold text-[#1d1d1f] shadow-[0_1px_2px_rgba(0,0,0,.03)] transition duration-200 hover:-translate-y-px hover:border-black/15 hover:shadow-[0_4px_14px_rgba(0,0,0,.07)] active:scale-[.97]"
+                          >
+                            {label}<span className="text-[#ff2432]">↗</span>
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -1788,20 +1767,8 @@ export default function SuperAdminDashboard() {
                 // Calculate ratio
                 const ratio = Math.min(100, Math.round((activeCount / limitFinal) * 100));
                 
-                // Get Domain
-                const getSchoolDomain = (schoolName: string) => {
-                  const clean = schoolName.toLowerCase().replace(/^(colegio|liceo|i\.e\.)\s+/i, '');
-                  return clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
-                };
-                const domain = getSchoolDomain(col.nombre);
-
-                // Quick login handler
-                const handleQuickOpen = (role: string) => {
-                  const url = typeof window !== 'undefined'
-                    ? `${window.location.origin}/login?magic_email=${role}@${domain}.com&expires_at=${Date.now() + 15 * 60 * 1000}`
-                    : `/login?magic_email=${role}@${domain}.com&expires_at=${Date.now() + 15 * 60 * 1000}`;
-                  window.open(url, '_blank');
-                };
+                // Vista previa segura: no reemplaza ni comparte la sesión real.
+                const handleQuickOpen = (role: 'director' | 'docente' | 'padre' | 'alumno') => openRolePreview(col.id, role);
 
                 return (
                   <div key={col.id} className="p-5 border border-gray-100 rounded-2xl hover:border-gray-250 hover:shadow-lg hover:shadow-gray-100/50 transition-all flex flex-col justify-between space-y-4">

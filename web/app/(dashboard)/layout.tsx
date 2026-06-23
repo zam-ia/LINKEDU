@@ -21,13 +21,25 @@ import {
   Plus,
   WalletCards,
   FileBadge2,
-  ShieldCheck
+  ShieldCheck,
+  Building2,
+  MonitorSmartphone,
+  Megaphone,
+  Eye,
+  ArrowLeft
 } from 'lucide-react';
 import { BrandMark } from '@/components/doce/BrandMark';
-import { getStoredDocentes } from '@/lib/supabase/client';
+import { getStoredColegios, getStoredDocentes } from '@/lib/supabase/client';
+
+type MenuItem = {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  path: string;
+  section?: string;
+};
 
 // Componente de navegación de escritorio que usa useSearchParams de forma segura
-function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed: boolean }) {
+function SidebarNav({ menuItems, isCollapsed }: { menuItems: MenuItem[]; isCollapsed: boolean }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -35,7 +47,7 @@ function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed:
 
   return (
     <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
-      {menuItems.map((item) => {
+      {menuItems.map((item, index) => {
         let isActive = false;
         if (item.path.includes('?')) {
           const parts = item.path.split('?');
@@ -46,9 +58,13 @@ function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed:
         } else {
           isActive = pathname === item.path && (!tab || item.path !== '/superadmin');
         }
+        const showSection = item.section && item.section !== menuItems[index - 1]?.section;
         return (
+          <div key={item.name}>
+            {showSection && (isCollapsed
+              ? <div className="mx-3 my-3 h-px bg-black/[.07]" />
+              : <p className="mb-2 mt-5 px-4 text-[9px] font-black uppercase tracking-[.15em] text-black/30 first:mt-0">{item.section}</p>)}
           <a
-            key={item.name}
             href={item.path}
             onClick={(e) => {
               e.preventDefault();
@@ -73,6 +89,7 @@ function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed:
               <div className="ml-auto w-1 h-5 rounded-full bg-[#ff2432]" />
             )}
           </a>
+          </div>
         );
       })}
     </nav>
@@ -80,7 +97,7 @@ function SidebarNav({ menuItems, isCollapsed }: { menuItems: any[]; isCollapsed:
 }
 
 // Componente de navegación móvil que usa useSearchParams de forma segura
-function MobileSidebarNav({ menuItems, onClose }: { menuItems: any[]; onClose: () => void }) {
+function MobileSidebarNav({ menuItems, onClose }: { menuItems: MenuItem[]; onClose: () => void }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -88,7 +105,7 @@ function MobileSidebarNav({ menuItems, onClose }: { menuItems: any[]; onClose: (
 
   return (
     <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-      {menuItems.map((item) => {
+      {menuItems.map((item, index) => {
         let isActive = false;
         if (item.path.includes('?')) {
           const parts = item.path.split('?');
@@ -99,9 +116,11 @@ function MobileSidebarNav({ menuItems, onClose }: { menuItems: any[]; onClose: (
         } else {
           isActive = pathname === item.path && (!tab || item.path !== '/superadmin');
         }
+        const showSection = item.section && item.section !== menuItems[index - 1]?.section;
         return (
+          <div key={item.name}>
+            {showSection && <p className="mb-2 mt-5 px-4 text-[9px] font-black uppercase tracking-[.15em] text-black/30 first:mt-0">{item.section}</p>}
           <a
-            key={item.name}
             href={item.path}
             onClick={(e) => {
               e.preventDefault();
@@ -117,20 +136,21 @@ function MobileSidebarNav({ menuItems, onClose }: { menuItems: any[]; onClose: (
             <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[#ff2432]' : 'text-gray-400'}`} />
             {item.name}
           </a>
+          </div>
         );
       })}
     </nav>
   );
 }
 
-export default function DashboardLayout({
+function DashboardLayoutContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { user, colegio, logout, loading } = useAuthStore();
   const router = useRouter();
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [styleContent, setStyleContent] = useState('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -516,16 +536,35 @@ export default function DashboardLayout({
     );
   }
 
+  const previewRoles = ['director', 'docente', 'padre', 'alumno'] as const;
+  const requestedPreviewRole = searchParams.get('preview_role');
+  const previewRole = user.rol === 'superadmin' && previewRoles.includes(requestedPreviewRole as typeof previewRoles[number])
+    ? requestedPreviewRole as typeof previewRoles[number]
+    : null;
+  const previewSchoolId = previewRole ? searchParams.get('preview_school') : null;
+  const previewSchool = previewSchoolId ? getStoredColegios().find((item) => item.id === previewSchoolId) ?? null : null;
+  const effectiveRole = previewRole ?? user.rol;
+  const previewQuery = previewRole
+    ? `preview_role=${encodeURIComponent(previewRole)}${previewSchoolId ? `&preview_school=${encodeURIComponent(previewSchoolId)}` : ''}`
+    : '';
+  const preservePreview = (path: string) => previewQuery ? `${path}${path.includes('?') ? '&' : '?'}${previewQuery}` : path;
+  const displayColegio = previewSchool
+    ? { nombre: previewSchool.nombre, logo: previewSchool.logo }
+    : colegio;
+  const roleLabels: Record<string, string> = { director: 'Director', docente: 'Docente', padre: 'Padre de familia', alumno: 'Alumno' };
+
   // Definir menú de navegación según el rol
   const getMenuItems = () => {
-    switch (user.rol) {
+    switch (effectiveRole) {
       case 'superadmin':
         return [
-          { name: 'Dashboard Global', icon: LayoutDashboard, path: '/superadmin' },
-          { name: 'Gestión Colegios', icon: BookOpen, path: '/superadmin?tab=colegios' },
-          { name: 'Control de Usuarios', icon: Users, path: '/superadmin?tab=usuarios' },
-          { name: 'Roles y Permisos', icon: ShieldCheck, path: '/superadmin/roles' },
-          { name: 'Configuración', icon: Settings, path: '/superadmin/settings' },
+          { name: 'Resumen ejecutivo', icon: LayoutDashboard, path: '/superadmin', section: 'Operación' },
+          { name: 'Instituciones', icon: Building2, path: '/superadmin?tab=colegios', section: 'Operación' },
+          { name: 'Usuarios', icon: Users, path: '/superadmin?tab=usuarios', section: 'Operación' },
+          { name: 'Vistas por rol', icon: MonitorSmartphone, path: '/superadmin?tab=demos_leads', section: 'Experiencia' },
+          { name: 'Landing y captación', icon: Megaphone, path: '/superadmin?tab=landing_vsl', section: 'Experiencia' },
+          { name: 'Roles y permisos', icon: ShieldCheck, path: '/superadmin/roles', section: 'Plataforma' },
+          { name: 'Marca y configuración', icon: Settings, path: '/superadmin/settings', section: 'Plataforma' },
         ];
       case 'director':
         return [
@@ -569,7 +608,7 @@ export default function DashboardLayout({
     }
   };
 
-  const menuItems = getMenuItems();
+  const menuItems = getMenuItems().map((item) => ({ ...item, path: preservePreview(item.path) }));
 
   const handleLogout = () => {
     logout();
@@ -625,7 +664,7 @@ export default function DashboardLayout({
           <div className="p-4 border-t border-gray-150 bg-gray-50/50">
             <div className={`flex items-center gap-3 ${isSidebarCollapsed ? 'flex-col justify-center' : ''}`}>
               <button
-                onClick={() => router.push(user.rol === 'director' ? '/director/settings' : `/${user.rol}/settings`)}
+                onClick={() => router.push(preservePreview(`/${effectiveRole}/settings`))}
                 className={`flex items-center gap-3 flex-1 min-w-0 text-left hover:opacity-80 transition-opacity cursor-pointer group ${
                   isSidebarCollapsed ? 'justify-center' : ''
                 }`}
@@ -675,15 +714,15 @@ export default function DashboardLayout({
 
           {/* Colegio Activo o Panel Global */}
           <div className="hidden sm:flex items-center gap-2">
-            {colegio ? (
+            {displayColegio ? (
               <>
                 <img 
-                  src={colegio.logo} 
+                  src={displayColegio.logo}
                   alt="Logo" 
                   className="w-7 h-7 rounded object-cover"
                 />
                 <span className="text-xs font-bold text-gray-500">
-                  {colegio.nombre}
+                  {displayColegio.nombre}
                 </span>
               </>
             ) : (
@@ -714,6 +753,21 @@ export default function DashboardLayout({
             <span className="text-xs font-bold text-gray-400">Año Académico 2026</span>
           </div>
         </header>
+
+        {previewRole && (
+          <div className="flex flex-col gap-3 border-b border-[#ff2432]/15 bg-[#fff0f1] px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#ff2432] shadow-sm"><Eye className="h-4 w-4" /></span>
+              <div>
+                <p className="text-xs font-black text-[#1d1d1f]">Vista previa como {roleLabels[previewRole]}</p>
+                <p className="mt-0.5 text-[10px] font-medium text-black/45">{previewSchool?.nombre ?? 'Institución de demostración'} · Tu sesión de Super Admin permanece protegida.</p>
+              </div>
+            </div>
+            <button onClick={() => router.push('/superadmin?tab=colegios')} className="flex items-center justify-center gap-2 rounded-full bg-[#1d1d1f] px-4 py-2 text-[11px] font-bold text-white transition hover:bg-black active:scale-[.97]">
+              <ArrowLeft className="h-3.5 w-3.5" /> Volver al Super Admin
+            </button>
+          </div>
+        )}
 
         {/* Scrollable Content Body */}
         <main className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[#F4F5F7]">
@@ -754,7 +808,7 @@ export default function DashboardLayout({
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    router.push(user.rol === 'director' ? '/director/settings' : `/${user.rol}/settings`);
+                    router.push(preservePreview(`/${effectiveRole}/settings`));
                   }}
                   className="flex items-center gap-3 flex-1 min-w-0 text-left cursor-pointer hover:opacity-85 transition-opacity"
                 >
@@ -1070,5 +1124,13 @@ export default function DashboardLayout({
         </div>
       )}
     </div>
+  );
+}
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#f5f5f7]"><div className="h-9 w-9 animate-spin rounded-full border-2 border-[#1d1d1f] border-t-transparent" /></div>}>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </Suspense>
   );
 }
