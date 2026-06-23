@@ -1,7 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-// URL y Anon Key desde las variables de entorno de Next.js
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://hhauwkcnpfithuqnyhss.supabase.co';
+// Supabase Auth necesita la URL base del proyecto. Normalizamos valores copiados
+// desde "API URL" para evitar rutas inválidas como /rest/v1/auth/v1/token.
+const projectUrl = 'https://hhauwkcnpfithuqnyhss.supabase.co';
+const configuredUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || projectUrl;
+const supabaseUrl = (() => {
+  try {
+    return new URL(configuredUrl).origin;
+  } catch {
+    return projectUrl;
+  }
+})();
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_cwLDk2w3g6WocWhHbL2RaA_IiIoy5tn';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -815,4 +824,3 @@ export const seedDataForNewSchool = (newColegioId: string, schoolName: string) =
     localStorage.setItem('doce_users', JSON.stringify([...users, ...newUsers]));
   }
 };
-

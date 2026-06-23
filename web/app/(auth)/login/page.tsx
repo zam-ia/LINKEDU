@@ -25,8 +25,17 @@ export default function LoginPage() {
       setError("Ingresa tu correo y contraseña.");
       return;
     }
-    const success = await login(email, password);
-    if (!success) setError("No pudimos validar tus credenciales. Revisa los datos o el estado de tu cuenta.");
+    const result = await login(email, password);
+    if (!result.ok) {
+      const messages = {
+        invalid_credentials: "El correo o la contraseña no coinciden.",
+        email_unconfirmed: "El correo todavía no está confirmado en Supabase.",
+        inactive: "La cuenta está inactiva. Contacta al administrador.",
+        profile_unavailable: "La cuenta existe, pero su perfil o permisos aún no están configurados.",
+        configuration: "No pudimos conectar con Supabase. Revisa la URL y las variables del despliegue.",
+      };
+      setError(messages[result.reason]);
+    }
   };
 
   return (

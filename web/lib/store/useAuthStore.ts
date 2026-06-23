@@ -16,14 +16,18 @@ interface AuthState {
   user: UserProfile | null;
   loading: boolean;
   colegio: ColegioState | null;
-  login: (email: string, password?: string) => Promise<boolean>;
+  login: (email: string, password?: string) => Promise<LoginResult>;
   logout: () => Promise<void>;
   setUser: (user: UserProfile | null) => void;
   updateUserProfile: (nombre: string, apellido: string, fotoUrl: string) => void;
   updateColegioInfo: (nombre: string, logo: string, colorPrimario?: string) => void;
 }
 
-const demoAuthEnabled = process.env.NEXT_PUBLIC_ENABLE_DEMO_AUTH === "true";
+export type LoginFailureReason = "invalid_credentials" | "email_unconfirmed" | "inactive" | "profile_unavailable" | "configuration";
+export type LoginResult = { ok: true } | { ok: false; reason: LoginFailureReason };
+
+// Nunca permitimos que una variable antigua de Vercel active datos demo en producción.
+const demoAuthEnabled = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_ENABLE_DEMO_AUTH === "true";
 
 function mapColegio(colegio: Partial<ColegioInfo> & { id: string; nombre: string }): ColegioState {
   return {
@@ -37,9 +41,34 @@ function mapColegio(colegio: Partial<ColegioInfo> & { id: string; nombre: string
   };
 }
 
-async function readSupabaseProfile(authUser: AuthUser): Promise<{ user: UserProfile; colegio: ColegioState | null } | null> {
+async function readSupabaseProfile(authUser: AuthUser): Promise<{ value: { user: UserProfile; colegio: ColegioState | null } | null; reason?: LoginFailureReason }> {
   const { data: profile, error } = await supabase.from("usuarios").select("id, colegio_id, rol, nombre, apellido, dni, foto_url, activo").eq("id", authUser.id).single();
-  if (error || !profile) return null;
+  if (error || !profile) {
+    // app_metadata la administra exclusivamente el servidor de Supabase. Este
+    // respaldo permite recuperar al Super Admin si una política RLS antigua
+    // impide leer public.usuarios, sin confiar en un rol editable por el usuario.
+    const trustedRole = authUser.app_metadata?.rol;
+    if (trustedRole === "superadmin") {
+      return {
+        value: {
+          user: {
+            id: authUser.id,
+            colegio_id: null,
+            rol: "superadmin",
+            nombre: authUser.user_metadata?.nombre ?? "Administrador",
+            apellido: authUser.user_metadata?.apellido ?? "Doce",
+            dni: authUser.user_metadata?.dni ?? "",
+            foto_url: authUser.user_metadata?.foto_url ?? "/brand/doce-icon.svg",
+            email: authUser.email,
+            activo: true,
+          },
+          colegio: null,
+        },
+      };
+    }
+    return { value: null, reason: "profile_unavailable" };
+  }
+  if (profile.activo === false) return { value: null, reason: "inactive" };
 
   let colegio: ColegioState | null = null;
   if (profile.colegio_id) {
@@ -47,7 +76,7 @@ async function readSupabaseProfile(authUser: AuthUser): Promise<{ user: UserProf
     if (tenant) colegio = mapColegio({ id: tenant.id, nombre: tenant.nombre, logo: tenant.logo_url ?? "", color_primario: tenant.color_primario ?? undefined });
   }
 
-  return {
+  return { value: {
     user: {
       id: profile.id,
       colegio_id: profile.colegio_id,
@@ -60,18 +89,18 @@ async function readSupabaseProfile(authUser: AuthUser): Promise<{ user: UserProf
       activo: profile.activo,
     },
     colegio,
-  };
+  } };
 }
 
 export const useAuthStore = create<AuthState>((set, get) => {
   const hydrate = async (authUser: AuthUser | null) => {
     if (!authUser) {
       set({ user: null, colegio: null, loading: false });
-      return false;
+      return { value: null, reason: "profile_unavailable" as LoginFailureReason };
     }
     const result = await readSupabaseProfile(authUser);
-    set(result ? { ...result, loading: false } : { user: null, colegio: null, loading: false });
-    return Boolean(result);
+    set(result.value ? { ...result.value, loading: false } : { user: null, colegio: null, loading: false });
+    return result;
   };
 
   if (typeof window !== "undefined") {
@@ -112,28 +141,36 @@ export const useAuthStore = create<AuthState>((set, get) => {
         const matchedUser = getStoredUsers().find((item) => item.email?.toLowerCase() === cleanEmail && item.activo !== false);
         if (!matchedUser) {
           set({ loading: false });
-          return false;
+          return { ok: false, reason: "invalid_credentials" };
         }
         const tenant = matchedUser.colegio_id ? getStoredColegios().find((item) => item.id === matchedUser.colegio_id && item.activo) : null;
         if (matchedUser.colegio_id && !tenant) {
           set({ loading: false });
-          return false;
+          return { ok: false, reason: "inactive" };
         }
         localStorage.setItem("doce_demo_session", JSON.stringify(matchedUser));
         set({ user: matchedUser, colegio: tenant ? mapColegio(tenant) : null, loading: false });
-        return true;
+        return { ok: true };
       }
 
       if (!password) {
         set({ loading: false });
-        return false;
+        return { ok: false, reason: "invalid_credentials" };
       }
       const { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
       if (error || !data.user) {
         set({ loading: false });
-        return false;
+        const message = error?.message.toLowerCase() ?? "";
+        if (message.includes("email not confirmed")) return { ok: false, reason: "email_unconfirmed" };
+        if (message.includes("invalid login credentials")) return { ok: false, reason: "invalid_credentials" };
+        return { ok: false, reason: "configuration" };
       }
-      return hydrate(data.user);
+      const profileResult = await hydrate(data.user);
+      if (!profileResult.value) {
+        await supabase.auth.signOut();
+        return { ok: false, reason: profileResult.reason ?? "profile_unavailable" };
+      }
+      return { ok: true };
     },
     logout: async () => {
       if (demoAuthEnabled) localStorage.removeItem("doce_demo_session");

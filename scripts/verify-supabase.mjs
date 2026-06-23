@@ -24,7 +24,16 @@ for (const table of ["colegios", "usuarios", "roles", "programas_aprendizaje", "
 const { data: bucket, error: bucketError } = await admin.storage.getBucket("brand-assets");
 checks.push({ resource: "storage:brand-assets", ok: Boolean(bucket) && !bucketError, detail: bucketError?.message });
 const { data: users, error: usersError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-checks.push({ resource: "auth:superadmin", ok: !usersError && users.users.some((user) => user.email === "admin@test.com"), detail: usersError?.message });
+const superAdmin = users?.users.find((user) => user.email === "admin@test.com");
+checks.push({ resource: "auth:superadmin", ok: !usersError && Boolean(superAdmin), detail: usersError?.message });
+checks.push({ resource: "auth:email-confirmado", ok: Boolean(superAdmin?.email_confirmed_at), detail: superAdmin && !superAdmin.email_confirmed_at ? "El correo no está confirmado." : undefined });
+checks.push({ resource: "auth:app-metadata-role", ok: superAdmin?.app_metadata?.rol === "superadmin", detail: superAdmin && superAdmin.app_metadata?.rol !== "superadmin" ? "Falta app_metadata.rol=superadmin." : undefined });
+
+if (superAdmin) {
+  const { data: profile, error: profileError } = await admin.from("usuarios").select("id, rol, activo").eq("id", superAdmin.id).maybeSingle();
+  const profileOk = !profileError && profile?.rol === "superadmin" && profile?.activo === true;
+  checks.push({ resource: "usuarios:perfil-superadmin", ok: profileOk, detail: profileOk ? undefined : profileError?.message || (!profile ? "No existe el perfil." : "El rol o estado del perfil no es válido.") });
+}
 
 for (const check of checks) console.log(`${check.ok ? "OK" : "ERROR"} ${check.resource}${check.detail ? ` - ${check.detail}` : ""}`);
 if (checks.some((check) => !check.ok)) process.exit(1);
