@@ -37,3 +37,5 @@ yarn-error.log*
 scratch/
 supabase/.temp/
 upabase docs
+
+.vercel
