@@ -47,6 +47,7 @@ import {
   ColegioInfo, 
   UserProfile 
 } from '@/lib/supabase/client';
+import { PaymentAccountsPanel, PLATFORM_PAYMENT_ACCOUNTS, StaticQr } from '@/components/doce/PaymentInstructions';
 
 // Gráfico de crecimiento de la suscripción SaaS
 const saasGrowthData = [
@@ -590,6 +591,7 @@ export default function SuperAdminDashboard() {
   const sectionCopy: Record<string, { eyebrow: string; title: string; description: string }> = {
     dashboard: { eyebrow: 'Operación de plataforma', title: 'Resumen ejecutivo', description: 'Salud comercial, adopción y operación global de todas las instituciones.' },
     colegios: { eyebrow: 'Operación multiinstitución', title: 'Instituciones', description: 'Administra cada colegio y revisa su experiencia exacta por tipo de usuario.' },
+    billing_saas: { eyebrow: 'Cobranza SaaS', title: 'Suscripciones y pagos de clientes', description: 'Controla mensualidades de colegios, canales de transferencia y regularizaciones pendientes.' },
     usuarios: { eyebrow: 'Identidad y acceso', title: 'Usuarios', description: 'Gestiona las cuentas, estados y asignaciones de cada institución.' },
     landing_vsl: { eyebrow: 'Crecimiento', title: 'Landing y captación', description: 'Configura el discurso comercial, la demostración y los puntos de conversión.' },
     demos_leads: { eyebrow: 'Control de experiencia', title: 'Vistas por rol', description: 'Inspecciona portales por institución y da seguimiento a oportunidades comerciales.' },
@@ -734,6 +736,82 @@ export default function SuperAdminDashboard() {
                   <Area type="monotone" dataKey="Ingresos" stroke="#1D1D1F" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSaaS)" />
                 </AreaChart>
               </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= PESTAÑA: COBRANZA SAAS ================= */}
+      {activeTab === 'billing_saas' && (
+        <div className="space-y-6">
+          <div className="grid gap-5 lg:grid-cols-[1fr_.9fr]">
+            <div className="premium-card p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff2432]">Ciclo de cobro</p>
+                  <h2 className="mt-2 text-xl font-black text-gray-950">Facturación recurrente Doce</h2>
+                  <p className="mt-1 text-xs font-semibold leading-5 text-gray-500">Tus clientes pueden transferir por banco o billetera y enviar voucher. Hasta activar pasarela, esta vista sirve como control de conciliación SaaS.</p>
+                </div>
+                <StaticQr label="QR Doce" />
+              </div>
+              <div className="mt-5 grid grid-cols-3 gap-3">
+                <div className="rounded-2xl bg-gray-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-gray-400">MRR activo</p>
+                  <p className="mt-1 text-xl font-black">S/. {totalIngresosReales.toLocaleString('es-PE')}</p>
+                </div>
+                <div className="rounded-2xl bg-gray-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-gray-400">Por renovar</p>
+                  <p className="mt-1 text-xl font-black text-[#E07B6A]">{colegiosPorRenovar.length}</p>
+                </div>
+                <div className="rounded-2xl bg-gray-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-gray-400">Suspendidos</p>
+                  <p className="mt-1 text-xl font-black">{colegios.filter(c => !c.activo).length}</p>
+                </div>
+              </div>
+            </div>
+            <PaymentAccountsPanel accounts={PLATFORM_PAYMENT_ACCOUNTS} title="Cuentas Doce" subtitle="Canales para cobrar implementación, mensualidad SaaS, upgrades y soporte a colegios clientes." />
+          </div>
+
+          <div className="premium-card overflow-hidden">
+            <div className="border-b border-gray-150 p-5">
+              <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Estado de cobro por institución</h3>
+              <p className="mt-1 text-xs font-semibold text-gray-400">Control operativo para seguimiento comercial y suspensión por vencimiento.</p>
+            </div>
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-gray-50 text-[10px] font-black uppercase tracking-wider text-gray-400">
+                  <tr>
+                    <th className="p-3">Colegio</th>
+                    <th className="p-3">Plan</th>
+                    <th className="p-3">Mensualidad</th>
+                    <th className="p-3">Vencimiento</th>
+                    <th className="p-3">Estado</th>
+                    <th className="p-3 text-right">Acción</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {colegios.map((col) => {
+                    const due = col.vencimiento ? new Date(col.vencimiento) : null;
+                    const isExpired = due ? due < new Date('2026-06-25') : false;
+                    return (
+                      <tr key={col.id} className="hover:bg-gray-50/50">
+                        <td className="p-3 font-black text-gray-950">{col.nombre}</td>
+                        <td className="p-3 font-bold text-gray-500">{col.plan || 'Sin plan'}</td>
+                        <td className="p-3 font-black text-gray-950">S/. {(col.mensualidad || 0).toLocaleString('es-PE')}</td>
+                        <td className="p-3 font-bold text-gray-500">{col.vencimiento || '—'}</td>
+                        <td className="p-3">
+                          <span className={`rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-wider ${!col.activo ? 'bg-gray-100 text-gray-400' : isExpired ? 'bg-[#FDECEA] text-[#E07B6A]' : 'bg-[#EAF5EF] text-[#5BAD8A]'}`}>
+                            {!col.activo ? 'Suspendido' : isExpired ? 'Vencido' : 'Al día'}
+                          </span>
+                        </td>
+                        <td className="p-3 text-right">
+                          <button onClick={() => triggerAlert(`Link de pago y cuentas enviado a ${col.nombre}.`)} className="rounded-lg bg-black px-3 py-1.5 text-[10px] font-black text-white">Enviar cobranza</button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

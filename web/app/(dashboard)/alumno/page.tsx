@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuthStore } from '@/lib/store/useAuthStore';
+import { getStoredAlumnos, getStoredPagos, AlumnoInfo, PagoInfo } from '@/lib/supabase/client';
 import { 
   GraduationCap, 
   Calendar, 
@@ -24,10 +26,28 @@ const CALENDAR_EVENTS = [
 ];
 
 export default function AlumnoDashboard() {
+  const { user } = useAuthStore();
   const [tasks, setTasks] = useState(UPCOMING_TASKS);
   const [asistenciaMes, setAsistenciaMes] = useState(92); // 92% asistencia
+  const [currentAlumno, setCurrentAlumno] = useState<AlumnoInfo | null>(null);
+  const [pagos, setPagos] = useState<PagoInfo[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    const alumnos = getStoredAlumnos();
+    setCurrentAlumno(alumnos.find(a => a.id === user.id || a.email === user.email) || alumnos[0] || null);
+    setPagos(getStoredPagos());
+  }, [user]);
+
+  const overduePayments = currentAlumno ? pagos.filter(p => p.alumno_id === currentAlumno.id && p.estado === 'vencido') : [];
+  const pendingPayments = currentAlumno ? pagos.filter(p => p.alumno_id === currentAlumno.id && p.estado !== 'pagado') : [];
+  const hasFinancialRestriction = overduePayments.length > 0 || currentAlumno?.financiero === 'en_mora';
 
   const handleCompleteTask = (id: string) => {
+    if (hasFinancialRestriction) {
+      alert('Contenido bloqueado por pago pendiente. Regulariza el estado de cuenta para entregar tareas y descargar materiales.');
+      return;
+    }
     setTasks(prev => prev.filter(t => t.id !== id));
     alert('¡Excelente trabajo! Tarea entregada con éxito a Supabase Storage.');
   };
@@ -36,9 +56,25 @@ export default function AlumnoDashboard() {
     <div className="space-y-6">
       {/* 1. SALUDO PERSONALIZADO */}
       <div className="bg-gradient-to-r from-[#1D1D1F] to-[#9B7FD4] p-6 rounded-2xl text-white shadow-lg shadow-[#1D1D1F]/10">
-        <h1 className="text-2xl font-black font-sans">¡Hola, Mateo! 👋</h1>
-        <p className="text-xs text-white/80 mt-1 font-semibold">Hoy es miércoles, 20 de mayo. Tienes {tasks.length} entregas pendientes para esta semana.</p>
+        <h1 className="text-2xl font-black font-sans">¡Hola, {currentAlumno?.nombre || 'Mateo'}! 👋</h1>
+        <p className="text-xs text-white/80 mt-1 font-semibold">Hoy tienes {tasks.length} entregas pendientes y {pendingPayments.length} obligación(es) de pago registradas.</p>
       </div>
+
+      {hasFinancialRestriction && (
+        <div className="rounded-2xl border border-[#E07B6A]/30 bg-[#FDECEA] p-5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#E07B6A]">Restricción por morosidad</p>
+              <h2 className="mt-1 text-lg font-black text-gray-950">Aula parcialmente bloqueada hasta validar pagos pendientes</h2>
+              <p className="mt-1 text-xs font-semibold leading-5 text-gray-500">Puedes revisar tu agenda y estado académico, pero las entregas, descargas y certificados quedan bloqueados si existen cuotas vencidas sin voucher validado.</p>
+            </div>
+            <div className="rounded-2xl bg-white px-4 py-3 text-right">
+              <p className="text-[10px] font-bold uppercase text-gray-400">Mora vencida</p>
+              <p className="text-xl font-black text-[#E07B6A]">S/. {overduePayments.reduce((sum, p) => sum + p.monto, 0).toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2. KPIs RÁPIDOS */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -120,9 +156,9 @@ export default function AlumnoDashboard() {
                     </span>
                     <button
                       onClick={() => handleCompleteTask(task.id)}
-                      className="px-3.5 py-1.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-[10px] rounded-lg shadow-xs cursor-pointer"
+                      className={`px-3.5 py-1.5 font-bold text-[10px] rounded-lg shadow-xs ${hasFinancialRestriction ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white cursor-pointer'}`}
                     >
-                      Subir Trabajo
+                      {hasFinancialRestriction ? 'Bloqueado por mora' : 'Subir Trabajo'}
                     </button>
                   </div>
                 </div>

@@ -25,10 +25,10 @@ import { BrandMark, useBrandAsset } from "@/components/doce/BrandMark";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const modules = [
-  { icon: BookOpen, label: "Aula virtual", title: "Aprendizaje que sí se puede gestionar", text: "Cursos, módulos, clases en vivo, materiales, tareas, evaluaciones y progreso en una sola experiencia." },
-  { icon: WalletCards, label: "Credenciales", title: "Carnets y fotochecks verificables", text: "Diseña, genera por lotes, imprime en CR80 y valida cada identidad mediante un QR seguro." },
-  { icon: FileBadge2, label: "Documentos", title: "Certificados que tienen valor real", text: "Diplomas, constancias y certificados con plantillas, emisión masiva, revocación y verificación pública." },
-  { icon: LayoutDashboard, label: "Gestión", title: "La operación educativa bajo control", text: "Alumnos, docentes, asistencia, notas, pagos, comunicaciones y reportes por institución." },
+  { icon: BookOpen, href: "#modulo-aula", label: "Aula virtual", title: "Aprendizaje que sí se puede gestionar", text: "Cursos, módulos, clases en vivo, materiales, tareas, evaluaciones y progreso en una sola experiencia.", bullets: ["Módulos y clases por programa", "Restricción por morosidad", "Certificados al finalizar"] },
+  { icon: WalletCards, href: "#modulo-credenciales", label: "Credenciales", title: "Carnets y fotochecks verificables", text: "Diseña, genera por lotes, imprime en CR80 y valida cada identidad mediante un QR seguro.", bullets: ["Carnet del alumno", "Fotocheck del personal", "Validación QR pública"] },
+  { icon: FileBadge2, href: "#modulo-documentos", label: "Documentos", title: "Certificados que tienen valor real", text: "Diplomas, constancias y certificados con plantillas, emisión masiva, revocación y verificación pública.", bullets: ["Diplomas y constancias", "Trazabilidad de emisión", "Verificación externa"] },
+  { icon: LayoutDashboard, href: "#modulo-gestion", label: "Gestión", title: "La operación educativa bajo control", text: "Alumnos, docentes, asistencia, notas, pagos, comunicaciones y reportes por institución.", bullets: ["Caja y morosidad", "Roles por institución", "Reportes operativos"] },
 ];
 
 const plans = [
@@ -133,9 +133,38 @@ export default function Home() {
           <div className="max-w-3xl"><p className="text-xs font-black uppercase tracking-[.2em] text-[#ff2432]">Una plataforma, cuatro sistemas</p><h2 className="mt-5 text-4xl font-black leading-[1.02] tracking-[-.04em] sm:text-6xl">No es otro LMS. Es la infraestructura digital de tu institución.</h2></div>
           <div className="mt-14 grid gap-4 md:grid-cols-2">
             {modules.map((module, index) => (
-              <article key={module.label} className={`group rounded-[28px] border border-black/[.07] p-7 transition hover:-translate-y-1 hover:shadow-xl sm:p-9 ${index === 0 ? "bg-black text-white" : "bg-white"}`}>
+              <a href={module.href} key={module.label} className={`group block rounded-[28px] border border-black/[.07] p-7 transition hover:-translate-y-1 hover:shadow-xl sm:p-9 ${index === 0 ? "bg-black text-white" : "bg-white"}`}>
                 <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${index === 0 ? "bg-[#ff2432]" : "bg-[#ffe9eb] text-[#ff2432]"}`}><module.icon className="h-5 w-5" /></div>
                 <p className={`mt-8 text-[11px] font-black uppercase tracking-[.18em] ${index === 0 ? "text-white/40" : "text-black/35"}`}>{module.label}</p><h3 className="mt-2 text-2xl font-black tracking-[-.025em]">{module.title}</h3><p className={`mt-3 max-w-xl text-sm font-medium leading-6 ${index === 0 ? "text-white/55" : "text-black/50"}`}>{module.text}</p><div className="mt-8 inline-flex items-center gap-2 text-xs font-bold">Conocer el módulo <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-5 py-24 lg:px-8 lg:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="text-xs font-black uppercase tracking-[.2em] text-[#ff2432]">Experiencia conectada</p>
+            <h2 className="mt-5 text-4xl font-black leading-[1.02] tracking-[-.04em] sm:text-6xl">La web no termina en una promesa. Entra directo al flujo operativo.</h2>
+            <p className="mt-5 text-sm font-medium leading-6 text-black/50">El recorrido replica la lógica web→campus: el interesado solicita demo, el colegio se activa como tenant, cada rol entra a su portal y los pagos/documentos alimentan el panel administrativo.</p>
+          </div>
+
+          <div className="mt-12 grid gap-4 lg:grid-cols-4">
+            {modules.map((module, index) => (
+              <article id={module.href.replace("#", "")} key={module.href} className="scroll-mt-28 rounded-[28px] border border-black/[.07] bg-[#f8f8f6] p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black text-white"><module.icon className="h-5 w-5 text-[#ff2432]" /></div>
+                  <span className="rounded-full bg-white px-3 py-1 text-[9px] font-black uppercase tracking-[.14em] text-black/35">0{index + 1}</span>
+                </div>
+                <h3 className="mt-6 text-lg font-black tracking-tight">{module.label}</h3>
+                <p className="mt-2 text-xs font-medium leading-5 text-black/50">{module.text}</p>
+                <ul className="mt-5 space-y-2 text-[11px] font-bold text-black/65">
+                  {module.bullets.map((bullet) => (
+                    <li key={bullet} className="flex gap-2"><Check className="h-4 w-4 shrink-0 text-[#ff2432]" />{bullet}</li>
+                  ))}
+                </ul>
+                <a href="#demo" className="mt-6 inline-flex items-center gap-2 rounded-full bg-black px-4 py-2.5 text-[11px] font-black text-white transition hover:bg-[#ff2432]">Ver demo aplicada <ArrowRight className="h-3.5 w-3.5" /></a>
               </article>
             ))}
           </div>

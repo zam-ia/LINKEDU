@@ -18,8 +18,10 @@ import {
   Lock, 
   ChevronRight,
   Sparkles,
-  Printer
+  Printer,
+  UploadCloud
 } from 'lucide-react';
+import { INSTITUTION_PAYMENT_ACCOUNTS, PaymentAccountsPanel, StaticQr } from '@/components/doce/PaymentInstructions';
 import { 
   BarChart, 
   Bar, 
@@ -69,6 +71,8 @@ export default function FinanzasPage() {
   const [activePagoToRegister, setActivePagoToRegister] = useState<PagoInfo | null>(null);
   const [pagoMetodo, setPagoMetodo] = useState<'Efectivo' | 'Tarjeta' | 'Transferencia'>('Efectivo');
   const [pagoReferencia, setPagoReferencia] = useState('');
+  const [pagoVoucherName, setPagoVoucherName] = useState('');
+  const [pagoVoucherPreview, setPagoVoucherPreview] = useState('');
 
   // Toast / Alerts
   const [alertMsg, setAlertMsg] = useState('');
@@ -136,7 +140,21 @@ export default function FinanzasPage() {
   const handleOpenRegistrarPago = (pago: PagoInfo) => {
     setActivePagoToRegister(pago);
     setPagoReferencia('');
+    setPagoVoucherName('');
+    setPagoVoucherPreview('');
     setShowRegistrarPago(true);
+  };
+
+  const handleVoucherUpload = (file?: File) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      triggerAlert('El voucher supera los 10MB permitidos.');
+      return;
+    }
+    setPagoVoucherName(file.name);
+    const reader = new FileReader();
+    reader.onloadend = () => setPagoVoucherPreview(String(reader.result || ''));
+    reader.readAsDataURL(file);
   };
 
   const handleSavePago = () => {
@@ -149,7 +167,7 @@ export default function FinanzasPage() {
           ...p,
           estado: 'pagado' as const,
           metodo: pagoMetodo,
-          comprobante: pagoReferencia ? `REF-${pagoReferencia}` : 'PAGO_MANUAL.pdf',
+          comprobante: pagoVoucherName ? `VOUCHER-${pagoReferencia || 'SIN-REF'}-${pagoVoucherName}` : (pagoReferencia ? `REF-${pagoReferencia}` : 'PAGO_MANUAL.pdf'),
           fecha: new Date().toISOString().split('T')[0]
         };
       }
@@ -850,7 +868,7 @@ export default function FinanzasPage() {
       {showRegistrarPago && activePagoToRegister && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={() => setShowRegistrarPago(false)}></div>
-          <div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="relative max-h-[92vh] overflow-y-auto bg-white rounded-2xl w-full max-w-4xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-base font-black text-gray-950 mb-1">Registrar Cobro de Pensión</h3>
             <p className="text-[10px] text-gray-400 font-semibold mb-4">Ingresa el pago manual realizado en efectivo o transferencia por el padre de familia.</p>
             
@@ -889,6 +907,19 @@ export default function FinanzasPage() {
                   className="block w-full rounded-xl border border-gray-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#5BAD8A]/15 text-sm font-semibold text-gray-900"
                 />
               </div>
+
+              <div className="grid gap-4 md:grid-cols-[auto_1fr]">
+                <StaticQr label="QR de tesorería" />
+                <label className="block cursor-pointer rounded-2xl border border-dashed border-gray-250 bg-gray-50 p-4 text-center hover:border-[#5BAD8A]">
+                  <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" className="hidden" onChange={(e) => handleVoucherUpload(e.target.files?.[0])} />
+                  <UploadCloud className="mx-auto h-6 w-6 text-[#5BAD8A]" />
+                  <span className="mt-2 block text-xs font-black text-gray-900">{pagoVoucherName || 'Adjuntar voucher del padre'}</span>
+                  <span className="mt-1 block text-[10px] font-semibold text-gray-400">JPG, PNG o PDF. Se guarda como comprobante de conciliación.</span>
+                  {pagoVoucherPreview && pagoVoucherPreview.startsWith('data:image') && <img src={pagoVoucherPreview} alt="Voucher de pago" className="mx-auto mt-3 max-h-32 rounded-xl border border-gray-150 object-contain" />}
+                </label>
+              </div>
+
+              <PaymentAccountsPanel accounts={INSTITUTION_PAYMENT_ACCOUNTS} compact title="Cuentas visibles para padres" subtitle="Estos datos se muestran también en el portal del padre para pagos por transferencia." />
 
               <div className="flex gap-3 justify-end pt-4 border-t border-gray-150">
                 <button

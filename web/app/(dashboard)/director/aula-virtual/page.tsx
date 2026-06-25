@@ -13,6 +13,7 @@ const initialPrograms = [
 export default function VirtualClassroomAdmin() {
   const [query, setQuery] = useState("");
   const [showCreate, setShowCreate] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState<typeof initialPrograms[number] | null>(null);
   const programs = useMemo(() => initialPrograms.filter((item) => item.name.toLowerCase().includes(query.toLowerCase())), [query]);
 
   return (
@@ -37,7 +38,7 @@ export default function VirtualClassroomAdmin() {
               <div className="flex items-start gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-black text-white"><CirclePlay className="h-5 w-5 text-[#ff2432]" /></div><div><div className="flex flex-wrap items-center gap-2"><h3 className="text-sm font-black text-black">{program.name}</h3><StatusBadge tone={program.state === "Finalizado" ? "success" : "accent"}>{program.state}</StatusBadge></div><p className="mt-1 text-[11px] font-semibold text-black/40">{program.type} · {program.modules} módulos</p></div></div>
               <div><p className="text-[10px] font-black uppercase tracking-[.12em] text-black/30">Participantes</p><p className="mt-1 text-sm font-bold">{program.students} matriculados</p></div>
               <div><div className="flex justify-between text-[10px] font-bold"><span>Progreso</span><span>{program.progress}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/5"><div className="h-full rounded-full bg-[#ff2432]" style={{ width: `${program.progress}%` }} /></div></div>
-              <button className="flex items-center gap-2 text-xs font-black">Gestionar <ChevronRight className="h-4 w-4" /></button>
+              <button onClick={() => setSelectedProgram(program)} className="flex items-center gap-2 text-xs font-black">Gestionar <ChevronRight className="h-4 w-4" /></button>
             </article>
           ))}
         </div>
@@ -45,10 +46,42 @@ export default function VirtualClassroomAdmin() {
 
       <section className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
         <div className="rounded-[24px] bg-black p-6 text-white sm:p-8"><p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff5965]">Próxima sesión</p><h2 className="mt-3 text-2xl font-black">Evaluación por competencias</h2><p className="mt-2 text-sm text-white/45">Módulo 4 · Instrumentos y evidencias de aprendizaje</p><div className="mt-8 flex flex-wrap gap-5 text-xs font-bold text-white/70"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#ff2432]" /> Mañana, 6:30 p. m.</span><span className="flex items-center gap-2"><Users className="h-4 w-4 text-[#ff2432]" /> 124 participantes</span></div><button className="mt-7 rounded-xl bg-white px-4 py-3 text-xs font-black text-black">Abrir sala docente</button></div>
-        <div className="rounded-[24px] border border-black/[.07] bg-white p-6"><h2 className="text-base font-black">Acciones rápidas</h2><div className="mt-5 grid gap-2"><button className={`${secondaryButton} !justify-start`}><Plus className="h-4 w-4 text-[#ff2432]" /> Agregar módulo o clase</button><button className={`${secondaryButton} !justify-start`}><Users className="h-4 w-4 text-[#ff2432]" /> Importar participantes</button><button className={`${secondaryButton} !justify-start`}><GraduationCap className="h-4 w-4 text-[#ff2432]" /> Revisar progreso y notas</button></div></div>
+        <div className="rounded-[24px] border border-black/[.07] bg-white p-6"><h2 className="text-base font-black">Acciones rápidas</h2><div className="mt-5 grid gap-2"><button onClick={() => setShowCreate(true)} className={`${secondaryButton} !justify-start`}><Plus className="h-4 w-4 text-[#ff2432]" /> Agregar módulo o clase</button><button onClick={() => alert('Importación lista para conectar con CSV/Supabase Storage.')} className={`${secondaryButton} !justify-start`}><Users className="h-4 w-4 text-[#ff2432]" /> Importar participantes</button><button onClick={() => setSelectedProgram(initialPrograms[0])} className={`${secondaryButton} !justify-start`}><GraduationCap className="h-4 w-4 text-[#ff2432]" /> Revisar progreso y notas</button></div></div>
       </section>
 
       {showCreate && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"><div className="w-full max-w-lg rounded-[26px] bg-white p-7 shadow-2xl"><p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff2432]">Nuevo contenido</p><h2 className="mt-2 text-2xl font-black">Crear programa</h2><div className="mt-6 grid gap-4"><label className="text-xs font-bold">Nombre<input autoFocus className="mt-2 w-full rounded-xl border border-black/10 px-4 py-3 font-medium outline-none focus:border-black" placeholder="Ej. Diplomado en gestión educativa" /></label><label className="text-xs font-bold">Tipo<select className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 font-medium"><option>Curso</option><option>Taller</option><option>Diplomado</option><option>Evento</option></select></label></div><div className="mt-7 flex justify-end gap-3"><button onClick={() => setShowCreate(false)} className={secondaryButton}>Cancelar</button><button onClick={() => setShowCreate(false)} className={primaryButton}>Crear borrador</button></div></div></div>}
+
+      {selectedProgram && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-3xl rounded-[28px] bg-white p-7 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff2432]">Gestión del aula</p>
+                <h2 className="mt-2 text-2xl font-black">{selectedProgram.name}</h2>
+                <p className="mt-1 text-xs font-semibold text-black/45">{selectedProgram.type} · {selectedProgram.students} participantes · {selectedProgram.modules} módulos</p>
+              </div>
+              <button onClick={() => setSelectedProgram(null)} className={secondaryButton}>Cerrar</button>
+            </div>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {["Contenido", "Evaluaciones", "Certificados"].map((item, index) => (
+                <div key={item} className="rounded-2xl border border-black/[.07] bg-[#f8f8f6] p-4">
+                  <p className="text-[10px] font-black uppercase tracking-[.14em] text-black/35">Módulo 0{index + 1}</p>
+                  <h3 className="mt-2 text-sm font-black">{item}</h3>
+                  <p className="mt-2 text-[11px] font-semibold leading-5 text-black/45">
+                    {index === 0 && "Ordena clases, materiales, enlaces de sala y descargas."}
+                    {index === 1 && "Publica tareas, pesos, notas y revisión de evidencias."}
+                    {index === 2 && "Emite diplomas o constancias solo si el alumno cumple progreso y pagos."}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 rounded-2xl border border-[#E07B6A]/25 bg-[#FDECEA] p-4">
+              <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#E07B6A]">Regla de acceso</p>
+              <p className="mt-1 text-xs font-semibold leading-5 text-black/55">Si un alumno tiene mensualidades vencidas sin voucher validado, el campus permite ver agenda y avisos, pero bloquea entregas, descargas premium y certificados hasta que tesorería regularice el pago.</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

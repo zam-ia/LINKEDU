@@ -560,6 +560,7 @@ function DashboardLayoutContent({
         return [
           { name: 'Resumen ejecutivo', icon: LayoutDashboard, path: '/superadmin', section: 'Operación' },
           { name: 'Instituciones', icon: Building2, path: '/superadmin?tab=colegios', section: 'Operación' },
+          { name: 'Cobranza SaaS', icon: CreditCard, path: '/superadmin?tab=billing_saas', section: 'Operación' },
           { name: 'Usuarios', icon: Users, path: '/superadmin?tab=usuarios', section: 'Operación' },
           { name: 'Vistas por rol', icon: MonitorSmartphone, path: '/superadmin?tab=demos_leads', section: 'Experiencia' },
           { name: 'Landing y captación', icon: Megaphone, path: '/superadmin?tab=landing_vsl', section: 'Experiencia' },

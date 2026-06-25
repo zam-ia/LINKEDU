@@ -11,8 +11,10 @@ import {
   DollarSign, 
   ChevronRight, 
   Lock, 
-  X 
+  X,
+  UploadCloud
 } from 'lucide-react';
+import { INSTITUTION_PAYMENT_ACCOUNTS, PaymentAccountsPanel, StaticQr } from '@/components/doce/PaymentInstructions';
 import { 
   getStoredAlumnos, 
   saveStoredAlumnos, 
@@ -38,6 +40,10 @@ export default function PagosPadre() {
     cvv: '123',
     holder: 'SOFIA CASTRO'
   });
+  const [checkoutMode, setCheckoutMode] = useState<'transferencia' | 'tarjeta'>('transferencia');
+  const [operationNumber, setOperationNumber] = useState('');
+  const [voucherPreview, setVoucherPreview] = useState('');
+  const [voucherFileName, setVoucherFileName] = useState('');
 
   const [alertMsg, setAlertMsg] = useState('');
 
@@ -67,7 +73,51 @@ export default function PagosPadre() {
 
   const handleOpenCheckout = (pago: PagoInfo) => {
     setActivePagoToPay(pago);
+    setCheckoutMode('transferencia');
+    setOperationNumber('');
+    setVoucherPreview('');
+    setVoucherFileName('');
     setShowCheckout(true);
+  };
+
+  const handleVoucherChange = (file?: File) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      triggerAlert('El voucher supera los 10MB permitidos.');
+      return;
+    }
+    setVoucherFileName(file.name);
+    const reader = new FileReader();
+    reader.onloadend = () => setVoucherPreview(String(reader.result || ''));
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmitTransferVoucher = () => {
+    if (!activePagoToPay) return;
+    if (!operationNumber.trim() || !voucherFileName) {
+      triggerAlert('Ingresa el número de operación y adjunta el voucher.');
+      return;
+    }
+
+    const storedGlobal = getStoredPagos();
+    const updated = storedGlobal.map(p => {
+      if (p.id === activePagoToPay.id) {
+        return {
+          ...p,
+          estado: 'pendiente' as const,
+          metodo: 'Transferencia' as const,
+          comprobante: `EN_REVISION-${operationNumber.trim()}-${voucherFileName}`,
+          fecha: new Date().toISOString().split('T')[0]
+        };
+      }
+      return p;
+    });
+
+    saveStoredPagos(updated);
+    setPagos(updated);
+    setShowCheckout(false);
+    setActivePagoToPay(null);
+    triggerAlert('Voucher recibido. Tesorería validará el pago antes de liberar el estado de cuenta.');
   };
 
   const handleSimulatePayment = () => {
@@ -221,7 +271,7 @@ export default function PagosPadre() {
                               onClick={() => handleOpenCheckout(pago)}
                               className="px-3 py-1.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white text-[10px] font-bold rounded-lg cursor-pointer transition-all shadow-xs"
                             >
-                              Pagar en Línea
+                              Pagar / adjuntar
                             </button>
                           ) : (
                             <span className="text-[10px] text-gray-400 font-bold italic">Sincronizado ✓</span>
@@ -241,104 +291,99 @@ export default function PagosPadre() {
         </div>
       )}
 
-      {/* ================= MODAL: SECURE CHECKOUT (CULQI MOCKUP) ================= */}
+      {/* ================= MODAL: CHECKOUT CON VOUCHER Y PASARELA MOCK ================= */}
       {showCheckout && activePagoToPay && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={() => setShowCheckout(false)}></div>
-          <div className="relative bg-[#1A1C29] text-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 flex flex-col">
+          <div className="relative max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-[28px] bg-[#f8f8f6] p-5 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+            <div className="flex items-center justify-between border-b border-black/10 pb-4 mb-5">
               <div className="flex items-center gap-2">
                 <Lock className="w-4.5 h-4.5 text-[#5BAD8A]" />
-                <span className="text-xs font-black tracking-widest uppercase text-white">Pasarela Segura Culqi</span>
+                <span className="text-xs font-black tracking-widest uppercase text-black">Centro de pago seguro</span>
               </div>
-              <button onClick={() => setShowCheckout(false)} className="p-1 hover:bg-white/10 text-white/50 hover:text-white rounded-full cursor-pointer">
+              <button onClick={() => setShowCheckout(false)} className="p-1 hover:bg-black/5 text-black/50 hover:text-black rounded-full cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Sumary of payment */}
-            <div className="bg-white/5 p-4 rounded-xl space-y-1 mb-4">
-              <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Concepto de Pago</span>
-              <p className="text-xs font-black">{activePagoToPay.concepto}</p>
-              <div className="flex items-center justify-between pt-2 mt-2 border-t border-white/5">
-                <span className="text-[10px] text-white/50 font-bold uppercase">Total a debitar</span>
-                <span className="text-sm font-black text-[#5BAD8A]">S/. {activePagoToPay.monto.toFixed(2)}</span>
-              </div>
-            </div>
-
-            {/* Card Simulator Graphic */}
-            <div className="relative w-full h-36 bg-gradient-to-tr from-[#3D405B] to-[#1D1D1F] rounded-xl p-4 shadow-lg mb-4 flex flex-col justify-between overflow-hidden border border-white/10">
-              <div className="absolute -right-10 -bottom-10 h-28 w-28 bg-white/5 rounded-full blur-xl" />
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black tracking-widest italic text-white/90">CREDIT CARD</span>
-                <span className="text-xs font-bold text-white/40">Mock Bank</span>
-              </div>
-              <p className="text-sm font-mono tracking-widest font-bold">{cardDetails.number}</p>
-              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-white/80">
-                <div>
-                  <span className="text-[8px] text-white/40 block">TARJETAHABIENTE</span>
-                  <span>{cardDetails.holder}</span>
+            <div className="grid gap-5 lg:grid-cols-[1fr_.95fr]">
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-2xl border border-black/10 space-y-1">
+                  <span className="text-[10px] text-black/40 font-bold uppercase tracking-wider">Concepto de pago</span>
+                  <p className="text-sm font-black text-black">{activePagoToPay.concepto}</p>
+                  <div className="flex items-center justify-between pt-2 mt-2 border-t border-black/5">
+                    <span className="text-[10px] text-black/40 font-bold uppercase">Total</span>
+                    <span className="text-lg font-black text-[#5BAD8A]">S/. {activePagoToPay.monto.toFixed(2)}</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[8px] text-white/40 block">VENCE</span>
-                  <span>{cardDetails.expiry}</span>
-                </div>
-              </div>
-            </div>
 
-            {/* Card Inputs Form */}
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[8px] font-black text-white/50 uppercase tracking-wider mb-1">Nombre Completo en la Tarjeta</label>
-                <input
-                  type="text"
-                  value={cardDetails.holder}
-                  onChange={(e) => setCardDetails({ ...cardDetails, holder: e.target.value.toUpperCase() })}
-                  className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-2">
-                  <label className="block text-[8px] font-black text-white/50 uppercase tracking-wider mb-1">Número de Tarjeta</label>
-                  <input
-                    type="text"
-                    value={cardDetails.number}
-                    onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
-                    className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono"
-                  />
+                <div className="grid grid-cols-2 gap-2 rounded-2xl bg-white p-1.5 border border-black/10">
+                  <button onClick={() => setCheckoutMode('transferencia')} className={`rounded-xl py-2 text-[11px] font-black ${checkoutMode === 'transferencia' ? 'bg-black text-white' : 'text-black/45'}`}>Transferencia + voucher</button>
+                  <button onClick={() => setCheckoutMode('tarjeta')} className={`rounded-xl py-2 text-[11px] font-black ${checkoutMode === 'tarjeta' ? 'bg-black text-white' : 'text-black/45'}`}>Pasarela futura</button>
                 </div>
-                <div>
-                  <label className="block text-[8px] font-black text-white/50 uppercase tracking-wider mb-1">CVV</label>
-                  <input
-                    type="text"
-                    maxLength={3}
-                    value={cardDetails.cvv}
-                    onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
-                    className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono text-center"
-                  />
-                </div>
-              </div>
 
-              <button
-                onClick={handleSimulatePayment}
-                disabled={processing}
-                className="w-full py-2.5 bg-[#5BAD8A] hover:bg-[#5BAD8A]/90 text-white font-bold text-xs rounded-xl shadow-lg cursor-pointer transition-all flex items-center justify-center gap-2"
-              >
-                {processing ? (
-                  <>
-                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Simulando transacción webhook...
-                  </>
+                {checkoutMode === 'transferencia' ? (
+                  <div className="rounded-2xl bg-white p-4 border border-black/10">
+                    <div className="grid gap-4 md:grid-cols-[auto_1fr]">
+                      <StaticQr label="QR institucional" />
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-[10px] font-black uppercase tracking-wider text-black/45">N° de operación bancaria</label>
+                          <input value={operationNumber} onChange={(e) => setOperationNumber(e.target.value)} placeholder="Ej. BCP-1928372" className="mt-2 block w-full rounded-xl border border-black/10 bg-[#f8f8f6] px-3 py-2.5 text-sm font-bold text-black outline-none focus:border-black" />
+                        </div>
+                        <label className="block cursor-pointer rounded-2xl border border-dashed border-black/20 bg-[#f8f8f6] p-4 text-center hover:border-[#ff2432]">
+                          <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" className="hidden" onChange={(e) => handleVoucherChange(e.target.files?.[0])} />
+                          <UploadCloud className="mx-auto h-6 w-6 text-[#ff2432]" />
+                          <span className="mt-2 block text-xs font-black text-black">{voucherFileName || 'Adjuntar voucher JPG, PNG o PDF'}</span>
+                          <span className="mt-1 block text-[10px] font-semibold text-black/40">Máximo 10MB. Quedará pendiente de validación.</span>
+                        </label>
+                        {voucherPreview && voucherPreview.startsWith('data:image') && <img src={voucherPreview} alt="Vista previa del voucher" className="max-h-36 w-full rounded-xl object-contain border border-black/10 bg-white" />}
+                        <button onClick={handleSubmitTransferVoucher} className="w-full rounded-xl bg-[#5BAD8A] py-3 text-xs font-black text-white shadow-lg shadow-[#5BAD8A]/20">Enviar voucher a revisión</button>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
-                  <>
-                    <Lock className="w-4 h-4" />
-                    Pagar S/. {activePagoToPay.monto.toFixed(2)}
-                  </>
+                  <div className="rounded-2xl bg-[#1A1C29] p-4 text-white">
+                    <div className="relative w-full h-36 bg-gradient-to-tr from-[#3D405B] to-[#1D1D1F] rounded-xl p-4 shadow-lg mb-4 flex flex-col justify-between overflow-hidden border border-white/10">
+                      <div className="absolute -right-10 -bottom-10 h-28 w-28 bg-white/5 rounded-full blur-xl" />
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black tracking-widest italic text-white/90">CREDIT CARD</span>
+                        <span className="text-xs font-bold text-white/40">Mock Bank</span>
+                      </div>
+                      <p className="text-sm font-mono tracking-widest font-bold">{cardDetails.number}</p>
+                      <div className="flex items-center justify-between text-[10px] font-mono font-bold text-white/80">
+                        <div><span className="text-[8px] text-white/40 block">TARJETAHABIENTE</span><span>{cardDetails.holder}</span></div>
+                        <div><span className="text-[8px] text-white/40 block">VENCE</span><span>{cardDetails.expiry}</span></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-[8px] font-black text-white/50 uppercase tracking-wider mb-1">Nombre Completo en la Tarjeta</label>
+                        <input type="text" value={cardDetails.holder} onChange={(e) => setCardDetails({ ...cardDetails, holder: e.target.value.toUpperCase() })} className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono" />
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="col-span-2">
+                          <label className="block text-[8px] font-black text-white/50 uppercase tracking-wider mb-1">Número de Tarjeta</label>
+                          <input type="text" value={cardDetails.number} onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })} className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono" />
+                        </div>
+                        <div>
+                          <label className="block text-[8px] font-black text-white/50 uppercase tracking-wider mb-1">CVV</label>
+                          <input type="text" maxLength={3} value={cardDetails.cvv} onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })} className="block w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 focus:outline-none focus:border-[#1D1D1F] text-xs font-bold font-mono text-center" />
+                        </div>
+                      </div>
+
+                      <button onClick={handleSimulatePayment} disabled={processing} className="w-full py-2.5 bg-[#5BAD8A] hover:bg-[#5BAD8A]/90 text-white font-bold text-xs rounded-xl shadow-lg cursor-pointer transition-all flex items-center justify-center gap-2">
+                        {processing ? <><span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Simulando webhook...</> : <><Lock className="w-4 h-4" /> Pagar S/. {activePagoToPay.monto.toFixed(2)}</>}
+                      </button>
+                    </div>
+                  </div>
                 )}
-              </button>
+              </div>
+
+              <PaymentAccountsPanel accounts={INSTITUTION_PAYMENT_ACCOUNTS} compact title="Cuentas de la institución" subtitle="Usa estos canales para pagos manuales. En producción cada colegio configura sus propias cuentas." />
             </div>
 
           </div>
