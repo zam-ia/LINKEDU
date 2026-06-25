@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Banknote, Building2, Copy, Edit3, Plus, QrCode, Save, Smartphone, Trash2, UploadCloud, X } from "lucide-react";
 
 export type PaymentAccount = {
@@ -214,14 +215,33 @@ export function PaymentConfigEditor({
   onSaved?: (config: PaymentConfig) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [accounts, setAccounts] = useState<PaymentAccount[]>(fallbackAccounts);
   const [qrDataUrl, setQrDataUrl] = useState<string | undefined>();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const config = getStoredPaymentConfig(storageKey, fallbackAccounts);
     setAccounts(config.accounts);
     setQrDataUrl(config.qrDataUrl);
   }, [storageKey, fallbackAccounts]);
+
+  useEffect(() => {
+    if (!open || typeof window === "undefined") return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   const updateAccount = (index: number, field: keyof PaymentAccount, value: string) => {
     setAccounts((current) => current.map((account, idx) => idx === index ? { ...account, [field]: value } : account));
@@ -290,10 +310,10 @@ export function PaymentConfigEditor({
         <Edit3 className="h-3.5 w-3.5" /> Editar cuentas / QR
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm">
-          <div className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-[28px] bg-white p-6 shadow-2xl">
-            <div className="flex items-start justify-between gap-4 border-b border-black/[.07] pb-4">
+      {open && mounted && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm">
+          <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-[28px] bg-white shadow-2xl">
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-black/[.07] p-6 pb-4">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff2432]">Configuración financiera</p>
                 <h2 className="mt-1 text-2xl font-black text-black">{title}</h2>
@@ -302,8 +322,9 @@ export function PaymentConfigEditor({
               <button onClick={() => setOpen(false)} className="rounded-full p-2 text-black/40 hover:bg-black/5 hover:text-black"><X className="h-5 w-5" /></button>
             </div>
 
-            <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_220px]">
-              <div className="space-y-3">
+            <div className="min-h-0 flex-1 overflow-y-auto p-6 custom-scrollbar">
+              <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_220px]">
+                <div className="space-y-3">
                 {accounts.map((account, index) => (
                   <div key={`${account.code}-${index}`} className="rounded-2xl border border-black/[.07] bg-[#f8f8f6] p-4">
                     <div className="mb-3 flex items-center justify-between">
@@ -321,9 +342,9 @@ export function PaymentConfigEditor({
                   </div>
                 ))}
                 <button onClick={addAccount} className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-black/20 py-3 text-xs font-black text-black/50 hover:border-black hover:text-black"><Plus className="h-4 w-4" /> Agregar canal</button>
-              </div>
+                </div>
 
-              <div className="space-y-3">
+                <div className="space-y-3">
                 <StaticQr label="QR configurado" imageDataUrl={qrDataUrl} />
                 <label className="block cursor-pointer rounded-2xl border border-dashed border-black/20 bg-[#f8f8f6] p-4 text-center hover:border-[#ff2432]">
                   <input type="file" accept="image/jpeg,image/png,image/jpg,image/svg+xml" className="hidden" onChange={(e) => handleQrUpload(e.target.files?.[0])} />
@@ -332,15 +353,17 @@ export function PaymentConfigEditor({
                   <span className="mt-1 block text-[9px] font-semibold text-black/35">JPG, PNG o SVG. Máx. 5MB.</span>
                 </label>
                 {qrDataUrl && <button onClick={() => setQrDataUrl(undefined)} className="w-full rounded-xl bg-[#FDECEA] py-2 text-[10px] font-black text-[#E07B6A]">Quitar QR</button>}
+                </div>
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end gap-3 border-t border-black/[.07] pt-4">
+            <div className="flex shrink-0 justify-end gap-3 border-t border-black/[.07] bg-white p-4">
               <button onClick={() => setOpen(false)} className="rounded-xl border border-black/10 px-4 py-2 text-xs font-black text-black/60">Cancelar</button>
               <button onClick={save} className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-xs font-black text-white"><Save className="h-4 w-4" /> Guardar configuración</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
