@@ -47,7 +47,7 @@ import {
   ColegioInfo, 
   UserProfile 
 } from '@/lib/supabase/client';
-import { PaymentAccountsPanel, PLATFORM_PAYMENT_ACCOUNTS, StaticQr } from '@/components/doce/PaymentInstructions';
+import { getStoredPaymentConfig, INSTITUTION_PAYMENT_ACCOUNTS, PaymentAccountsPanel, PaymentConfig, PaymentConfigEditor, PLATFORM_PAYMENT_ACCOUNTS, StaticQr } from '@/components/doce/PaymentInstructions';
 
 // Gráfico de crecimiento de la suscripción SaaS
 const saasGrowthData = [
@@ -177,6 +177,7 @@ export default function SuperAdminDashboard() {
   const [activeTab, setActiveTab] = useState(tabParam);
   const [colegios, setColegios] = useState<ColegioInfo[]>([]);
   const [usuarios, setUsuarios] = useState<UserProfile[]>([]);
+  const [platformPaymentConfig, setPlatformPaymentConfig] = useState<PaymentConfig>({ accounts: PLATFORM_PAYMENT_ACCOUNTS });
 
   // Demos & Magic Links States
   const [leads, setLeads] = useState<any[]>([]);
@@ -191,6 +192,10 @@ export default function SuperAdminDashboard() {
       setLeads(getStoredLeads());
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    setPlatformPaymentConfig(getStoredPaymentConfig('doce_platform_payment_config', PLATFORM_PAYMENT_ACCOUNTS));
+  }, []);
 
   useEffect(() => {
     if (colegios.length > 0) {
@@ -751,8 +756,17 @@ export default function SuperAdminDashboard() {
                   <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff2432]">Ciclo de cobro</p>
                   <h2 className="mt-2 text-xl font-black text-gray-950">Facturación recurrente Doce</h2>
                   <p className="mt-1 text-xs font-semibold leading-5 text-gray-500">Tus clientes pueden transferir por banco o billetera y enviar voucher. Hasta activar pasarela, esta vista sirve como control de conciliación SaaS.</p>
+                  <div className="mt-4">
+                    <PaymentConfigEditor
+                      storageKey="doce_platform_payment_config"
+                      fallbackAccounts={PLATFORM_PAYMENT_ACCOUNTS}
+                      title="Editar cuentas y QR de Doce"
+                      description="Estos datos se muestran para cobrar implementación, mensualidad SaaS, upgrades y soporte a colegios clientes."
+                      onSaved={setPlatformPaymentConfig}
+                    />
+                  </div>
                 </div>
-                <StaticQr label="QR Doce" />
+                <StaticQr label="QR Doce" imageDataUrl={platformPaymentConfig.qrDataUrl} />
               </div>
               <div className="mt-5 grid grid-cols-3 gap-3">
                 <div className="rounded-2xl bg-gray-50 p-4">
@@ -769,7 +783,7 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
             </div>
-            <PaymentAccountsPanel accounts={PLATFORM_PAYMENT_ACCOUNTS} title="Cuentas Doce" subtitle="Canales para cobrar implementación, mensualidad SaaS, upgrades y soporte a colegios clientes." />
+            <PaymentAccountsPanel accounts={platformPaymentConfig.accounts} updatedAt={platformPaymentConfig.updatedAt} title="Cuentas Doce" subtitle="Canales para cobrar implementación, mensualidad SaaS, upgrades y soporte a colegios clientes." />
           </div>
 
           <div className="premium-card overflow-hidden">
@@ -916,6 +930,14 @@ export default function SuperAdminDashboard() {
                             {label}<span className="text-[#ff2432]">↗</span>
                           </button>
                         ))}
+                      </div>
+                      <div className="mt-3">
+                        <PaymentConfigEditor
+                          storageKey={`doce_institution_payment_config_${col.id}`}
+                          fallbackAccounts={INSTITUTION_PAYMENT_ACCOUNTS}
+                          title={`Cuentas y QR de ${col.nombre}`}
+                          description="Configura los canales que verán padres y tesorería dentro de esta institución."
+                        />
                       </div>
                     </div>
                   </div>

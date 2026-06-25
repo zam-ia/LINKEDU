@@ -14,7 +14,7 @@ import {
   X,
   UploadCloud
 } from 'lucide-react';
-import { INSTITUTION_PAYMENT_ACCOUNTS, PaymentAccountsPanel, StaticQr } from '@/components/doce/PaymentInstructions';
+import { getStoredPaymentConfig, INSTITUTION_PAYMENT_ACCOUNTS, PaymentAccountsPanel, PaymentConfig, StaticQr } from '@/components/doce/PaymentInstructions';
 import { 
   getStoredAlumnos, 
   saveStoredAlumnos, 
@@ -44,6 +44,7 @@ export default function PagosPadre() {
   const [operationNumber, setOperationNumber] = useState('');
   const [voucherPreview, setVoucherPreview] = useState('');
   const [voucherFileName, setVoucherFileName] = useState('');
+  const [institutionPaymentConfig, setInstitutionPaymentConfig] = useState<PaymentConfig>({ accounts: INSTITUTION_PAYMENT_ACCOUNTS });
 
   const [alertMsg, setAlertMsg] = useState('');
 
@@ -70,6 +71,11 @@ export default function PagosPadre() {
 
   const currentHijo = hijos.find(h => h.id === selectedHijoId);
   const childPagos = pagos.filter(p => p.alumno_id === selectedHijoId && p.tipo === 'ingreso');
+
+  useEffect(() => {
+    if (!currentHijo) return;
+    setInstitutionPaymentConfig(getStoredPaymentConfig(`doce_institution_payment_config_${currentHijo.colegio_id}`, INSTITUTION_PAYMENT_ACCOUNTS));
+  }, [currentHijo]);
 
   const handleOpenCheckout = (pago: PagoInfo) => {
     setActivePagoToPay(pago);
@@ -327,7 +333,7 @@ export default function PagosPadre() {
                 {checkoutMode === 'transferencia' ? (
                   <div className="rounded-2xl bg-white p-4 border border-black/10">
                     <div className="grid gap-4 md:grid-cols-[auto_1fr]">
-                      <StaticQr label="QR institucional" />
+                      <StaticQr label="QR institucional" imageDataUrl={institutionPaymentConfig.qrDataUrl} />
                       <div className="space-y-4">
                         <div>
                           <label className="block text-[10px] font-black uppercase tracking-wider text-black/45">N° de operación bancaria</label>
@@ -383,7 +389,7 @@ export default function PagosPadre() {
                 )}
               </div>
 
-              <PaymentAccountsPanel accounts={INSTITUTION_PAYMENT_ACCOUNTS} compact title="Cuentas de la institución" subtitle="Usa estos canales para pagos manuales. En producción cada colegio configura sus propias cuentas." />
+              <PaymentAccountsPanel accounts={institutionPaymentConfig.accounts} updatedAt={institutionPaymentConfig.updatedAt} compact title="Cuentas de la institución" subtitle="Usa estos canales para pagos manuales. En producción cada colegio configura sus propias cuentas." />
             </div>
 
           </div>

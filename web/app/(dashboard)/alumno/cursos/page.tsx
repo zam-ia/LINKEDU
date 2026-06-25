@@ -91,8 +91,8 @@ export default function CursosAlumno() {
 
       {/* HEADER */}
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Mis Cursos</h1>
-        <p className="text-sm text-gray-500 mt-1">Revisa el syllabus, descarga guías de estudio y monitorea tus calificaciones curso por curso.</p>
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Mis Cursos y Diplomados</h1>
+        <p className="text-sm text-gray-500 mt-1">Revisa el syllabus, descarga guías de estudio y entra a tus cursos o diplomados activos.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

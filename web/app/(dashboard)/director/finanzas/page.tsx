@@ -21,7 +21,7 @@ import {
   Printer,
   UploadCloud
 } from 'lucide-react';
-import { INSTITUTION_PAYMENT_ACCOUNTS, PaymentAccountsPanel, StaticQr } from '@/components/doce/PaymentInstructions';
+import { getStoredPaymentConfig, INSTITUTION_PAYMENT_ACCOUNTS, PaymentAccountsPanel, PaymentConfig, PaymentConfigEditor, StaticQr } from '@/components/doce/PaymentInstructions';
 import { 
   BarChart, 
   Bar, 
@@ -54,6 +54,7 @@ export default function FinanzasPage() {
   const [alumnos, setAlumnos] = useState<AlumnoInfo[]>([]);
   const [docentes, setDocentes] = useState<DocenteInfo[]>([]);
   const [schoolPlan, setSchoolPlan] = useState('Premium SaaS');
+  const [institutionPaymentConfig, setInstitutionPaymentConfig] = useState<PaymentConfig>({ accounts: INSTITUTION_PAYMENT_ACCOUNTS });
 
   // Filters & State for Cuentas por Cobrar
   const [searchCobrar, setSearchCobrar] = useState('');
@@ -94,6 +95,7 @@ export default function FinanzasPage() {
       setPagos(storedPagos.filter(p => p.colegio_id === colegio.id));
       setAlumnos(storedAlumnos.filter(a => a.colegio_id === colegio.id));
       setDocentes(storedDocentes.filter(d => d.colegio_id === colegio.id));
+      setInstitutionPaymentConfig(getStoredPaymentConfig(`doce_institution_payment_config_${colegio.id}`, INSTITUTION_PAYMENT_ACCOUNTS));
     }
   }, [colegio]);
 
@@ -309,13 +311,24 @@ export default function FinanzasPage() {
             Imprimir Reporte
           </button>
           {!isBasico && (
-            <button 
-              onClick={() => setShowAddEgreso(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#1D1D1F]/20 cursor-pointer"
-            >
-              <Plus className="w-4.5 h-4.5" />
-              Registrar Egreso
-            </button>
+            <>
+              {colegio && (
+                <PaymentConfigEditor
+                  storageKey={`doce_institution_payment_config_${colegio.id}`}
+                  fallbackAccounts={INSTITUTION_PAYMENT_ACCOUNTS}
+                  title="Editar cuentas y QR del colegio"
+                  description="Estos canales se mostrarán a padres y tesorería para pagos por transferencia, Yape/Plin y regularizaciones."
+                  onSaved={setInstitutionPaymentConfig}
+                />
+              )}
+              <button 
+                onClick={() => setShowAddEgreso(true)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#1D1D1F] hover:bg-[#1D1D1F]/90 text-white font-bold text-xs rounded-xl shadow-md shadow-[#1D1D1F]/20 cursor-pointer"
+              >
+                <Plus className="w-4.5 h-4.5" />
+                Registrar Egreso
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -909,7 +922,7 @@ export default function FinanzasPage() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-[auto_1fr]">
-                <StaticQr label="QR de tesorería" />
+                <StaticQr label="QR de tesorería" imageDataUrl={institutionPaymentConfig.qrDataUrl} />
                 <label className="block cursor-pointer rounded-2xl border border-dashed border-gray-250 bg-gray-50 p-4 text-center hover:border-[#5BAD8A]">
                   <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" className="hidden" onChange={(e) => handleVoucherUpload(e.target.files?.[0])} />
                   <UploadCloud className="mx-auto h-6 w-6 text-[#5BAD8A]" />
@@ -919,7 +932,7 @@ export default function FinanzasPage() {
                 </label>
               </div>
 
-              <PaymentAccountsPanel accounts={INSTITUTION_PAYMENT_ACCOUNTS} compact title="Cuentas visibles para padres" subtitle="Estos datos se muestran también en el portal del padre para pagos por transferencia." />
+              <PaymentAccountsPanel accounts={institutionPaymentConfig.accounts} updatedAt={institutionPaymentConfig.updatedAt} compact title="Cuentas visibles para padres" subtitle="Estos datos se muestran también en el portal del padre para pagos por transferencia." />
 
               <div className="flex gap-3 justify-end pt-4 border-t border-gray-150">
                 <button

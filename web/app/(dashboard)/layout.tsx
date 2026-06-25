@@ -598,11 +598,10 @@ function DashboardLayoutContent({
       case 'alumno':
         return [
           { name: 'Inicio', icon: LayoutDashboard, path: '/alumno' },
-          { name: 'Mi Horario', icon: Calendar, path: '/alumno/horario' },
-          { name: 'Entregas', icon: ClipboardList, path: '/alumno/tareas' },
-          { name: 'Mis Cursos', icon: BookOpen, path: '/alumno/cursos' },
-          { name: 'Certificados', icon: FileBadge2, path: '/alumno/certificados' },
-          { name: 'Configuración', icon: Settings, path: '/alumno/settings' },
+          { name: 'Mis Cursos y Diplomados', icon: BookOpen, path: '/alumno/cursos' },
+          { name: 'Mis Calificaciones', icon: ClipboardList, path: '/alumno/calificaciones' },
+          { name: 'Mis Pagos', icon: CreditCard, path: '/alumno/pagos' },
+          { name: 'Perfil', icon: Settings, path: '/alumno/settings' },
         ];
       default:
         return [];
