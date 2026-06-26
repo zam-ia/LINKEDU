@@ -195,27 +195,31 @@ function MiniDashboard({ heroAsset }: { heroAsset?: string }) {
     <div className="relative mx-auto w-full max-w-[680px]">
       <div className="absolute -inset-8 -z-10 rounded-full bg-[#ff2432]/10 blur-3xl" />
       {heroAsset && <div aria-hidden className="absolute -inset-3 -z-10 rounded-[38px] bg-cover bg-center opacity-20 blur-[2px]" style={{ backgroundImage: `url(${JSON.stringify(heroAsset).slice(1, -1)})` }} />}
-      <div className="overflow-hidden rounded-[32px] border border-black/10 bg-white shadow-[0_35px_120px_-48px_rgba(0,0,0,.48)]">
+      <div className="overflow-hidden rounded-[26px] border border-black/10 bg-white shadow-[0_35px_120px_-48px_rgba(0,0,0,.48)] sm:rounded-[32px]">
         <div className="flex h-11 items-center gap-2 border-b border-black/[.06] px-5">
           <span className="h-2.5 w-2.5 rounded-full bg-[#ff2432]" />
           <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
           <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
           <span className="ml-auto text-[10px] font-black uppercase tracking-[.18em] text-black/30">Doce OS</span>
         </div>
-        <div className="grid min-h-[420px] grid-cols-[116px_1fr] bg-[#f8f8f6] sm:grid-cols-[160px_1fr]">
-          <aside className="border-r border-black/[.06] bg-white p-4">
-            <BrandMark className="mb-8 !w-[78px]" />
+        <div className="grid bg-[#f8f8f6] sm:min-h-[420px] sm:grid-cols-[160px_1fr]">
+          <aside className="border-b border-black/[.06] bg-white p-3 sm:border-b-0 sm:border-r sm:p-4">
+            <div className="flex items-center gap-3 sm:block">
+            <BrandMark className="!w-[70px] shrink-0 sm:mb-8 sm:!w-[78px]" />
+            <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto custom-scrollbar sm:block">
             {["Resumen", "Pagos", "Alumnos", "Carnets", "Certificados"].map((item, index) => (
-              <div key={item} className={`mb-2 rounded-2xl px-3 py-2.5 text-[10px] font-black sm:text-xs ${index === 0 ? "bg-black text-white" : "text-black/42"}`}>{item}</div>
+              <div key={item} className={`shrink-0 rounded-2xl px-3 py-2.5 text-[10px] font-black sm:mb-2 sm:text-xs ${index === 0 ? "bg-black text-white" : "text-black/42"}`}>{item}</div>
             ))}
+            </div>
+            </div>
           </aside>
           <div className="p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[.18em] text-[#ff2432]">Dirección general</p>
-                <h3 className="mt-1 text-xl font-black tracking-[-.035em] sm:text-3xl">Colegio ordenado en tiempo real</h3>
+                <h3 className="mt-1 text-lg font-black tracking-[-.035em] sm:text-3xl">Colegio ordenado en tiempo real</h3>
               </div>
-              <div className="rounded-full bg-emerald-50 px-3 py-1 text-[9px] font-black uppercase tracking-[.14em] text-emerald-600">Activo</div>
+              <div className="hidden rounded-full bg-emerald-50 px-3 py-1 text-[9px] font-black uppercase tracking-[.14em] text-emerald-600 min-[420px]:block">Activo</div>
             </div>
             <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
               {[["1,284", "alumnos"], ["S/ 38k", "por cobrar"], ["98%", "asistencia"]].map(([value, label]) => (
@@ -388,6 +392,11 @@ export default function Home() {
     router.push(path);
   };
 
+  const accessClassroom = () => {
+    trackEvent("demo_cta_click", { source: "aula_virtual_access" });
+    router.push("/login");
+  };
+
   const heroDemoClick = () => {
     trackEvent("hero_cta_click");
     document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" });
@@ -440,26 +449,27 @@ export default function Home() {
             {navItems.map(([label, href]) => <a key={href} href={href} className="hover:text-black">{label}</a>)}
           </nav>
           <div className="hidden items-center gap-3 md:flex">
-            <button onClick={() => router.push("/login")} className="rounded-full px-5 py-2.5 text-sm font-bold hover:bg-black/5">Acceso demo</button>
+            <button onClick={accessClassroom} className="rounded-full px-5 py-2.5 text-sm font-bold hover:bg-black/5">Aula virtual</button>
             <a href="#demo" onClick={() => trackEvent("demo_cta_click", { source: "header" })} className="rounded-full bg-black px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#ff2432]">Agendar demo</a>
           </div>
-          <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl p-2 lg:hidden" aria-label="Abrir menú">{menuOpen ? <X /> : <Menu />}</button>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl p-2 md:hidden" aria-label="Abrir menú">{menuOpen ? <X /> : <Menu />}</button>
         </div>
         {menuOpen && (
-          <div className="border-t border-black/5 bg-white p-5 lg:hidden">
+          <div className="border-t border-black/5 bg-white p-5 md:hidden">
             <div className="grid gap-3 text-sm font-bold">
               {navItems.map(([label, href]) => <a key={href} href={href} onClick={() => setMenuOpen(false)} className="rounded-2xl bg-[#f8f8f6] px-4 py-3">{label}</a>)}
-              <button onClick={() => router.push("/login")} className="rounded-full bg-black py-3 text-white">Acceso demo</button>
+              <button onClick={accessClassroom} className="rounded-full bg-black py-3 text-white">Aula virtual</button>
+              <a href="#demo" onClick={() => { setMenuOpen(false); trackEvent("demo_cta_click", { source: "mobile_menu" }); }} className="rounded-full bg-[#ff2432] py-3 text-center text-white">Agendar demo</a>
             </div>
           </div>
         )}
       </header>
 
-      <section id="inicio" className="relative px-5 pb-20 pt-34 lg:px-8 lg:pb-32 lg:pt-44">
-        <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-[.95fr_1.05fr]">
+      <section id="inicio" className="relative px-4 pb-20 pt-32 sm:px-5 lg:px-8 lg:pb-32 lg:pt-44">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.95fr_1.05fr] lg:gap-16">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-[.15em] shadow-sm"><Sparkles className="h-3.5 w-3.5 text-[#ff2432]" /> SaaS educativo alquilable</div>
-            <h1 className="mt-7 max-w-[780px] text-[44px] font-black leading-[.96] tracking-[-.058em] sm:text-[66px] lg:text-[78px]">Administra tu institución sin Excel, sin papeles y sin perseguir información por WhatsApp.</h1>
+            <h1 className="mt-7 max-w-[780px] text-[38px] font-black leading-[.98] tracking-[-.055em] min-[420px]:text-[44px] sm:text-[66px] lg:text-[78px]">Administra tu institución sin Excel, sin papeles y sin perseguir información por WhatsApp.</h1>
             <p className="mt-7 max-w-xl text-base font-medium leading-7 text-black/55 sm:text-lg">Doce centraliza alumnos, docentes, pagos, asistencia, carnets, certificados y reportes en una sola plataforma alquilada por alumno.</p>
             <div className="mt-7 grid gap-2 text-sm font-bold text-black/62 sm:grid-cols-2">
               {["Control académico y administrativo en tiempo real.", "Portal para dirección, docentes, padres y alumnos.", "Carnets, fotochecks y certificados con QR verificable.", "Desde S/ 5 por alumno al mes."].map((item) => <span key={item} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ff2432]" />{item}</span>)}
