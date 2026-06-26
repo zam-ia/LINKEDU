@@ -202,9 +202,9 @@ function MiniDashboard({ heroAsset }: { heroAsset?: string }) {
           <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
           <span className="ml-auto text-[10px] font-black uppercase tracking-[.18em] text-black/30">Doce OS</span>
         </div>
-        <div className="grid bg-[#f8f8f6] sm:min-h-[420px] sm:grid-cols-[160px_1fr]">
-          <aside className="border-b border-black/[.06] bg-white p-3 sm:border-b-0 sm:border-r sm:p-4">
-            <div className="flex items-center gap-3 sm:block">
+        <div className="grid grid-cols-[minmax(0,1fr)] bg-[#f8f8f6] sm:min-h-[420px] sm:grid-cols-[160px_1fr]">
+          <aside className="min-w-0 border-b border-black/[.06] bg-white p-3 sm:border-b-0 sm:border-r sm:p-4">
+            <div className="flex min-w-0 items-center gap-3 sm:block">
             <BrandMark className="!w-[70px] shrink-0 sm:mb-8 sm:!w-[78px]" />
             <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto custom-scrollbar sm:block">
             {["Resumen", "Pagos", "Alumnos", "Carnets", "Certificados"].map((item, index) => (
@@ -213,7 +213,7 @@ function MiniDashboard({ heroAsset }: { heroAsset?: string }) {
             </div>
             </div>
           </aside>
-          <div className="p-4 sm:p-6">
+          <div className="min-w-0 p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[.18em] text-[#ff2432]">Dirección general</p>
@@ -305,9 +305,9 @@ function CredentialMockups() {
 function WhatsAppLauncher() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="fixed bottom-5 right-5 z-[60]">
+    <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-[60] sm:bottom-5 sm:right-5">
       {open && (
-        <div className="mb-3 w-[300px] rounded-[26px] border border-black/[.08] bg-white p-3 shadow-[0_30px_80px_-35px_rgba(0,0,0,.55)]">
+        <div className="mb-3 w-[min(300px,calc(100vw-2rem))] rounded-[26px] border border-black/[.08] bg-white p-3 shadow-[0_30px_80px_-35px_rgba(0,0,0,.55)]">
           <div className="px-2 py-2">
             <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff2432]">WhatsApp Doce</p>
             <p className="mt-1 text-xs font-semibold leading-5 text-black/45">Elige el motivo y abrimos un mensaje listo.</p>
@@ -321,8 +321,8 @@ function WhatsAppLauncher() {
           </div>
         </div>
       )}
-      <button onClick={() => setOpen((current) => !current)} className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_20px_40px_-18px_rgba(37,211,102,.9)]" aria-label="Abrir opciones de WhatsApp">
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+      <button onClick={() => setOpen((current) => !current)} className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_20px_40px_-18px_rgba(37,211,102,.9)] sm:h-14 sm:w-14" aria-label="Abrir opciones de WhatsApp">
+        {open ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />}
       </button>
     </div>
   );
@@ -452,7 +452,10 @@ export default function Home() {
             <button onClick={accessClassroom} className="rounded-full px-5 py-2.5 text-sm font-bold hover:bg-black/5">Aula virtual</button>
             <a href="#demo" onClick={() => trackEvent("demo_cta_click", { source: "header" })} className="rounded-full bg-black px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#ff2432]">Agendar demo</a>
           </div>
-          <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl p-2 md:hidden" aria-label="Abrir menú">{menuOpen ? <X /> : <Menu />}</button>
+          <div className="flex items-center gap-2 md:hidden">
+            <button onClick={accessClassroom} className="rounded-full bg-black px-4 py-2 text-xs font-black text-white">Aula</button>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl p-2" aria-label="Abrir menú">{menuOpen ? <X /> : <Menu />}</button>
+          </div>
         </div>
         {menuOpen && (
           <div className="border-t border-black/5 bg-white p-5 md:hidden">
@@ -466,25 +469,31 @@ export default function Home() {
       </header>
 
       <section id="inicio" className="relative px-4 pb-20 pt-32 sm:px-5 lg:px-8 lg:pb-32 lg:pt-44">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.95fr_1.05fr] lg:gap-16">
-          <div>
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-12 lg:grid-cols-[.95fr_1.05fr] lg:gap-16">
+          <div className="min-w-0 max-w-full">
             <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-[.15em] shadow-sm"><Sparkles className="h-3.5 w-3.5 text-[#ff2432]" /> SaaS educativo alquilable</div>
-            <h1 className="mt-7 max-w-[780px] text-[38px] font-black leading-[.98] tracking-[-.055em] min-[420px]:text-[44px] sm:text-[66px] lg:text-[78px]">Administra tu institución sin Excel, sin papeles y sin perseguir información por WhatsApp.</h1>
-            <p className="mt-7 max-w-xl text-base font-medium leading-7 text-black/55 sm:text-lg">Doce centraliza alumnos, docentes, pagos, asistencia, carnets, certificados y reportes en una sola plataforma alquilada por alumno.</p>
-            <div className="mt-7 grid gap-2 text-sm font-bold text-black/62 sm:grid-cols-2">
+            <h1 className="mt-7 max-w-full text-[36px] font-black leading-[.98] tracking-[-.055em] min-[390px]:text-[40px] sm:hidden">Ordena tu institución en una sola plataforma.</h1>
+            <h1 className="mt-7 hidden max-w-[780px] font-black leading-[.98] tracking-[-.055em] sm:block sm:text-[66px] lg:text-[78px]">Administra tu institución sin Excel, sin papeles y sin perseguir información por WhatsApp.</h1>
+            <p className="mt-6 max-w-xl text-[15px] font-medium leading-7 text-black/55 sm:hidden">Pagos, asistencia, aula virtual y certificados con QR desde S/ 5 por alumno.</p>
+            <p className="mt-7 hidden max-w-xl text-lg font-medium leading-7 text-black/55 sm:block">Doce centraliza alumnos, docentes, pagos, asistencia, carnets, certificados y reportes en una sola plataforma alquilada por alumno.</p>
+            <div className="mt-7 grid gap-2 text-sm font-bold text-black/62 sm:hidden">
+              {["Pagos y morosidad controlada.", "Portal para cada rol.", "Certificados y carnets con QR."].map((item) => <span key={item} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ff2432]" />{item}</span>)}
+            </div>
+            <div className="mt-7 hidden gap-2 text-sm font-bold text-black/62 sm:grid sm:grid-cols-2">
               {["Control académico y administrativo en tiempo real.", "Portal para dirección, docentes, padres y alumnos.", "Carnets, fotochecks y certificados con QR verificable.", "Desde S/ 5 por alumno al mes."].map((item) => <span key={item} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ff2432]" />{item}</span>)}
             </div>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <button onClick={heroDemoClick} className="inline-flex items-center justify-center gap-2 rounded-full bg-black px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#ff2432]">Agendar demo gratuita <ArrowRight className="h-4 w-4" /></button>
-              <a href="#recorrido" className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-bold">Ver cómo funciona <ChevronRight className="h-4 w-4" /></a>
+              <button onClick={accessClassroom} className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-bold sm:hidden">Aula virtual <ArrowRight className="h-4 w-4" /></button>
+              <a href="#recorrido" className="hidden items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-bold sm:inline-flex">Ver cómo funciona <ChevronRight className="h-4 w-4" /></a>
             </div>
           </div>
           <MiniDashboard heroAsset={heroAsset} />
         </div>
       </section>
 
-      <section className="border-y border-black/[.06] bg-white px-5 py-7">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-12 gap-y-4 text-center text-xs font-black uppercase tracking-[.18em] text-black/35">
+      <section className="border-y border-black/[.06] bg-white px-4 py-7 sm:px-5">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-4 text-center text-[11px] font-black uppercase tracking-[.1em] text-black/35 sm:gap-x-12 sm:text-xs sm:tracking-[.18em]">
           <span>Colegios</span><span>Academias</span><span>Institutos</span><span>Universidades</span><span>Capacitación corporativa</span>
         </div>
       </section>
