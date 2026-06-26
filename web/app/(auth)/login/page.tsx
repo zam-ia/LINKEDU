@@ -6,6 +6,16 @@ import { useRouter } from "next/navigation";
 import { BrandMark } from "@/components/doce/BrandMark";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
+function trackAuthEvent(event: "login_attempt" | "demo_login_success", payload: Record<string, unknown> = {}) {
+  if (typeof window === "undefined") return;
+  void fetch("/api/landing-events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ event, payload, path: window.location.pathname, referrer: document.referrer || null }),
+    keepalive: true,
+  }).catch(() => undefined);
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const { login, loading, user } = useAuthStore();
@@ -25,7 +35,12 @@ export default function LoginPage() {
       setError("Ingresa tu correo y contraseña.");
       return;
     }
+    trackAuthEvent("login_attempt", { email_domain: email.includes("@") ? email.split("@").pop() : null });
     const result = await login(email, password);
+    if (result.ok) {
+      trackAuthEvent("demo_login_success");
+      return;
+    }
     if (!result.ok) {
       const messages = {
         invalid_credentials: "El correo o la contraseña no coinciden.",

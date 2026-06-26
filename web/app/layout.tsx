@@ -10,8 +10,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Doce — Sistema operativo educativo",
-  description: "Aula virtual, gestión institucional, carnets y certificados verificables para colegios, institutos y centros de capacitación.",
-  keywords: ["aula virtual", "gestión educativa", "certificados con QR", "carnets escolares", "software educativo"],
+  description: "Plataforma SaaS educativa para gestionar alumnos, docentes, pagos, asistencia, aula virtual, carnets y certificados verificables con QR.",
+  keywords: ["aula virtual", "gestión educativa", "certificados con QR", "carnets escolares", "software educativo", "SaaS educativo"],
   authors: [{ name: "Doce" }],
 };
 
